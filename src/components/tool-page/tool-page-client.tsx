@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, CheckCircle2, List, CaseSensitive, HelpCircle, ArrowRight } from 'lucide-react';
 import { ToolInterface } from './tool-interface';
+import { AdBanner } from '@/components/shared/ad-banner';
 
 interface ToolPageClientProps {
   tool: Tool & { image: string; imageHint: string };
@@ -82,7 +83,8 @@ export function ToolPageClient({ tool, aiContent, translations }: ToolPageClient
             </Card>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-8 sticky top-24">
+            <AdBanner adSlot="YOUR_SIDE_BANNER_AD_SLOT_ID" className="w-full min-h-[250px] bg-muted rounded-lg mb-8 hidden lg:flex items-center justify-center" />
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

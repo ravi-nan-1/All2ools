@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/shared/header';
 import { Footer } from '@/components/shared/footer';
 import { LanguageProvider } from '@/context/language-context';
+import { AdBanner } from '@/components/shared/ad-banner';
 
 export const metadata: Metadata = {
   title: 'All2ools | The Ultimate Suite of Free AI-Powered Online Tools',
@@ -18,6 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3080938150148610"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -37,6 +45,13 @@ export default function RootLayout({
             <Footer />
           </div>
           <Toaster />
+          <AdBanner
+            adSlot="YOUR_STICKY_AD_SLOT_ID"
+            adFormat="auto"
+            dataFullWidthResponsive={true}
+            className="fixed bottom-0 left-0 w-full bg-background border-t z-50 flex justify-center items-center"
+            style={{ minHeight: '50px' }}
+          />
         </LanguageProvider>
       </body>
     </html>

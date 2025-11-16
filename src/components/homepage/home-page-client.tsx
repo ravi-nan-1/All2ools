@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Fragment } from 'react';
 import type { Tool, ToolCategory } from '@/lib/tools';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ToolCard, type ToolWithImage } from './tool-card';
 import { useLanguage } from '@/hooks/use-language';
 import { Search } from 'lucide-react';
+import { AdBanner } from '@/components/shared/ad-banner';
 
 const categories: ToolCategory[] = [
   'Finance',
@@ -20,6 +21,8 @@ const categories: ToolCategory[] = [
 interface HomePageClientProps {
   tools: ToolWithImage[];
 }
+
+const NATIVE_AD_INTERVAL = 6; // Show an ad every 6 cards
 
 export function HomePageClient({ tools }: HomePageClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,9 +86,19 @@ export function HomePageClient({ tools }: HomePageClientProps) {
       </section>
 
       <section>
+        <div className="mb-8">
+          <AdBanner adSlot="YOUR_BANNER_AD_SLOT_ID" className="w-full min-h-[100px] flex items-center justify-center bg-muted rounded-lg" />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTools.map((tool) => (
-            <ToolCard key={tool.slug} tool={tool} />
+          {filteredTools.map((tool, index) => (
+            <Fragment key={tool.slug}>
+              <ToolCard tool={tool} />
+              {(index + 1) % NATIVE_AD_INTERVAL === 0 && (
+                <div className="md:col-span-1 lg:col-span-1 flex items-stretch">
+                   <AdBanner adSlot="YOUR_NATIVE_AD_SLOT_ID" adFormat="fluid" className="w-full h-full min-h-[300px] bg-muted rounded-lg"/>
+                </div>
+              )}
+            </Fragment>
           ))}
         </div>
         {filteredTools.length === 0 && (
