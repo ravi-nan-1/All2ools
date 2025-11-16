@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 declare global {
@@ -17,29 +17,20 @@ interface AdBannerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function AdBanner({ adSlot, adFormat = "auto", dataFullWidthResponsive = false, ...props }: AdBannerProps) {
   const pathname = usePathname();
-  const adPushedRef = useRef(false);
 
   useEffect(() => {
-    // When the path changes, we need to reset the ref so ads can be pushed again.
-    adPushedRef.current = false;
-  }, [pathname]);
-
-  useEffect(() => {
-    if (adPushedRef.current) return;
-
     try {
       if (window.adsbygoogle) {
-        console.log('Pushing ad:', adSlot);
+        console.log('Pushing ad for slot:', adSlot);
         (window.adsbygoogle = window.adsbygoogle || []).push({});
-        adPushedRef.current = true;
       }
     } catch (err) {
-      console.error('AdSense error:', err);
+      console.error(`AdSense error for slot ${adSlot}:`, err);
     }
-  }, [pathname, adSlot]); // Re-run when pathname changes
+  }, []);
 
   return (
-    <div {...props} key={pathname + adSlot}>
+    <div {...props} key={`${pathname}-${adSlot}`}>
         <ins className="adsbygoogle"
             style={{ display: 'block' }}
             data-ad-client="ca-pub-3080938150148610"
