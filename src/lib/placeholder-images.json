@@ -3,8 +3,8 @@
     {
       "id": "tinyurl-maker",
       "description": "TinyURL Maker",
-      "imageUrl": "https://images.unsplash.com/photo-1585079374502-431f8a706294?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsaW5rJTIwc2hvcnRlbmVyfGVufDB8fHx8MTc2MzI3ODgxMHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "link shortener"
+      "imageUrl": "https://images.unsplash.com/photo-1543357115-92e515b14e36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkaWdpdGFsJTIwY29ubmVjdGlvbnxlbnwwfHx8fDE3NjM3OTY3MDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "digital connection"
     },
     {
       "id": "startup-equity-calculator",
@@ -153,7 +153,7 @@
     {
       "id": "saas-pricing-optimizer",
       "description": "SaaS Pricing Optimizer",
-      "imageUrl": "https://images.unsplash.com/photo-1728825445493-1a6e89164511?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwcmljaW5nJTIwdGFibGV8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1728825445493-1a6e89164511?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwcmljaW5nJTIwdGFibGV8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "pricing table"
     },
     {
@@ -165,7 +165,7 @@
     {
       "id": "salary-benchmark-tool",
       "description": "Salary Benchmark Tool",
-      "imageUrl": "https://images.unsplash.com/photo-1563296299-1e2092247cb4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzYWxhcnklMjBjb21wYXJpc29ufGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1563296299-1e2092247cb4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzYWxhcnklMjBjb21wYXJpc29ufGVufDB8fHx8MTc2MzMwNDA3MHww&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "salary comparison"
     },
     {
@@ -177,7 +177,7 @@
     {
       "id": "invoice-excel-extractor",
       "description": "Invoice -> Excel Extractor",
-      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwZXh0cmFjdGlvbnxlbnwwfHx8fDE3NjMyMDkwODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwZXh0cmFjdGlvbnxlbnwwfHx8fDE3NjMyMDkwODN8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "data extraction"
     }
   ]
