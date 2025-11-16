@@ -40,23 +40,6 @@ export async function generateSEOMetadata(
   return generateSEOMetadataFlow(input);
 }
 
-// Define the prompt at the top level of the module
-const faqPrompt = ai.definePrompt({
-  name: 'generateFaqPrompt',
-  input: { schema: GenerateSEOMetadataInputSchema },
-  output: { schema: z.object({ faqContent: z.string() }) },
-  prompt: `
-    You are an expert SEO content creator.
-    Your task is to generate a list of 3-5 Frequently Asked Questions (FAQs) for a tool page based on the tool name and description provided.
-    Provide clear and concise answers. Format it as a single multi-line string.
-
-    Tool Name: {{{toolName}}}
-    Tool Description: {{{toolDescription}}}
-  `,
-  config: {
-    model: 'googleai/gemini-1.5-flash-latest',
-  },
-});
 
 const generateSEOMetadataFlow = ai.defineFlow(
   {
@@ -65,17 +48,8 @@ const generateSEOMetadataFlow = ai.defineFlow(
     outputSchema: GenerateSEOMetadataOutputSchema,
   },
   async (input) => {
-    let faqContent = 'FAQs could not be generated at this time.';
-
-    try {
-      // Call the pre-defined prompt
-      const { output } = await faqPrompt(input);
-      if (output?.faqContent) {
-        faqContent = output.faqContent;
-      }
-    } catch (e) {
-      console.error("FAQ generation failed, using default.", e);
-    }
+    // AI generation is removed to prevent errors. Returning a placeholder.
+    const faqContent = 'FAQs are currently unavailable. Please check back later.';
 
     const seoTitle = `${input.toolName} | All2ools`;
     const seoDescription = input.toolDescription.substring(0, 160);
