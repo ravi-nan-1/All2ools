@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -39,8 +40,8 @@ export function AiTaxDeductionFinder() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      income: undefined,
-      expenses: undefined,
+      income: 0,
+      expenses: 0,
       country: '',
       categoryTags: '',
     },
@@ -101,7 +102,7 @@ export function AiTaxDeductionFinder() {
                       type="number" 
                       placeholder="e.g., 80000" 
                       {...field}
-                      onChange={e => field.onChange(parseFloat(e.target.value))}
+                      onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                       disabled={isLoading} 
                     />
                   </FormControl>
@@ -120,7 +121,7 @@ export function AiTaxDeductionFinder() {
                       type="number" 
                       placeholder="e.g., 20000" 
                       {...field} 
-                      onChange={e => field.onChange(parseFloat(e.target.value))}
+                      onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                       disabled={isLoading}
                     />
                   </FormControl>
