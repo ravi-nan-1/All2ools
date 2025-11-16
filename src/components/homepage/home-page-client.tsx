@@ -48,10 +48,7 @@ export function HomePageClient({ tools }: HomePageClientProps) {
 
     if ((i + 1) % NATIVE_AD_INTERVAL === 0) {
       itemsToRender.push(
-        <div
-          key={`ad-${i}`}
-          className="my-8 md:col-span-2 lg:col-span-3"
-        >
+        <div key={`ad-${i}`}>
           <AdBanner
             adSlot="YOUR_NATIVE_AD_SLOT_ID"
             adFormat="fluid"
