@@ -62,6 +62,7 @@ export const translations: Record<string, Record<string, string>> = {
     'salary-benchmark-tool': 'Salary Benchmark Tool',
     'ai-contract-summarizer': 'AI Contract Summarizer',
     'invoice-excel-extractor': 'Invoice → Excel Extractor',
+    // Tool-specific translations
     'upload_image_and_remove_bg': 'Upload an image to remove the background',
     'upload_image': 'Upload Image',
     'analyze_text_for_seo': 'Paste your content and competitor URLs to identify content gaps and get SEO improvement advice.',
@@ -74,6 +75,7 @@ export const translations: Record<string, Record<string, string>> = {
     'latency': 'Latency',
     'tool_coming_soon': 'Tool UI coming soon...',
     'tool_placeholder_desc': 'The interactive UI for this tool is currently under development. Please check back later!',
+    'analyze_deductions': 'Analyze Deductions',
   },
   es: {
     // Homepage
@@ -125,6 +127,7 @@ export const translations: Record<string, Record<string, string>> = {
     'salary-benchmark-tool': 'Herramienta de Benchmark Salarial',
     'ai-contract-summarizer': 'Resumidor de Contratos con IA',
     'invoice-excel-extractor': 'Extractor de Facturas a Excel',
+    // Tool-specific translations
     'upload_image_and_remove_bg': 'Sube una imagen para eliminar el fondo',
     'upload_image': 'Subir Imagen',
     'analyze_text_for_seo': 'Pega tu contenido y las URLs de tus competidores para identificar brechas de contenido y recibir consejos de SEO.',
@@ -137,5 +140,6 @@ export const translations: Record<string, Record<string, string>> = {
     'latency': 'Latencia',
     'tool_coming_soon': 'La interfaz de la herramienta estará disponible pronto...',
     'tool_placeholder_desc': 'La interfaz interactiva para esta herramienta está actualmente en desarrollo. ¡Por favor, vuelve más tarde!',
+    'analyze_deductions': 'Analizar Deducciones',
   },
 };

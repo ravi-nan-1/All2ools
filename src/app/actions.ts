@@ -2,12 +2,32 @@
 
 import { removeBackground } from "@/ai/flows/ai-product-background-remover";
 import { analyzeContentGap } from "@/ai/flows/analyze-content-gap";
+import { findTaxDeductions } from "@/ai/flows/find-tax-deductions";
 
 async function fileToDataUri(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   const base64 = buffer.toString('base64');
   return `data:${file.type};base64,${base64}`;
+}
+
+export async function handleTaxAnalysis(formData: FormData) {
+  try {
+    const income = parseFloat(formData.get('income') as string);
+    const expenses = parseFloat(formData.get('expenses') as string);
+    const country = formData.get('country') as string;
+    const categoryTags = formData.get('categoryTags') as string;
+
+    if (isNaN(income) || isNaN(expenses) || !country || !categoryTags) {
+      throw new Error('Invalid input. Please fill out all required fields.');
+    }
+
+    const result = await findTaxDeductions({ income, expenses, country, categoryTags });
+    return { result };
+
+  } catch (error: any) {
+    return { error: error.message || 'Failed to analyze tax deductions.' };
+  }
 }
 
 export async function handleBackgroundRemoval(formData: FormData) {

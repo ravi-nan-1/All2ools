@@ -4,6 +4,7 @@ import { ApiLatencyChecker } from './tools/api-latency-checker';
 import { PlaceholderTool } from './tools/placeholder-tool';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Wrench } from 'lucide-react';
+import { AiTaxDeductionFinder } from './tools/ai-tax-deduction-finder';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -18,6 +19,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <ContentGapAnalyzer />;
       case 'api-latency-checker':
         return <ApiLatencyChecker />;
+      case 'ai-tax-deduction-finder':
+        return <AiTaxDeductionFinder />;
       default:
         return <PlaceholderTool />;
     }
