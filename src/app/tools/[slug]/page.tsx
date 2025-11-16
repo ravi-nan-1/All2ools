@@ -26,6 +26,7 @@ export async function generateMetadata({
 
   try {
     const { seoTitle, seoDescription } = await generateSEOMetadata({
+      toolName: tool.name,
       toolDescription: tool.longDescription,
     });
     return {
@@ -58,6 +59,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
   let aiContent;
   try {
     aiContent = await generateSEOMetadata({
+      toolName: tool.name,
       toolDescription: tool.longDescription,
     });
   } catch (error) {

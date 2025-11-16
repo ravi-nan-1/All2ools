@@ -16,6 +16,7 @@ const GenerateSEOMetadataInputSchema = z.object({
   toolDescription: z
     .string()
     .describe('The detailed description of the tool.'),
+  toolName: z.string().describe('The name of the tool.'),
 });
 
 export type GenerateSEOMetadataInput = z.infer<
@@ -25,8 +26,8 @@ export type GenerateSEOMetadataInput = z.infer<
 const GenerateSEOMetadataOutputSchema = z.object({
   seoTitle: z.string().describe('The SEO title for the tool page.'),
   seoDescription: z.string().describe('The SEO description for the tool page.'),
-  jsonLdSchema: z.string().describe('The JSON-LD schema for the tool page.'),
-  faqContent: z.string().describe('The FAQ content for the tool page.'),
+  jsonLdSchema: z.string().describe('A valid JSON-LD WebApplication schema as a string.'),
+  faqContent: z.string().describe('A multi-line string containing 3-5 frequently asked questions and their answers.'),
 });
 
 export type GenerateSEOMetadataOutput = z.infer<
@@ -44,17 +45,16 @@ const generateSEOMetadataPrompt = ai.definePrompt({
   input: {schema: GenerateSEOMetadataInputSchema},
   output: {schema: GenerateSEOMetadataOutputSchema},
   prompt: `You are an expert SEO content creator.
-  Your task is to generate SEO metadata, JSON-LD schema, and FAQ content for a tool page based on the tool description provided.
+  Your task is to generate SEO metadata for a tool page based on the tool name and description provided.
 
+  Tool Name: {{{toolName}}}
   Tool Description: {{{toolDescription}}}
 
   Instructions:
   1.  SEO Title: Create a concise and compelling SEO title (50-60 characters).
-  2.  SEO Description: Write a brief and informative SEO description (150-160 characters) that accurately summarizes the tool's functionality and benefits.
-  3.  JSON-LD Schema: Generate a valid JSON-LD WebApplication schema that includes the tool's name, description, URL, and other relevant information.
-  4.  FAQ Content: Develop a list of Frequently Asked Questions (FAQs) that address common user queries about the tool. Provide clear and concise answers.
-
-  Return the output as a valid JSON object that conforms to the specified output schema.
+  2.  SEO Description: Write a brief and informative SEO description (150-160 characters).
+  3.  JSON-LD Schema: Generate a valid JSON-LD WebApplication schema as a string. Include the tool's name and description.
+  4.  FAQ Content: Develop a list of 3-5 Frequently Asked Questions (FAQs) that address common user queries about the tool. Provide clear and concise answers. Format it as a single multi-line string.
   `,
 });
 
