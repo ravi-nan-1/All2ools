@@ -68,35 +68,42 @@ const generateSEOMetadataFlow = ai.defineFlow(
     outputSchema: GenerateSEOMetadataOutputSchema,
   },
   async input => {
-    const {output} = await ai.generate({
-      model: 'googleai/gemini-1.5-flash-latest',
-      prompt: {
-        ...generateFaqPrompt,
-        input,
-      },
-      config: {
-        safetySettings: [
-          {
-            category: 'HARM_CATEGORY_HATE_SPEECH',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_HARASSMENT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-        ],
-      },
-    });
-
-    const faqResult = output!;
+    let faqResult = { faqContent: 'FAQs could not be generated at this time.' };
+    
+    try {
+      const { output } = await ai.generate({
+        model: 'googleai/gemini-1.5-flash-latest',
+        prompt: {
+          ...generateFaqPrompt,
+          input,
+        },
+        config: {
+          safetySettings: [
+            {
+              category: 'HARM_CATEGORY_HATE_SPEECH',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+            {
+              category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+            {
+              category: 'HARM_CATEGORY_HARASSMENT',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+            {
+              category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+          ],
+        },
+      });
+      if (output) {
+        faqResult = output;
+      }
+    } catch (e) {
+      console.error("FAQ generation failed, using default.", e)
+    }
 
     const seoTitle = `${input.toolName} | All2ools`;
     const seoDescription = input.toolDescription.substring(0, 160);
