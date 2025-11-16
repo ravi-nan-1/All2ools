@@ -52,6 +52,7 @@ const generateFaqPrompt = ai.definePrompt({
   name: 'generateFaqPrompt',
   input: {schema: GenerateSEOMetadataInputSchema},
   output: {schema: GenerateFaqOutputSchema},
+  model: 'googleai/gemini-1.5-flash-latest',
   system: 'You are an expert SEO content creator.',
   prompt: `
   Your task is to generate a list of 3-5 Frequently Asked Questions (FAQs) for a tool page based on the tool name and description provided. Provide clear and concise answers. Format it as a single multi-line string.
@@ -59,6 +60,26 @@ const generateFaqPrompt = ai.definePrompt({
   Tool Name: {{{toolName}}}
   Tool Description: {{{toolDescription}}}
   `,
+  config: {
+    safetySettings: [
+      {
+        category: 'HARM_CATEGORY_HATE_SPEECH',
+        threshold: 'BLOCK_ONLY_HIGH',
+      },
+      {
+        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+        threshold: 'BLOCK_ONLY_HIGH',
+      },
+      {
+        category: 'HARM_CATEGORY_HARASSMENT',
+        threshold: 'BLOCK_ONLY_HIGH',
+      },
+      {
+        category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+        threshold: 'BLOCK_ONLY_HIGH',
+      },
+    ],
+  },
 });
 
 const generateSEOMetadataFlow = ai.defineFlow(
@@ -71,33 +92,7 @@ const generateSEOMetadataFlow = ai.defineFlow(
     let faqResult = { faqContent: 'FAQs could not be generated at this time.' };
     
     try {
-      const { output } = await ai.generate({
-        model: 'googleai/gemini-1.5-flash-latest',
-        prompt: {
-          ...generateFaqPrompt,
-          input,
-        },
-        config: {
-          safetySettings: [
-            {
-              category: 'HARM_CATEGORY_HATE_SPEECH',
-              threshold: 'BLOCK_ONLY_HIGH',
-            },
-            {
-              category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-              threshold: 'BLOCK_ONLY_HIGH',
-            },
-            {
-              category: 'HARM_CATEGORY_HARASSMENT',
-              threshold: 'BLOCK_ONLY_HIGH',
-            },
-            {
-              category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-              threshold: 'BLOCK_ONLY_HIGH',
-            },
-          ],
-        },
-      });
+      const { output } = await generateFaqPrompt(input);
       if (output) {
         faqResult = output;
       }
