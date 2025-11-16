@@ -27,8 +27,7 @@ export function ToolCard({ tool }: ToolCardProps) {
 
   return (
     <Card className="flex flex-col overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-      <CardHeader>
-        <div className="relative aspect-[16/9] w-full mb-4">
+       <div className="relative aspect-[16/9] w-full">
           <Image
             src={tool.image}
             alt={tool.name}
@@ -37,6 +36,7 @@ export function ToolCard({ tool }: ToolCardProps) {
             data-ai-hint={tool.imageHint}
           />
         </div>
+      <CardHeader>
         <div className="flex items-start justify-between gap-2">
             <CardTitle className="text-xl font-headline leading-tight">
                 {translate(tool.slug)}
