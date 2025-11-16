@@ -45,19 +45,19 @@ export function HomePageClient({ tools }: HomePageClientProps) {
   const itemsToRender = [];
   for (let i = 0; i < filteredTools.length; i++) {
     itemsToRender.push(<ToolCard key={filteredTools[i].slug} tool={filteredTools[i]} />);
-
-    if ((i + 1) % NATIVE_AD_INTERVAL === 0) {
+    if ((i + 1) > 0 && (i + 1) % NATIVE_AD_INTERVAL === 0) {
       itemsToRender.push(
-        <div key={`ad-${i}`}>
-          <AdBanner
+        <div key={`ad-${i}`} className="md:col-span-2 lg:col-span-3">
+           <AdBanner
             adSlot="YOUR_NATIVE_AD_SLOT_ID"
             adFormat="fluid"
-            className="w-full h-full min-h-[300px] bg-muted rounded-lg flex items-center justify-center"
+            className=""
           />
         </div>
       );
     }
   }
+
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
