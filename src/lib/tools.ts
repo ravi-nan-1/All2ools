@@ -34,6 +34,7 @@ import {
   FileDiff,
   GraduationCap,
   FileSpreadsheet,
+  Minimize,
 } from 'lucide-react';
 
 export type ToolCategory =
@@ -122,6 +123,39 @@ export const tools: Tool[] = [
       'Students preparing data sets for academic projects.',
       'Business managers creating reports from raw CSV files.',
       'Anyone needing to perform quick and powerful spreadsheet operations online.',
+    ],
+  },
+  {
+    name: 'Image Compressor',
+    slug: 'image-compressor',
+    category: 'Image',
+    icon: 'Minimize',
+    description:
+      'Reduce image file sizes (JPEG, PNG, SVG) without sacrificing quality for faster web performance.',
+    longDescription:
+      "Speed up your website and save storage space with our powerful Image Compressor. This tool allows you to drastically reduce the file size of your images (JPEG, PNG, SVG, GIF) while maintaining the best possible visual quality. Using advanced encoding and compression algorithms, it finds the perfect balance between size and quality. It's an essential tool for web developers, marketers, and content creators who need to optimize images for faster page load times, better user experience, and improved SEO rankings. The entire process is done securely in your browser.",
+    features: [
+      'Supports JPEG, PNG, SVG, and GIF formats',
+      'Significant file size reduction with minimal quality loss',
+      'Adjustable compression levels for fine-tuned control',
+      'Batch processing for multiple images at once',
+      'Secure, client-side processing in your browser',
+      'Real-time preview of original vs. compressed image',
+      'No software installation required',
+      'Redirects to a dedicated, full-featured web application',
+    ],
+    howItWorks: [
+      'Launch the Image Compressor application from the tool page.',
+      'Drag and drop your images or select them from your computer.',
+      'The tool automatically compresses the images to an optimal size.',
+      'Fine-tune the compression level if needed.',
+      'Download your optimized images individually or as a zip file.',
+    ],
+    useCases: [
+      'Web developers optimizing images for a website.',
+      'Bloggers reducing image sizes to improve page speed.',
+      'Marketers compressing images for email campaigns.',
+      'Anyone needing to reduce image file size for storage or sharing.',
     ],
   },
   {

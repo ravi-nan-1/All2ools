@@ -8,6 +8,7 @@ import { TinyUrlMaker } from '@/app/tools/tinyurl-maker/tinyurl-maker';
 import { PdfToWordConverter } from '@/app/tools/pdf-to-word-converter/pdf-to-word-converter';
 import { AiTutor } from '@/app/tools/ai-tutor/ai-tutor';
 import { ExcelPowerTools } from '@/app/tools/excel-power-tools/excel-power-tools';
+import { ImageCompressor } from '@/app/tools/image-compressor/image-compressor';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -30,6 +31,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <AiTutor />;
       case 'excel-power-tools':
         return <ExcelPowerTools />;
+      case 'image-compressor':
+        return <ImageCompressor />;
       default:
         return <PlaceholderTool />;
     }
