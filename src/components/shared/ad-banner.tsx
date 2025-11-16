@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 declare global {
@@ -17,14 +17,21 @@ interface AdBannerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function AdBanner({ adSlot, adFormat = "auto", dataFullWidthResponsive = false, ...props }: AdBannerProps) {
   const pathname = usePathname();
+  const adPushedRef = useRef(false);
 
   useEffect(() => {
+    if (adPushedRef.current) return;
+
     try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      if (window.adsbygoogle) {
+        console.log('Pushing ad:', adSlot);
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        adPushedRef.current = true;
+      }
     } catch (err) {
-      console.error(err);
+      console.error('AdSense error:', err);
     }
-  }, [pathname]);
+  }, [pathname, adSlot]);
 
   return (
     <div {...props}>

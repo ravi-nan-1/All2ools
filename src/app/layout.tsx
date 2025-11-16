@@ -49,7 +49,7 @@ export default function RootLayout({
             adSlot="YOUR_STICKY_AD_SLOT_ID"
             adFormat="auto"
             dataFullWidthResponsive={true}
-            className="fixed bottom-0 left-0 w-full bg-background border-t z-50 flex justify-center items-center"
+            className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-center border-t bg-background"
             style={{ minHeight: '50px' }}
           />
         </LanguageProvider>
