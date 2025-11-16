@@ -43,26 +43,15 @@ export function HomePageClient({ tools }: HomePageClientProps) {
   }, [tools, searchQuery, selectedCategory]);
 
   const itemsToRender = [];
-  const itemsPerRow = 3;
+  for (let i = 0; i < filteredTools.length; i++) {
+    itemsToRender.push(<ToolCard key={filteredTools[i].slug} tool={filteredTools[i]} />);
 
-  for (let i = 0; i < filteredTools.length; i += itemsPerRow) {
-    const rowItems = filteredTools.slice(i, i + itemsPerRow);
-    const row = (
-      <div
-        key={`row-${i}`}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-      >
-        {rowItems.map((tool) => (
-          <ToolCard key={tool.slug} tool={tool} />
-        ))}
-      </div>
-    );
-    itemsToRender.push(row);
-
-    // Insert an ad after every `NATIVE_AD_INTERVAL` cards, which corresponds to 2 rows
-    if ((i / itemsPerRow + 1) % (NATIVE_AD_INTERVAL / itemsPerRow) === 0) {
+    if ((i + 1) % NATIVE_AD_INTERVAL === 0) {
       itemsToRender.push(
-        <div key={`ad-${i}`} className="my-8">
+        <div
+          key={`ad-${i}`}
+          className="my-8 md:col-span-2 lg:col-span-3"
+        >
           <AdBanner
             adSlot="YOUR_NATIVE_AD_SLOT_ID"
             adFormat="fluid"
@@ -121,7 +110,9 @@ export function HomePageClient({ tools }: HomePageClientProps) {
       </section>
 
       <section>
-        <div className="space-y-8">{itemsToRender}</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {itemsToRender}
+        </div>
         {filteredTools.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-lg">No tools found.</p>
