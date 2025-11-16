@@ -42,6 +42,18 @@ export function HomePageClient({ tools }: HomePageClientProps) {
     });
   }, [tools, searchQuery, selectedCategory]);
 
+  const itemsToRender = [];
+  for (let i = 0; i < filteredTools.length; i++) {
+    itemsToRender.push(<ToolCard key={filteredTools[i].slug} tool={filteredTools[i]} />);
+    if ((i + 1) % NATIVE_AD_INTERVAL === 0) {
+      itemsToRender.push(
+        <div key={`ad-${i}`} className="flex items-stretch">
+           <AdBanner adSlot="YOUR_NATIVE_AD_SLOT_ID" adFormat="fluid" className="w-full h-full min-h-[300px] bg-muted rounded-lg"/>
+        </div>
+      );
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <section className="text-center py-12 md:py-20">
@@ -90,16 +102,7 @@ export function HomePageClient({ tools }: HomePageClientProps) {
           <AdBanner adSlot="YOUR_BANNER_AD_SLOT_ID" className="w-full min-h-[100px] flex items-center justify-center bg-muted rounded-lg" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredTools.map((tool, index) => (
-            <Fragment key={tool.slug}>
-              <ToolCard tool={tool} />
-              {(index + 1) % NATIVE_AD_INTERVAL === 0 && (
-                <div className="md:col-span-1 lg:col-span-1 flex items-stretch">
-                   <AdBanner adSlot="YOUR_NATIVE_AD_SLOT_ID" adFormat="fluid" className="w-full h-full min-h-[300px] bg-muted rounded-lg"/>
-                </div>
-              )}
-            </Fragment>
-          ))}
+          {itemsToRender}
         </div>
         {filteredTools.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
