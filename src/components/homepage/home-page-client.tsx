@@ -47,13 +47,11 @@ export function HomePageClient({ tools }: HomePageClientProps) {
     itemsToRender.push(<ToolCard key={filteredTools[i].slug} tool={filteredTools[i]} />);
     if ((i + 1) % NATIVE_AD_INTERVAL === 0) {
       itemsToRender.push(
-        <div key={`ad-${i}`}>
-           <AdBanner
-            adSlot="YOUR_NATIVE_AD_SLOT_ID"
-            adFormat="fluid"
-            className="w-full h-full min-h-[300px] bg-muted rounded-lg flex items-center justify-center"
-          />
-        </div>
+        <AdBanner
+          key={`ad-${i}`}
+          adSlot="YOUR_NATIVE_AD_SLOT_ID"
+          adFormat="fluid"
+        />
       );
     }
   }
