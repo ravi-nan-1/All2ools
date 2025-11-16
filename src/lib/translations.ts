@@ -33,7 +33,7 @@ export const translations: Record<string, Record<string, string>> = {
     faq: 'Frequently Asked Questions',
     // Tool Names
     'tinyurl-maker': 'TinyURL Maker – URL Shortener Tool',
-    'startup-equity-calculator': 'Startup Equity Calculator',
+    'pdf-to-word-converter': 'PDF to Word Converter',
     'global-loan-optimizer': 'Global Loan Optimizer',
     'crypto-tax-calculator': 'Crypto Tax Calculator',
     'forex-arbitrage-checker': 'Forex Arbitrage Checker',
@@ -110,7 +110,7 @@ export const translations: Record<string, Record<string, string>> = {
     faq: 'Preguntas Frecuentes',
     // Tool Names
     'tinyurl-maker': 'Creador de TinyURL – Acortador de URL',
-    'startup-equity-calculator': 'Calculadora de Capital para Startups',
+    'pdf-to-word-converter': 'Convertidor de PDF a Word',
     'global-loan-optimizer': 'Optimizador de Préstamos Globales',
     'crypto-tax-calculator': 'Calculadora de Impuestos de Criptomonedas',
     'forex-arbitrage-checker': 'Verificador de Arbitraje Forex',

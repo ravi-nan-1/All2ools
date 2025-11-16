@@ -31,6 +31,7 @@ import {
   FileSearch,
   Table,
   Link,
+  FileDiff,
 } from 'lucide-react';
 
 export type ToolCategory =
@@ -93,30 +94,33 @@ export const tools: Tool[] = [
     ],
   },
   {
-    name: 'Startup Equity Calculator',
-    slug: 'startup-equity-calculator',
-    category: 'Finance',
-    icon: 'Landmark',
+    name: 'PDF to Word Converter',
+    slug: 'pdf-to-word-converter',
+    category: 'Business',
+    icon: 'FileDiff',
     description:
-      'Calculates founder equity, dilution over multiple funding rounds, ESOP distribution, and vesting schedules.',
+      'Convert PDF files to editable Word documents with high accuracy.',
     longDescription:
-      'The Startup Equity Calculator is an essential tool for founders and startup teams. It helps you model and understand equity distribution, dilution, and ownership over time. Plan for multiple funding rounds, create and manage an Employee Stock Option Pool (ESOP), and visualize how vesting schedules will impact ownership. By providing a clear picture of equity scenarios, this calculator empowers founders to make informed decisions and plan for long-term success and ownership control.',
+      'Unlock the content within your PDF files. Our PDF to Word Converter allows you to effortlessly transform static PDFs into fully editable Microsoft Word documents (.docx). The tool is designed to preserve the original layout, formatting, images, and tables of your document with exceptional accuracy. This means you spend less time reformatting and more time working with your content. It\'s the perfect solution for students, professionals, and anyone who needs to edit, reuse, or update information locked away in a PDF. The process is simple, secure, and incredibly fast, turning a read-only document into a flexible one in just a few clicks.',
     features: [
-      'Model multiple funding rounds (Seed, Series A, B, etc.)',
-      'Calculate equity dilution for existing shareholders',
-      'Plan and manage Employee Stock Option Pools (ESOP)',
-      'Simulate vesting schedules and their impact',
+      'High-accuracy text and formatting preservation',
+      'Retains original layout, images, and tables',
+      'Converts PDFs to fully editable .docx files',
+      'Secure, browser-based processing',
+      'Simple drag-and-drop or click-to-upload interface',
+      'No software installation required',
     ],
     howItWorks: [
-      'Enter initial founder equity distribution.',
-      'Add new investment rounds with valuation and investment amounts.',
-      'Define your ESOP and vesting rules.',
-      'View a detailed cap table showing ownership percentages and dilution.',
+      'Upload your PDF file using the drag-and-drop area or by clicking.',
+      'The tool automatically processes the file to analyze its structure.',
+      'Click the "Convert to Word" button to start the conversion.',
+      'Download your new, editable Word document instantly.',
     ],
     useCases: [
-      'Founders planning their initial equity split.',
-      'Startups preparing for a new funding round.',
-      'Advisors helping companies model their capitalization table.',
+      'Students converting lecture notes or research papers for editing.',
+      'Professionals updating old reports or contracts that are only in PDF format.',
+      'Writers repurposing content from a PDF into a new document.',
+      'Anyone needing to copy more than just a small section of text from a PDF.',
     ],
   },
   {
@@ -167,7 +171,7 @@ export const tools: Tool[] = [
       'Review your transaction history and dashboard.',
       'Download your comprehensive tax report.',
     ],
-    useCases: [
+useCases: [
       'Crypto traders needing to calculate capital gains for tax season.',
       'Long-term investors tracking their portfolio performance.',
       'DeFi users who need to account for staking and yield farming income.',

@@ -5,6 +5,7 @@ import { PlaceholderTool } from './tools/placeholder-tool';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Wrench } from 'lucide-react';
 import { TinyUrlMaker } from '@/app/tools/tinyurl-maker/tinyurl-maker';
+import { PdfToWordConverter } from '@/app/tools/pdf-to-word-converter/pdf-to-word-converter';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -21,6 +22,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <ContentGapAnalyzer />;
       case 'api-latency-checker':
         return <ApiLatencyChecker />;
+      case 'pdf-to-word-converter':
+        return <PdfToWordConverter />;
       default:
         return <PlaceholderTool />;
     }
