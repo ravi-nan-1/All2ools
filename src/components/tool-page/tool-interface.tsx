@@ -1,10 +1,10 @@
-import { AiProductBackgroundRemover } from './tools/ai-product-background-remover';
-import { ContentGapAnalyzer } from './tools/content-gap-analyzer';
-import { ApiLatencyChecker } from './tools/api-latency-checker';
+import { AiProductBackgroundRemover } from '@/app/tools/ai-product-background-remover/ai-product-background-remover';
+import { ContentGapAnalyzer } from '@/app/tools/content-gap-analyzer/content-gap-analyzer';
+import { ApiLatencyChecker } from '@/app/tools/api-latency-checker/api-latency-checker';
 import { PlaceholderTool } from './tools/placeholder-tool';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Wrench } from 'lucide-react';
-import { TinyUrlMaker } from './tools/tinyurl-maker';
+import { TinyUrlMaker } from '@/app/tools/tinyurl-maker/tinyurl-maker';
 
 interface ToolInterfaceProps {
   slug: string;
