@@ -1,3 +1,184 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "ai-tax-deduction-finder",
+      "description": "AI Tax Deduction Finder",
+      "imageUrl": "https://images.unsplash.com/photo-1579444741963-5ae219cfe27c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0YXglMjBmaW5hbmNlfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tax finance"
+    },
+    {
+      "id": "startup-equity-calculator",
+      "description": "Startup Equity Calculator",
+      "imageUrl": "https://images.unsplash.com/photo-1758873272714-4106a439de5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzdGFydHVwJTIwY2hhcnR8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "startup chart"
+    },
+    {
+      "id": "global-loan-optimizer",
+      "description": "Global Loan Optimizer",
+      "imageUrl": "https://images.unsplash.com/photo-1758424760956-34e7cc427a31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnbG9iYWwlMjBmaW5hbmNlfGVufDB8fHx8MTc2MzI5MzI4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "global finance"
+    },
+    {
+      "id": "crypto-tax-calculator",
+      "description": "Crypto Tax Calculator",
+      "imageUrl": "https://images.unsplash.com/photo-1611281929131-8b9284ee2da1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjcnlwdG8lMjBjb2luc3xlbnwwfHx8fDE3NjMyNDY1MTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "crypto coins"
+    },
+    {
+      "id": "forex-arbitrage-checker",
+      "description": "Forex Arbitrage Checker",
+      "imageUrl": "https://images.unsplash.com/photo-1622662124723-5c60aafebd4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjdXJyZW5jeSUyMGV4Y2hhbmdlfGVufDB8fHx8MTc2MzIxNDAzMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "currency exchange"
+    },
+    {
+      "id": "ai-invoice-generator",
+      "description": "AI Invoice Generator",
+      "imageUrl": "https://images.unsplash.com/photo-1518893560155-b89cac6db0c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpbnZvaWNlJTIwZG9jdW1lbnR8ZW58MHx8fHwxNzYzMjEyMjUzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "invoice document"
+    },
+    {
+      "id": "business-valuation-calculator",
+      "description": "Business Valuation Calculator",
+      "imageUrl": "https://images.unsplash.com/photo-1462899006636-339e08d1844e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxidXNpbmVzcyUyMGdyb3d0aHxlbnwwfHx8fDE3NjMyMjE1ODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business growth"
+    },
+    {
+      "id": "ai-product-background-remover",
+      "description": "AI Product Background Remover",
+      "imageUrl": "https://images.unsplash.com/photo-1615900119312-2acd3a71f3aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcm9kdWN0JTIwcGhvdG9ncmFwaHl8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "product photography"
+    },
+    {
+      "id": "ai-headshot-generator",
+      "description": "AI Headshot Generator",
+      "imageUrl": "https://images.unsplash.com/photo-1544168190-79c17527004f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cHJvZmVzc2lvbmFsJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYzMjc4Nzk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "professional portrait"
+    },
+    {
+      "id": "ai-transparent-logo-maker",
+      "description": "AI Transparent Logo Maker",
+      "imageUrl": "https://images.unsplash.com/photo-1626251851903-1143b5c6f057?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsb2dvJTIwZGVzaWdufGVufDB8fHx8MTc2MzI2NTIzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo design"
+    },
+    {
+      "id": "ai-meme-generator",
+      "description": "AI Meme Generator",
+      "imageUrl": "https://images.unsplash.com/photo-1655558131821-e4e342357d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmdW5ueSUyMG1lbWV8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "funny meme"
+    },
+    {
+      "id": "ai-image-copyright-checker",
+      "description": "AI Image Copyright Checker",
+      "imageUrl": "https://images.unsplash.com/photo-1649366911769-44f4c6763479?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb3B5cmlnaHQlMjBzeW1ib2x8ZW58MHx8fHwxNzYzMzA0MDcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "copyright symbol"
+    },
+    {
+      "id": "keyword-cluster-generator",
+      "description": "Keyword Cluster Generator",
+      "imageUrl": "https://images.unsplash.com/photo-1668499192678-042f75b741e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzZW8lMjBrZXl3b3Jkc3xlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "seo keywords"
+    },
+    {
+      "id": "ai-schema-markup-generator",
+      "description": "AI Schema Markup Generator",
+      "imageUrl": "https://images.unsplash.com/photo-1669023414162-5bb06bbff0ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2RlJTIwc2NoZW1hfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "code schema"
+    },
+    {
+      "id": "content-gap-analyzer",
+      "description": "Content Gap Analyzer",
+      "imageUrl": "https://images.unsplash.com/photo-1762330467572-5199bc772a20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb250ZW50JTIwYW5hbHlzaXN8ZW58MHx8fHwxNzYzMzA0MDcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "content analysis"
+    },
+    {
+      "id": "1-click-article-outline-generator",
+      "description": "1-Click Article Outline Generator",
+      "imageUrl": "https://images.unsplash.com/photo-1565489032347-cd8c5eecf29c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhcnRpY2xlJTIwd3JpdGluZ3xlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "article writing"
+    },
+    {
+      "id": "ai-product-description-generator",
+      "description": "AI Product Description Generator",
+      "imageUrl": "https://images.unsplash.com/photo-1691096674326-74cfe19c04cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxlY29tbWVyY2UlMjBwcm9kdWN0fGVufDB8fHx8MTc2MzI3MjM4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ecommerce product"
+    },
+    {
+      "id": "api-latency-checker",
+      "description": "API Latency Checker",
+      "imageUrl": "https://images.unsplash.com/photo-1614508569207-3295ac89d75f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZXJ2ZXIlMjBuZXR3b3JrfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server network"
+    },
+    {
+      "id": "jwt-decoder-validator",
+      "description": "JWT Decoder & Validator",
+      "imageUrl": "https://images.unsplash.com/photo-1696013910376-c56f76dd8178?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzZWN1cml0eSUyMHRva2VufGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "security token"
+    },
+    {
+      "id": "regex-generator-from-text",
+      "description": "Regex Generator From Text",
+      "imageUrl": "https://images.unsplash.com/photo-1550482781-48d477e61c72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2RlJTIwcGF0dGVybnxlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "code pattern"
+    },
+    {
+      "id": "json-excel-converter",
+      "description": "JSON -> Excel Converter",
+      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwY29udmVyc2lvbnxlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data conversion"
+    },
+    {
+      "id": "webhook-tester",
+      "description": "Webhook Tester",
+      "imageUrl": "https://images.unsplash.com/photo-1609355882616-d06ba5118196?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhcGklMjB3ZWJob29rfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "api webhook"
+    },
+    {
+      "id": "daily-calorie-macro-calculator",
+      "description": "Daily Calorie & Macro Calculator",
+      "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjMyNzQxOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthy food"
+    },
+    {
+      "id": "sleep-score-analyzer",
+      "description": "Sleep Score Analyzer",
+      "imageUrl": "https://images.unsplash.com/photo-1609680582612-4265665a01b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzbGVlcCUyMHRyYWNraW5nfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sleep tracking"
+    },
+    {
+      "id": "ai-habit-tracker",
+      "description": "AI Habit Tracker",
+      "imageUrl": "https://images.unsplash.com/photo-1570700701974-437adb234c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxoYWJpdCUyMHBsYW5uZXJ8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "habit planner"
+    },
+    {
+      "id": "saas-pricing-optimizer",
+      "description": "SaaS Pricing Optimizer",
+      "imageUrl": "https://images.unsplash.com/photo-1728825445493-1a6e89164511?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwcmljaW5nJTIwdGFibGV8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pricing table"
+    },
+    {
+      "id": "churn-prediction-calculator",
+      "description": "Churn Prediction Calculator",
+      "imageUrl": "https://images.unsplash.com/photo-1683027301758-5a09c546a65a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjdXN0b21lciUyMGNodXJufGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "customer churn"
+    },
+    {
+      "id": "salary-benchmark-tool",
+      "description": "Salary Benchmark Tool",
+      "imageUrl": "https://images.unsplash.com/photo-1563296299-1e2092247cb4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzYWxhcnklMjBjb21wYXJpc29ufGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salary comparison"
+    },
+    {
+      "id": "ai-contract-summarizer",
+      "description": "AI Contract Summarizer",
+      "imageUrl": "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdhbCUyMGRvY3VtZW50fGVufDB8fHx8MTc2MzE4NDkzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "legal document"
+    },
+    {
+      "id": "invoice-excel-extractor",
+      "description": "Invoice -> Excel Extractor",
+      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwZXh0cmFjdGlvbnxlbnwwfHx8fDE3NjMyMDkwODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data extraction"
+    }
+  ]
 }
