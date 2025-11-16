@@ -43,28 +43,38 @@ export function HomePageClient({ tools }: HomePageClientProps) {
   }, [tools, searchQuery, selectedCategory]);
 
   const itemsToRender = [];
-  for (let i = 0; i < filteredTools.length; i++) {
-    itemsToRender.push(<ToolCard key={filteredTools[i].slug} tool={filteredTools[i]} />);
-  }
+  const itemsPerRow = 3;
 
-  // Insert ads at intervals
-  const itemsWithAds = [];
-  let lastAdIndex = -1;
-  for (let i = 0; i < itemsToRender.length; i++) {
-    itemsWithAds.push(itemsToRender[i]);
-    if ((i + 1) % NATIVE_AD_INTERVAL === 0) {
-      itemsWithAds.push(
-        <div key={`ad-${i}`} className="md:col-span-2 lg:col-span-3">
-           <AdBanner adSlot="YOUR_NATIVE_AD_SLOT_ID" adFormat="fluid" className="w-full h-full min-h-[300px] bg-muted rounded-lg flex items-center justify-center"/>
+  for (let i = 0; i < filteredTools.length; i += itemsPerRow) {
+    const rowItems = filteredTools.slice(i, i + itemsPerRow);
+    const row = (
+      <div
+        key={`row-${i}`}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        {rowItems.map((tool) => (
+          <ToolCard key={tool.slug} tool={tool} />
+        ))}
+      </div>
+    );
+    itemsToRender.push(row);
+
+    // Insert an ad after every `NATIVE_AD_INTERVAL` cards, which corresponds to 2 rows
+    if ((i / itemsPerRow + 1) % (NATIVE_AD_INTERVAL / itemsPerRow) === 0) {
+      itemsToRender.push(
+        <div key={`ad-${i}`} className="my-8">
+          <AdBanner
+            adSlot="YOUR_NATIVE_AD_SLOT_ID"
+            adFormat="fluid"
+            className="w-full h-full min-h-[300px] bg-muted rounded-lg flex items-center justify-center"
+          />
         </div>
       );
-      lastAdIndex = i;
     }
   }
 
-
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
+    <div className="container mx-auto px-4 py-8 md:py-12">
       <section className="text-center py-12 md:py-20">
         <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tight">
           {translate('hero_title')}
@@ -85,7 +95,10 @@ export function HomePageClient({ tools }: HomePageClientProps) {
       </section>
 
       <section className="mb-12">
-        <AdBanner adSlot="YOUR_TOP_BANNER_AD_SLOT_ID" className="w-full min-h-[100px] flex items-center justify-center bg-muted rounded-lg mb-8" />
+        <AdBanner
+          adSlot="YOUR_TOP_BANNER_AD_SLOT_ID"
+          className="w-full min-h-[100px] flex items-center justify-center bg-muted rounded-lg mb-8"
+        />
         <div className="flex justify-center flex-wrap gap-2">
           <Button
             variant={selectedCategory === 'All' ? 'default' : 'outline'}
@@ -108,9 +121,7 @@ export function HomePageClient({ tools }: HomePageClientProps) {
       </section>
 
       <section>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {itemsWithAds}
-        </div>
+        <div className="space-y-8">{itemsToRender}</div>
         {filteredTools.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-lg">No tools found.</p>
