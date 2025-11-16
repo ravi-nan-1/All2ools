@@ -36,19 +36,19 @@ export function ToolCard({ tool }: ToolCardProps) {
             data-ai-hint={tool.imageHint}
           />
         </div>
-      <CardHeader>
+      <CardHeader className="p-4">
         <div className="flex items-start justify-between gap-2">
-            <CardTitle className="text-xl font-headline leading-tight">
+            <CardTitle className="text-lg font-headline leading-tight">
                 {translate(tool.slug)}
             </CardTitle>
-            <Icon className="h-8 w-8 text-primary shrink-0" />
+            <Icon className="h-7 w-7 text-primary shrink-0" />
         </div>
         <Badge variant="outline" className="w-fit">{tool.category}</Badge>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <CardDescription>{tool.description}</CardDescription>
+      <CardContent className="flex-grow p-4 pt-0">
+        <CardDescription className="text-sm">{tool.description}</CardDescription>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="p-4 pt-0">
         <Button asChild className="w-full">
           <Link href={`/tools/${tool.slug}`}>
             {translate('use_tool')}
