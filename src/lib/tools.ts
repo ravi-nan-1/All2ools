@@ -33,6 +33,7 @@ import {
   Link,
   FileDiff,
   GraduationCap,
+  FileSpreadsheet,
 } from 'lucide-react';
 
 export type ToolCategory =
@@ -64,7 +65,7 @@ export const tools: Tool[] = [
     description:
       'Upload content via URL or PDF to get summaries and generate interactive quizzes.',
     longDescription:
-      'The AI Tutor transforms any content into a personalized learning experience. Simply provide a web URL or upload a PDF document, and our advanced AI will instantly summarize the key information, making it easier to digest and understand complex topics. But it doesn\'t stop there. The AI Tutor also generates interactive quizzes with 10, 20, or 30 questions based on the content, allowing you to test your knowledge and reinforce your learning. It\'s the perfect companion for students, professionals, and lifelong learners who want to study more efficiently and effectively.',
+      "The AI Tutor transforms any content into a personalized learning experience. Simply provide a web URL or upload a PDF document, and our advanced AI will instantly summarize the key information, making it easier to digest and understand complex topics. But it doesn't stop there. The AI Tutor also generates interactive quizzes with 10, 20, or 30 questions based on the content, allowing you to test your knowledge and reinforce your learning. It's the perfect companion for students, professionals, and lifelong learners who want to study more efficiently and effectively.",
     features: [
       'Content summarization from web URLs and PDFs',
       'AI-powered quiz generation',
@@ -91,6 +92,39 @@ export const tools: Tool[] = [
     ],
   },
   {
+    name: 'Excel Power Tools',
+    slug: 'excel-power-tools',
+    category: 'Business',
+    icon: 'FileSpreadsheet',
+    description:
+      'A powerful suite of tools to convert, manage, and analyze your Excel spreadsheets online.',
+    longDescription:
+      "Unlock the full potential of your spreadsheets with Excel Power Tools. This all-in-one suite is designed for professionals, students, and data analysts who work with Excel daily. Whether you need to convert files to or from the Excel format, clean up messy data, generate complex formulas, or create insightful charts, this tool has you covered. It runs entirely in your browser, offering a secure and convenient way to handle spreadsheet tasks without needing to install any software. Its intuitive interface makes complex operations simple, saving you time and boosting your productivity.",
+    features: [
+      'Convert files between Excel, CSV, JSON, and PDF',
+      'AI-powered formula generator',
+      'Data cleaning and deduplication tools',
+      'One-click chart and graph creation',
+      'Secure, in-browser processing',
+      'No software installation required',
+      'User-friendly interface for all skill levels',
+      'Directly launches a dedicated web application',
+    ],
+    howItWorks: [
+      'Launch the Excel Power Tools application from the tool page.',
+      'Select the specific function you need (e.g., "Convert", "Clean Data").',
+      'Upload your Excel file or paste your data.',
+      'Follow the on-screen instructions to process your file.',
+      'Download the results directly to your computer.',
+    ],
+    useCases: [
+      'Analysts converting JSON API data into Excel for analysis.',
+      'Students preparing data sets for academic projects.',
+      'Business managers creating reports from raw CSV files.',
+      'Anyone needing to perform quick and powerful spreadsheet operations online.',
+    ],
+  },
+  {
     name: 'TinyURL Maker – URL Shortener Tool',
     slug: 'tinyurl-maker',
     category: 'Developer',
@@ -98,7 +132,7 @@ export const tools: Tool[] = [
     description:
       'Create clean, fast, trackable short links instantly.',
     longDescription:
-      'The TinyURL Maker is a powerful and intuitive tool designed to transform long, cumbersome web addresses into short, clean, and memorable links. In today\'s digital world, sharing URLs is a daily activity, but long links can be distracting in social media posts, emails, and marketing materials. Our URL shortener solves this problem by creating a concise link that is easy to share and track. Beyond just shortening, the tool offers advanced features like custom slugs, allowing you to brand your links for better recognition and trust. For example, instead of a random string, you can create a link like `all2ools.com/s/summer-sale`. Additionally, every shortened link automatically generates a QR code, making it incredibly easy to share URLs in print media, presentations, or on physical products. The built-in analytics provide valuable insights into your link\'s performance, showing you how many clicks it receives and from where. This makes it an indispensable tool for marketers, content creators, and anyone looking to optimize their digital presence and understand their audience engagement better.',
+      "The TinyURL Maker is a powerful and intuitive tool designed to transform long, cumbersome web addresses into short, clean, and memorable links. In today's digital world, sharing URLs is a daily activity, but long links can be distracting in social media posts, emails, and marketing materials. Our URL shortener solves this problem by creating a concise link that is easy to share and track. Beyond just shortening, the tool offers advanced features like custom slugs, allowing you to brand your links for better recognition and trust. For example, instead of a random string, you can create a link like `all2ools.com/s/summer-sale`. Additionally, every shortened link automatically generates a QR code, making it incredibly easy to share URLs in print media, presentations, or on physical products. The built-in analytics provide valuable insights into your link's performance, showing you how many clicks it receives and from where. This makes it an indispensable tool for marketers, content creators, and anyone looking to optimize their digital presence and understand their audience engagement better.",
     features: [
       'One-click URL shortening',
       'Customizable slugs for branded links',
@@ -136,7 +170,7 @@ export const tools: Tool[] = [
     description:
       'Convert PDF files to editable Word documents with high accuracy.',
     longDescription:
-      'Unlock the content within your PDF files. Our PDF to Word Converter allows you to effortlessly transform static PDFs into fully editable Microsoft Word documents (.docx). The tool is designed to preserve the original layout, formatting, images, and tables of your document with exceptional accuracy. This means you spend less time reformatting and more time working with your content. It\'s the perfect solution for students, professionals, and anyone who needs to edit, reuse, or update information locked away in a PDF. The process is simple, secure, and incredibly fast, turning a read-only document into a flexible one in just a few clicks.',
+      "Unlock the content within your PDF files. Our PDF to Word Converter allows you to effortlessly transform static PDFs into fully editable Microsoft Word documents (.docx). The tool is designed to preserve the original layout, formatting, images, and tables of your document with exceptional accuracy. This means you spend less time reformatting and more time working with your content. It's the perfect solution for students, professionals, and anyone who needs to edit, reuse, or update information locked away in a PDF. The process is simple, secure, and incredibly fast, turning a read-only document into a flexible one in just a few clicks.",
     features: [
       'High-accuracy text and formatting preservation',
       'Retains original layout, images, and tables',
@@ -275,7 +309,7 @@ useCases: [
     description:
       'Uses DCF models, comparables, and market benchmarks to estimate accurate company valuation.',
     longDescription:
-      'Determine the worth of your business with our comprehensive Business Valuation Calculator. This tool employs industry-standard methodologies, including Discounted Cash Flow (DCF) analysis, market comparables, and asset-based valuations. By inputting your company\'s financial data and industry benchmarks, you can generate a reliable estimation of its current market value. This is crucial for fundraising, mergers and acquisitions, or strategic planning.',
+      "Determine the worth of your business with our comprehensive Business Valuation Calculator. This tool employs industry-standard methodologies, including Discounted Cash Flow (DCF) analysis, market comparables, and asset-based valuations. By inputting your company's financial data and industry benchmarks, you can generate a reliable estimation of its current market value. This is crucial for fundraising, mergers and acquisitions, or strategic planning.",
     features: [
       'Discounted Cash Flow (DCF) analysis',
       'Comparable Company Analysis (CCA)',
@@ -329,7 +363,7 @@ useCases: [
     description:
       'Creates professional headshots from selfies using photography-grade AI enhancement.',
     longDescription:
-      'Need a professional headshot but don\'t have the time or budget for a photographer? The AI Headshot Generator transforms your casual selfies into high-quality, professional headshots. Upload a few of your photos, and our AI will generate a variety of headshots with different outfits, backgrounds, and lighting conditions. It uses advanced enhancement techniques to ensure a photorealistic result, perfect for your LinkedIn profile, company website, or resume.',
+      "Need a professional headshot but don't have the time or budget for a photographer? The AI Headshot Generator transforms your casual selfies into high-quality, professional headshots. Upload a few of your photos, and our AI will generate a variety of headshots with different outfits, backgrounds, and lighting conditions. It uses advanced enhancement techniques to ensure a photorealistic result, perfect for your LinkedIn profile, company website, or resume.",
     features: [
       'Generates multiple headshot styles from your photos',
       'Variety of professional outfits and backgrounds',
@@ -491,7 +525,7 @@ useCases: [
     description:
       'Compares content against top competitors to find missing keywords and SERP intent issues.',
     longDescription:
-      'Identify what your competitors are doing right and find opportunities to outperform them. The Content Gap Analyzer allows you to compare your content (or a target keyword) against the top-ranking pages on Google. It analyzes the competition to find common keywords, subtopics, and questions that they cover but you don\'t. By filling these "gaps," you can create more comprehensive and authoritative content that better matches user intent and has a higher chance of ranking.',
+      "Identify what your competitors are doing right and find opportunities to outperform them. The Content Gap Analyzer allows you to compare your content (or a target keyword) against the top-ranking pages on Google. It analyzes the competition to find common keywords, subtopics, and questions that they cover but you don't. By filling these \"gaps,\" you can create more comprehensive and authoritative content that better matches user intent and has a higher chance of ranking.",
     features: [
       'Analyzes top-ranking pages for a given keyword',
       'Compares your content URL against competitors',
@@ -518,7 +552,7 @@ useCases: [
     description:
       'Creates long-form article outlines with SEO headings, subtopics, and questions.',
     longDescription:
-      'Beat writer\'s block and create SEO-optimized content faster than ever. The 1-Click Article Outline Generator takes your target keyword and generates a detailed, long-form article outline in seconds. The outline includes a logical structure of H2 and H3 headings, relevant subtopics to cover, and common questions people also ask. This tool is perfect for planning blog posts, articles, and guides that are structured for both readers and search engines.',
+      "Beat writer's block and create SEO-optimized content faster than ever. The 1-Click Article Outline Generator takes your target keyword and generates a detailed, long-form article outline in seconds. The outline includes a logical structure of H2 and H3 headings, relevant subtopics to cover, and common questions people also ask. This tool is perfect for planning blog posts, articles, and guides that are structured for both readers and search engines.",
     features: [
       'Generates outlines based on a target keyword',
       'Includes SEO-friendly H2 and H3 headings',
@@ -680,7 +714,7 @@ useCases: [
     description:
       'Creates instant URLs to test webhooks and inspect incoming data.',
     longDescription:
-      'Developing and debugging webhooks has never been easier. The Webhook Tester instantly generates a unique, temporary URL that you can use to receive webhook requests from any service (like Stripe, GitHub, or your own application). All incoming requests sent to this URL are captured and displayed in real-time, allowing you to inspect the headers, payload, and other details. It\'s an indispensable tool for ensuring your webhook integrations are working correctly.',
+      "Developing and debugging webhooks has never been easier. The Webhook Tester instantly generates a unique, temporary URL that you can use to receive webhook requests from any service (like Stripe, GitHub, or your own application). All incoming requests sent to this URL are captured and displayed in real-time, allowing you to inspect the headers, payload, and other details. It's an indispensable tool for ensuring your webhook integrations are working correctly.",
     features: [
       'Generates a unique, disposable URL',
       'Inspects incoming webhook headers and payloads in real-time',

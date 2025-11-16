@@ -7,6 +7,12 @@
       "imageHint": "people studying"
     },
     {
+      "id": "excel-power-tools",
+      "description": "Excel Power Tools",
+      "imageUrl": "https://images.unsplash.com/photo-1552528359-90b1e421063c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkYXRhJTIwYW5hbHlzaXMlMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzYzOTI4MzIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data analysis dashboard"
+    },
+    {
       "id": "tinyurl-maker",
       "description": "TinyURL Maker",
       "imageUrl": "https://images.unsplash.com/photo-1509005170144-85e9af46b57d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsaW5rJTIwY2hhaW58ZW58MHx8fHwxNzYzMzI0NDI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -69,7 +75,7 @@
     {
       "id": "ai-meme-generator",
       "description": "AI Meme Generator",
-      "imageUrl": "https://images.unsplash.com/photo-1655558131821-e4e342357d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmdW5ueSUyMG1lbWV8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1655558131821-e4e342357d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmdW5ueSUyMG1lbWV8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "funny meme"
     },
     {
@@ -87,7 +93,7 @@
     {
       "id": "ai-schema-markup-generator",
       "description": "AI Schema Markup Generator",
-      "imageUrl": "https://images.unsplash.com/photo-1669023414162-5bb06bbff0ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2RlJTIwc2NoZW1hfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1669023414162-5bb06bbff0ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2RlJTIwc2NoZW1hfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "code schema"
     },
     {
@@ -141,7 +147,7 @@
     {
       "id": "daily-calorie-macro-calculator",
       "description": "Daily Calorie & Macro Calculator",
-      "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjMyNzQxOTZ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjMyNzQxOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "healthy food"
     },
     {
@@ -153,7 +159,7 @@
     {
       "id": "ai-habit-tracker",
       "description": "AI Habit Tracker",
-      "imageUrl": "https://images.unsplash.com/photo-1570700701974-437adb234c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxoYWJpdCUyMHBsYW5uZXJ8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1570700701974-437adb234c35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxoYWJpdCUyMHBsYW5uZXJ8ZW58MHx8fHwxNzYzMzA0MDcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "habit planner"
     },
     {

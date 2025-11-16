@@ -7,6 +7,7 @@ import { Wrench } from 'lucide-react';
 import { TinyUrlMaker } from '@/app/tools/tinyurl-maker/tinyurl-maker';
 import { PdfToWordConverter } from '@/app/tools/pdf-to-word-converter/pdf-to-word-converter';
 import { AiTutor } from '@/app/tools/ai-tutor/ai-tutor';
+import { ExcelPowerTools } from '@/app/tools/excel-power-tools/excel-power-tools';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -27,6 +28,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <PdfToWordConverter />;
       case 'ai-tutor':
         return <AiTutor />;
+      case 'excel-power-tools':
+        return <ExcelPowerTools />;
       default:
         return <PlaceholderTool />;
     }
