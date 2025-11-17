@@ -10,9 +10,6 @@ import { AdBanner } from '@/components/shared/ad-banner';
 export const metadata: Metadata = {
   title: 'All2ools | The Ultimate Suite of Free AI-Powered Online Tools',
   description: 'Finance, SEO, images, business, developer tools & more.',
-  icons: {
-    icon: [],
-  },
 };
 
 export default function RootLayout({
