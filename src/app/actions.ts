@@ -102,7 +102,7 @@ export async function handleLatencyCheck(formData: FormData) {
     const data = await Promise.all(promises);
     return { data };
 
-  } catch (error: any) => {
+  } catch (error: any) {
     return { error: error.message || 'Failed to check latency.' };
   }
 }
