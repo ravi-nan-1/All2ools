@@ -41,7 +41,6 @@ export function ToolCard({ tool }: ToolCardProps) {
             <CardTitle className="text-xs font-headline leading-snug">
                 {translate(tool.slug)}
             </CardTitle>
-            <Icon className="h-4 w-4 text-primary shrink-0" />
         </div>
         <Badge variant="outline" className="w-fit">{tool.category}</Badge>
       </CardHeader>
