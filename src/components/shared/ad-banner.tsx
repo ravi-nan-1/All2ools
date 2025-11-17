@@ -47,7 +47,7 @@ export function AdBanner({
   }
 
   return (
-    <div key={pathname} className={cn("adsbygoogle-container", className)} {...props}>
+    <div key={pathname} className={cn(className)} {...props}>
         <ins
           className="adsbygoogle"
           style={{ display: 'block' }}
