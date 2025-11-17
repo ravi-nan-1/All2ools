@@ -32,14 +32,19 @@ export function AdBanner({
   
   useEffect(() => {
     if (isMounted) {
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (err) {
-        console.error(`AdSense error for slot ${adSlot}:`, err);
-      }
+      // Use a timeout to push the ad script to the end of the event loop.
+      // This gives the browser time to calculate container dimensions.
+      const timeoutId = setTimeout(() => {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (err) {
+          console.error(`AdSense error for slot ${adSlot}:`, err);
+        }
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
     }
   }, [pathname, adSlot, isMounted]);
-
 
   if (!isMounted) {
     return null;
