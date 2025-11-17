@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -24,14 +24,25 @@ export function AdBanner({
   ...props 
 }: AdBannerProps) {
   const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (err) {
-      console.error(`AdSense error for slot ${adSlot}:`, err);
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (err) {
+        console.error(`AdSense error for slot ${adSlot}:`, err);
+      }
     }
-  }, [pathname, adSlot]);
+  }, [pathname, adSlot, isMounted]);
+
+  if (!isMounted) {
+    return <div className={cn("adsbygoogle-container", className)} {...props} />;
+  }
 
   return (
     <div className={cn("adsbygoogle-container", className)} {...props}>
