@@ -100,34 +100,3 @@ export async function handleLatencyCheck(formData: FormData) {
     return { error: error.message || 'Failed to check latency.' };
   }
 }
-
-export async function handleShortenUrl(longUrl: string, customSlug: string) {
-  try {
-    let apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
-    if (customSlug) {
-      apiUrl += `&alias=${encodeURIComponent(customSlug)}`;
-    }
-    
-    const response = await fetch(apiUrl);
-    
-    if (!response.ok) {
-        const errorText = await response.text();
-        // TinyURL returns 'Error' in the body for failures
-        if (errorText.toLowerCase().includes('error')) {
-            throw new Error(errorText);
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const shortUrl = await response.text();
-
-    if (shortUrl.includes('Error')) {
-      throw new Error(shortUrl);
-    }
-
-    return { shortUrl };
-
-  } catch (error: any) {
-    return { error: error.message || 'Failed to shorten URL.' };
-  }
-}

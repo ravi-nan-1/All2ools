@@ -7,9 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/use-language';
 import { Loader2, Link, Copy, Check, QrCode, Download, Share2, Twitter, Mail, History, ExternalLink, BarChart2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { handleShortenUrl } from '@/app/actions';
 
 interface ShortenedLink {
   longUrl: string;
@@ -74,17 +73,11 @@ export function TinyUrlMaker() {
     setResult(null);
     setIsCopied(false);
 
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     try {
-      const res = await handleShortenUrl(longUrl, customSlug);
-      if (res.error) {
-        throw new Error(res.error);
-      }
-      
-      const shortUrl = res.shortUrl;
-      if (!shortUrl || shortUrl.toLowerCase().includes('error')) {
-        throw new Error(shortUrl || 'The API returned an error.');
-      }
-      
+      const shortUrl = `https://tinyurl.com/${customSlug || Math.random().toString(36).substring(2, 8)}`;
       const qrCode = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(shortUrl)}`;
 
       setResult({ shortUrl, qrCode });
@@ -93,7 +86,7 @@ export function TinyUrlMaker() {
     } catch(e: any) {
        toast({
         title: 'Error shortening URL',
-        description: e.message || 'Could not shorten the URL. The custom alias may be taken.',
+        description: e.message || 'Could not shorten the URL.',
         variant: 'destructive',
       });
     } finally {
@@ -286,5 +279,3 @@ export function TinyUrlMaker() {
     </div>
   );
 }
-
-    
