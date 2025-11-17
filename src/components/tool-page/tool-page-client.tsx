@@ -47,13 +47,14 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
       const targetLanguageName = languages.find(l => l.code === language)?.name || 'English';
       
       const translateArray = async (arr: string[]) => {
-        const results = await Promise.all(arr.map(item => handleTranslation(item, targetLanguageName)));
+        if (!arr || arr.length === 0) return [];
+        const results = await Promise.all(arr.map(item => item ? handleTranslation(item, targetLanguageName) : Promise.resolve({ translatedContent: '' })));
         return results.map(res => res.error ? '' : res.translatedContent!);
       };
 
       const [descResult, faqResult, featuresResult, howItWorksResult, useCasesResult] = await Promise.all([
-        handleTranslation(tool.longDescription, targetLanguageName),
-        handleTranslation(aiContent.faqContent, targetLanguageName),
+        tool.longDescription ? handleTranslation(tool.longDescription, targetLanguageName) : Promise.resolve({ translatedContent: '' }),
+        aiContent.faqContent ? handleTranslation(aiContent.faqContent, targetLanguageName) : Promise.resolve({ translatedContent: '' }),
         translateArray(tool.features),
         translateArray(tool.howItWorks),
         translateArray(tool.useCases)
