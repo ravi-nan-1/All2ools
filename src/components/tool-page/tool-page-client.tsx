@@ -28,20 +28,35 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
   const [isPending, startTransition] = useTransition();
   const [translatedDescription, setTranslatedDescription] = useState(tool.longDescription);
   const [translatedFaq, setTranslatedFaq] = useState(aiContent.faqContent);
+  const [translatedFeatures, setTranslatedFeatures] = useState(tool.features);
+  const [translatedHowItWorks, setTranslatedHowItWorks] = useState(tool.howItWorks);
+  const [translatedUseCases, setTranslatedUseCases] = useState(tool.useCases);
+
 
   useEffect(() => {
     if (language === 'en') {
       setTranslatedDescription(tool.longDescription);
       setTranslatedFaq(aiContent.faqContent);
+      setTranslatedFeatures(tool.features);
+      setTranslatedHowItWorks(tool.howItWorks);
+      setTranslatedUseCases(tool.useCases);
       return;
     }
 
     startTransition(async () => {
       const targetLanguageName = languages.find(l => l.code === language)?.name || 'English';
       
-      const [descResult, faqResult] = await Promise.all([
+      const translateArray = async (arr: string[]) => {
+        const results = await Promise.all(arr.map(item => handleTranslation(item, targetLanguageName)));
+        return results.map(res => res.error ? '' : res.translatedContent!);
+      };
+
+      const [descResult, faqResult, featuresResult, howItWorksResult, useCasesResult] = await Promise.all([
         handleTranslation(tool.longDescription, targetLanguageName),
-        handleTranslation(aiContent.faqContent, targetLanguageName)
+        handleTranslation(aiContent.faqContent, targetLanguageName),
+        translateArray(tool.features),
+        translateArray(tool.howItWorks),
+        translateArray(tool.useCases)
       ]);
 
       if (!descResult.error) {
@@ -50,8 +65,11 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
       if (!faqResult.error) {
         setTranslatedFaq(faqResult.translatedContent!);
       }
+      setTranslatedFeatures(featuresResult);
+      setTranslatedHowItWorks(howItWorksResult);
+      setTranslatedUseCases(useCasesResult);
     });
-  }, [language, tool.longDescription, aiContent.faqContent]);
+  }, [language, tool.longDescription, aiContent.faqContent, tool.features, tool.howItWorks, tool.useCases]);
 
 
   return (
@@ -144,14 +162,21 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-muted-foreground">
-                  {tool.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-500 mt-1 shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                {isPending ? (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>{translate('processing')}...</span>
+                  </div>
+                ) : (
+                  <ul className="space-y-2 text-muted-foreground">
+                    {translatedFeatures.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-green-500 mt-1 shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </CardContent>
             </Card>
 
@@ -163,14 +188,21 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ol className="space-y-3 text-muted-foreground">
-                    {tool.howItWorks.map((step, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm shrink-0 mt-0.5">{index + 1}</span>
-                            <span>{step}</span>
-                        </li>
-                    ))}
-                </ol>
+                {isPending ? (
+                   <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>{translate('processing')}...</span>
+                  </div>
+                ) : (
+                  <ol className="space-y-3 text-muted-foreground">
+                      {translatedHowItWorks.map((step, index) => (
+                          <li key={index} className="flex items-start gap-3">
+                              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm shrink-0 mt-0.5">{index + 1}</span>
+                              <span>{step}</span>
+                          </li>
+                      ))}
+                  </ol>
+                )}
               </CardContent>
             </Card>
 
@@ -182,14 +214,21 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-muted-foreground">
-                  {tool.useCases.map((useCase, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                       <ArrowRight className="h-4 w-4 text-primary mt-1.5 shrink-0" />
-                      <span>{useCase}</span>
-                    </li>
-                  ))}
-                </ul>
+                {isPending ? (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>{translate('processing')}...</span>
+                  </div>
+                ) : (
+                  <ul className="space-y-2 text-muted-foreground">
+                    {translatedUseCases.map((useCase, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                         <ArrowRight className="h-4 w-4 text-primary mt-1.5 shrink-0" />
+                        <span>{useCase}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </CardContent>
             </Card>
           </div>
