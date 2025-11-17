@@ -11,24 +11,24 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const PageContentSchema = z.object({
+const PageContentSchema = z.object({
   description: z.string().describe('The main description of the tool.'),
   faq: z.string().describe('The Frequently Asked Questions content.'),
   features: z.array(z.string()).describe('A list of tool features.'),
   howItWorks: z.array(z.string()).describe('A list of steps explaining how the tool works.'),
   useCases: z.array(z.string()).describe('A list of common use cases for the tool.'),
 });
-export type PageContent = z.infer<typeof PageContentSchema>;
+type PageContent = z.infer<typeof PageContentSchema>;
 
 const TranslatePageContentInputSchema = z.object({
   content: PageContentSchema,
   targetLanguage: z.string().describe('The target language for translation (e.g., "Spanish", "Chinese").'),
 });
-export type TranslatePageContentInput = z.infer<typeof TranslatePageContentInputSchema>;
+type TranslatePageContentInput = z.infer<typeof TranslatePageContentInputSchema>;
 
 // The output schema is the same as the PageContentSchema
-export const TranslatedPageContentSchema = PageContentSchema;
-export type TranslatedPageContent = z.infer<typeof TranslatedPageContentSchema>;
+const TranslatedPageContentSchema = PageContentSchema;
+type TranslatedPageContent = z.infer<typeof TranslatedPageContentSchema>;
 
 
 export async function translatePageContent(input: TranslatePageContentInput): Promise<TranslatedPageContent> {
