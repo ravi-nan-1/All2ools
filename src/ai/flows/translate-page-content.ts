@@ -3,51 +3,30 @@
  * @fileOverview A Genkit flow for translating all text content on a page in a single call.
  *
  * - translatePageContent - A function that translates a content object to a specified language.
- * - TranslatePageContentInput - The input type for the translatePageContent function.
- * - PageContentSchema - The Zod schema for the content object.
- * - TranslatedPageContentSchema - The Zod schema for the translated content object.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { PageContentSchema } from '@/app/actions';
-import type { PageContent } from '@/app/actions';
-
 
 const TranslatePageContentInputSchema = z.object({
-  content: PageContentSchema,
+  content: z.any(),
   targetLanguage: z.string().describe('The target language for translation (e.g., "Spanish", "Chinese").'),
+  schema: z.any(),
 });
 type TranslatePageContentInput = z.infer<typeof TranslatePageContentInputSchema>;
 
-// The output schema is the same as the PageContentSchema
-const TranslatedPageContentSchema = PageContentSchema;
-type TranslatedPageContent = z.infer<typeof TranslatedPageContentSchema>;
+export async function translatePageContent(input: TranslatePageContentInput): Promise<any> {
+  const prompt = ai.definePrompt({
+    name: 'translatePageContentPrompt',
+    input: {schema: TranslatePageContentInputSchema },
+    output: {schema: input.schema },
+    prompt: `Translate the following JSON object's string values into {{targetLanguage}}. Maintain the exact JSON structure and keys. Only return the translated JSON object, without any additional explanations or formatting.
 
+  Content to translate:
+  {{{json content}}}
+  `,
+  });
 
-export async function translatePageContent(input: TranslatePageContentInput): Promise<TranslatedPageContent> {
-  return translatePageContentFlow(input);
+  const {output} = await prompt(input);
+  return output!;
 }
-
-const translatePageContentPrompt = ai.definePrompt({
-  name: 'translatePageContentPrompt',
-  input: {schema: TranslatePageContentInputSchema},
-  output: {schema: TranslatedPageContentSchema},
-  prompt: `Translate the following JSON object's string values into {{targetLanguage}}. Maintain the exact JSON structure and keys. Only return the translated JSON object, without any additional explanations or formatting.
-
-Content to translate:
-{{{json content}}}
-`,
-});
-
-const translatePageContentFlow = ai.defineFlow(
-  {
-    name: 'translatePageContentFlow',
-    inputSchema: TranslatePageContentInputSchema,
-    outputSchema: TranslatedPageContentSchema,
-  },
-  async input => {
-    const {output} = await translatePageContentPrompt(input);
-    return output!;
-  }
-);
