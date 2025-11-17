@@ -2,7 +2,7 @@
 
 import type { Tool } from '@/lib/tools';
 import type { GenerateSEOMetadataOutput } from '@/ai/flows/generate-seo-metadata';
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/hooks/use-language';
@@ -12,8 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, CheckCircle2, List, CaseSensitive, HelpCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { ToolInterface } from './tool-interface';
 import { AdBanner } from '@/components/shared/ad-banner';
-import { handleTranslation } from '@/app/actions';
+import { handlePageTranslation } from '@/app/actions';
 import { languages } from '@/lib/translations';
+import type { TranslatedPageContent } from '@/ai/flows/translate-page-content';
 
 interface ToolPageClientProps {
   tool: Tool & { image: string; imageHint: string };
@@ -26,51 +27,34 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
   const { jsonLdSchema } = aiContent;
 
   const [isPending, startTransition] = useTransition();
-  const [translatedDescription, setTranslatedDescription] = useState(tool.longDescription);
-  const [translatedFaq, setTranslatedFaq] = useState(aiContent.faqContent);
-  const [translatedFeatures, setTranslatedFeatures] = useState(tool.features);
-  const [translatedHowItWorks, setTranslatedHowItWorks] = useState(tool.howItWorks);
-  const [translatedUseCases, setTranslatedUseCases] = useState(tool.useCases);
+
+  const originalContent = useMemo(() => ({
+    description: tool.longDescription,
+    faq: aiContent.faqContent,
+    features: tool.features,
+    howItWorks: tool.howItWorks,
+    useCases: tool.useCases,
+  }), [tool, aiContent]);
+
+  const [translatedContent, setTranslatedContent] = useState<TranslatedPageContent>(originalContent);
 
 
   useEffect(() => {
     if (language === 'en') {
-      setTranslatedDescription(tool.longDescription);
-      setTranslatedFaq(aiContent.faqContent);
-      setTranslatedFeatures(tool.features);
-      setTranslatedHowItWorks(tool.howItWorks);
-      setTranslatedUseCases(tool.useCases);
+      setTranslatedContent(originalContent);
       return;
     }
 
     startTransition(async () => {
       const targetLanguageName = languages.find(l => l.code === language)?.name || 'English';
       
-      const translateArray = async (arr: string[]) => {
-        if (!arr || arr.length === 0) return [];
-        const results = await Promise.all(arr.map(item => item ? handleTranslation(item, targetLanguageName) : Promise.resolve({ translatedContent: '' })));
-        return results.map(res => res.error ? '' : res.translatedContent!);
-      };
+      const result = await handlePageTranslation(originalContent, targetLanguageName);
 
-      const [descResult, faqResult, featuresResult, howItWorksResult, useCasesResult] = await Promise.all([
-        tool.longDescription ? handleTranslation(tool.longDescription, targetLanguageName) : Promise.resolve({ translatedContent: '' }),
-        aiContent.faqContent ? handleTranslation(aiContent.faqContent, targetLanguageName) : Promise.resolve({ translatedContent: '' }),
-        translateArray(tool.features),
-        translateArray(tool.howItWorks),
-        translateArray(tool.useCases)
-      ]);
-
-      if (!descResult.error) {
-        setTranslatedDescription(descResult.translatedContent!);
+      if (result.data && !result.error) {
+        setTranslatedContent(result.data);
       }
-      if (!faqResult.error) {
-        setTranslatedFaq(faqResult.translatedContent!);
-      }
-      setTranslatedFeatures(featuresResult);
-      setTranslatedHowItWorks(howItWorksResult);
-      setTranslatedUseCases(useCasesResult);
     });
-  }, [language, tool.longDescription, aiContent.faqContent, tool.features, tool.howItWorks, tool.useCases]);
+  }, [language, originalContent]);
 
 
   return (
@@ -119,7 +103,7 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                     <span>{translate('processing')}...</span>
                   </div>
                 ) : (
-                  <p className="text-muted-foreground whitespace-pre-line">{translatedDescription}</p>
+                  <p className="text-muted-foreground whitespace-pre-line">{translatedContent.description}</p>
                 )}
               </CardContent>
             </Card>
@@ -147,7 +131,7 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                     <span>{translate('processing')}...</span>
                   </div>
                 ) : (
-                  <pre className="text-sm text-muted-foreground bg-muted p-4 rounded-md whitespace-pre-wrap font-body">{translatedFaq}</pre>
+                  <pre className="text-sm text-muted-foreground bg-muted p-4 rounded-md whitespace-pre-wrap font-body">{translatedContent.faq}</pre>
                 )}
               </CardContent>
             </Card>
@@ -170,7 +154,7 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                   </div>
                 ) : (
                   <ul className="space-y-2 text-muted-foreground">
-                    {translatedFeatures.map((feature, index) => (
+                    {translatedContent.features.map((feature, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-500 mt-1 shrink-0" />
                         <span>{feature}</span>
@@ -196,7 +180,7 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                   </div>
                 ) : (
                   <ol className="space-y-3 text-muted-foreground">
-                      {translatedHowItWorks.map((step, index) => (
+                      {translatedContent.howItWorks.map((step, index) => (
                           <li key={index} className="flex items-start gap-3">
                               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-sm shrink-0 mt-0.5">{index + 1}</span>
                               <span>{step}</span>
@@ -222,7 +206,7 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                   </div>
                 ) : (
                   <ul className="space-y-2 text-muted-foreground">
-                    {translatedUseCases.map((useCase, index) => (
+                    {translatedContent.useCases.map((useCase, index) => (
                       <li key={index} className="flex items-start gap-2">
                          <ArrowRight className="h-4 w-4 text-primary mt-1.5 shrink-0" />
                         <span>{useCase}</span>

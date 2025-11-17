@@ -3,6 +3,7 @@
 import { removeBackground } from "@/ai/flows/ai-product-background-remover";
 import { analyzeContentGap } from "@/ai/flows/analyze-content-gap";
 import { translateContent } from "@/ai/flows/translate-content";
+import { translatePageContent, type PageContent } from "@/ai/flows/translate-page-content";
 
 async function fileToDataUri(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -111,5 +112,18 @@ export async function handleTranslation(content: string, targetLanguage: string)
     return result;
   } catch (error: any) {
     return { error: error.message || 'Failed to translate content.' };
+  }
+}
+
+
+export async function handlePageTranslation(content: PageContent, targetLanguage: string) {
+  try {
+    if (!content) {
+      throw new Error('No content object provided for translation.');
+    }
+    const result = await translatePageContent({ content, targetLanguage });
+    return { data: result };
+  } catch (error: any) {
+    return { error: error.message || 'Failed to translate page content.' };
   }
 }
