@@ -8,8 +8,9 @@ import { LanguageProvider } from '@/context/language-context';
 import { AdBanner } from '@/components/shared/ad-banner';
 
 export const metadata: Metadata = {
-  title: 'All2ools | The Ultimate Suite of Free AI-Powered Online Tools',
-  description: 'Finance, SEO, images, business, developer tools & more.',
+  title: 'All2ools | Free AI-Powered Tools for Finance, SEO, & Business',
+  description: 'The ultimate suite of 30+ free online tools powered by AI. Explore tools for finance, SEO, image editing, business management, developers, and more. Boost your productivity today.',
+  keywords: 'ai tools, free tools, online tools, finance calculator, seo analyzer, image editor, business tools, developer utilities, crypto tax, invoice generator, url shortener',
   icons: {
     icon: '/favicon.ico',
   },
