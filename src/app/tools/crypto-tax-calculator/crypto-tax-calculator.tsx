@@ -266,6 +266,3 @@ export function CryptoTaxCalculator() {
     </div>
   );
 }
-
-    
-    
