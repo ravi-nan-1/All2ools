@@ -135,13 +135,13 @@
     {
       "id": "regex-generator-from-text",
       "description": "Regex Generator From Text",
-      "imageUrl": "https://images.unsplash.com/photo-1550482781-48d477e61c72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2RlJTIwcGF0dGVybnxlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1550482781-48d477e61c72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb2RlJTIwcGF0dGVybnxlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "code pattern"
     },
     {
       "id": "json-excel-converter",
       "description": "JSON -> Excel Converter",
-      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwY29udmVyc2lvbnxlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwY29udmVyc2lvbnxlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "data conversion"
     },
     {
@@ -153,7 +153,7 @@
     {
       "id": "daily-calorie-macro-calculator",
       "description": "Daily Calorie & Macro Calculator",
-      "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjMyNzQxOTZ8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjMyNzQxOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "healthy food"
     },
     {
@@ -189,7 +189,7 @@
     {
       "id": "ai-contract-summarizer",
       "description": "AI Contract Summarizer",
-      "imageUrl": "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdhbCUyMGRvY3VtZW50fGVufDB8fHx8MTc2MzE4NDkzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdhbCUyMGRvY3VtZW50fGVufDB8fHx8MTc2MzE4NDkzMXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "legal document"
     },
     {

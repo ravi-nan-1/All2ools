@@ -15,6 +15,7 @@ import { JwtDecoderValidator } from '@/app/tools/jwt-decoder-validator/jwt-decod
 import { GlobalLoanOptimizer } from '@/app/tools/global-loan-optimizer/global-loan-optimizer';
 import { CryptoTaxCalculator } from '@/app/tools/crypto-tax-calculator/crypto-tax-calculator';
 import { ForexArbitrageChecker } from '@/app/tools/forex-arbitrage-checker/forex-arbitrage-checker';
+import { AiInvoiceGenerator } from '@/app/tools/ai-invoice-generator/ai-invoice-generator';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -49,6 +50,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <CryptoTaxCalculator />;
       case 'forex-arbitrage-checker':
         return <ForexArbitrageChecker />;
+      case 'ai-invoice-generator':
+        return <AiInvoiceGenerator />;
       default:
         return <PlaceholderTool />;
     }
