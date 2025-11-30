@@ -8,13 +8,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Zap, Settings, LineChart, History, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
-const mockBrokers = ['OANDA', 'FXCM', 'Interactive Brokers', 'Dukascopy', 'Pepperstone'];
+const mockBrokers = ['OANDA', 'FXCM', 'Interactive Brokers', 'Dukascopy', 'Pepperstone', 'IC Markets'];
 const mockPairs = ['EUR/USD', 'USD/JPY', 'GBP/USD', 'USD/CHF', 'AUD/USD', 'USD/CAD'];
 
 const mockOpportunities = [
   { path: 'EUR → USD → JPY → EUR', profit: '0.12%', age: '2s ago', brokers: ['OANDA', 'FXCM', 'Dukascopy'] },
-  { path: 'GBP → USD → CHF → GBP', profit: '0.08%', age: '5s ago', brokers: ['Pepperstone', 'FXCM', 'IB'] },
+  { path: 'GBP → USD → CHF → GBP', profit: '0.08%', age: '5s ago', brokers: ['Pepperstone', 'FXCM', 'Interactive Brokers'] },
   { path: 'USD → JPY → AUD → USD', profit: '0.05%', age: '12s ago', brokers: ['IC Markets', 'OANDA', 'FXCM'] },
 ];
 
@@ -26,6 +27,9 @@ const mockPriceFeeds = [
 
 export function ForexArbitrageChecker() {
     const [isScanning, setIsScanning] = useState(false);
+    const [selectedBroker, setSelectedBroker] = useState<string>('');
+    const [selectedPair, setSelectedPair] = useState<string>('');
+    const [arbitrageType, setArbitrageType] = useState<string>('triangular');
 
     const handleScan = () => {
         setIsScanning(true);
@@ -51,21 +55,31 @@ export function ForexArbitrageChecker() {
                     <CardDescription>Configure your arbitrage scan settings.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <Select disabled>
-                        <SelectTrigger><SelectValue placeholder="Select Brokers..." /></SelectTrigger>
+                    <Select value={selectedBroker} onValueChange={setSelectedBroker}>
+                        <SelectTrigger><SelectValue placeholder="Select a Broker..." /></SelectTrigger>
+                        <SelectContent>
+                            {mockBrokers.map(broker => (
+                                <SelectItem key={broker} value={broker}>{broker}</SelectItem>
+                            ))}
+                        </SelectContent>
                     </Select>
-                     <Select disabled>
-                        <SelectTrigger><SelectValue placeholder="Select Currency Pairs..." /></SelectTrigger>
+                     <Select value={selectedPair} onValueChange={setSelectedPair}>
+                        <SelectTrigger><SelectValue placeholder="Select a Currency Pair..." /></SelectTrigger>
+                        <SelectContent>
+                             {mockPairs.map(pair => (
+                                <SelectItem key={pair} value={pair}>{pair}</SelectItem>
+                            ))}
+                        </SelectContent>
                     </Select>
-                    <Select disabled>
+                    <Select value={arbitrageType} onValueChange={setArbitrageType}>
                         <SelectTrigger><SelectValue placeholder="Arbitrage Type..." /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="triangular">Triangular</SelectItem>
                             <SelectItem value="direct">Direct (2-Leg)</SelectItem>
-                             <SelectItem value="statistical">Statistical</SelectItem>
+                             <SelectItem value="statistical" disabled>Statistical (soon)</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button onClick={handleScan} disabled={isScanning}>
+                    <Button onClick={handleScan} disabled={isScanning || !selectedBroker || !selectedPair}>
                         {isScanning ? (
                             <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Scanning...</>
                         ) : (
@@ -111,8 +125,8 @@ export function ForexArbitrageChecker() {
                                         <TableRow key={opp.path}>
                                             <TableCell className="font-mono">{opp.path}</TableCell>
                                              <TableCell>
-                                                <div className="flex gap-1">
-                                                    {opp.brokers.map(b => <span key={b} className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{b}</span>)}
+                                                <div className="flex flex-wrap gap-1">
+                                                    {opp.brokers.map(b => <Badge key={b} variant="secondary">{b}</Badge>)}
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right font-medium text-green-600">{opp.profit}</TableCell>
