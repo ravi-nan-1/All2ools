@@ -9,6 +9,8 @@ import { PdfToWordConverter } from '@/app/tools/pdf-to-word-converter/pdf-to-wor
 import { AiTutor } from '@/app/tools/ai-tutor/ai-tutor';
 import { ExcelPowerTools } from '@/app/tools/excel-power-tools/excel-power-tools';
 import { ImageCompressor } from '@/app/tools/image-compressor/image-compressor';
+import { PlagiarismChecker } from '@/app/tools/plagiarism-checker/plagiarism-checker';
+import { JwtDecoderValidator } from '@/app/tools/jwt-decoder-validator/jwt-decoder-validator';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -33,6 +35,10 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <ExcelPowerTools />;
       case 'image-compressor':
         return <ImageCompressor />;
+      case 'plagiarism-checker':
+        return <PlagiarismChecker />;
+      case 'jwt-decoder-validator':
+        return <JwtDecoderValidator />;
       default:
         return <PlaceholderTool />;
     }
@@ -50,5 +56,3 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
     </Card>
   );
 }
-
-    
