@@ -13,6 +13,7 @@ import { ImageCompressor } from '@/app/tools/image-compressor/image-compressor';
 import { PlagiarismChecker } from '@/app/tools/plagiarism-checker/plagiarism-checker';
 import { JwtDecoderValidator } from '@/app/tools/jwt-decoder-validator/jwt-decoder-validator';
 import { GlobalLoanOptimizer } from '@/app/tools/global-loan-optimizer/global-loan-optimizer';
+import { CryptoTaxCalculator } from '@/app/tools/crypto-tax-calculator/crypto-tax-calculator';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -43,6 +44,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <JwtDecoderValidator />;
       case 'global-loan-optimizer':
         return <GlobalLoanOptimizer />;
+      case 'crypto-tax-calculator':
+        return <CryptoTaxCalculator />;
       default:
         return <PlaceholderTool />;
     }
