@@ -49,9 +49,11 @@ export function AiProductBackgroundRemover() {
     
     try {
       const result = await handleBackgroundRemoval(formData);
+
       if (result.error) {
         throw new Error(result.error);
       }
+
       if (result.backgroundRemovedPhotoDataUri) {
         setProcessedImage(result.backgroundRemovedPhotoDataUri);
       } else {
@@ -76,7 +78,7 @@ export function AiProductBackgroundRemover() {
         {translate('upload_image_and_remove_bg')}
       </p>
       <div className="space-y-4">
-        <Input type="file" accept="image/*" onChange={handleFileChange} className="flex-grow" />
+        <Input type="file" accept="image/*" onChange={handleFileChange} className="flex-grow" disabled={isLoading}/>
         <Button onClick={handleRemoveBackground} disabled={isLoading || !file} className="w-full">
           {isLoading ? (
             <>

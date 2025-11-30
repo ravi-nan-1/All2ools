@@ -17,14 +17,23 @@ export async function handleBackgroundRemoval(formData: FormData) {
   try {
     const imageFile = formData.get('image') as File;
     if (!imageFile) {
-      throw new Error('No image file provided.');
+      return { error: 'No image file provided.' };
+    }
+
+    // Add a size check
+    if (imageFile.size > 4 * 1024 * 1024) { // 4MB limit
+        return { error: 'Image file is too large. Please use a file under 4MB.' };
     }
 
     const productPhotoDataUri = await fileToDataUri(imageFile);
     const result = await removeBackground({ productPhotoDataUri });
     return result;
   } catch (error: any) {
-    return { error: error.message || 'Failed to remove background.' };
+    console.error('Background removal action error:', error);
+    if (error.message.includes('upstream')) {
+        return { error: 'The AI service is currently unavailable. Please try again later.' };
+    }
+    return { error: error.message || 'An unexpected error occurred during background removal.' };
   }
 }
 
