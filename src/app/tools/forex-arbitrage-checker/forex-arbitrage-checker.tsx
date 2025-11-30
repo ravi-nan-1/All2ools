@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, Zap, Settings, LineChart, History, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { ForexAnalysisChart } from '@/components/tool-page/tools/forex-analysis-chart';
 
 const mockBrokers = ['OANDA', 'FXCM', 'Interactive Brokers', 'Dukascopy', 'Pepperstone', 'IC Markets'];
 const mockPairs = ['EUR/USD', 'USD/JPY', 'GBP/USD', 'USD/CHF', 'AUD/USD', 'USD/CAD'];
@@ -18,6 +19,13 @@ const mockOpportunities = [
   { path: 'GBP → USD → CHF → GBP', profit: '0.08%', age: '5s ago', brokers: ['Pepperstone', 'FXCM', 'Interactive Brokers'] },
   { path: 'USD → JPY → AUD → USD', profit: '0.05%', age: '12s ago', brokers: ['IC Markets', 'OANDA', 'FXCM'] },
 ];
+
+const mockHistoricalOpportunities = [
+    { id: 1, path: 'EUR → USD → CAD → EUR', profit: '0.09%', age: '2m 15s ago', brokers: ['OANDA', 'Dukascopy'] },
+    { id: 2, path: 'GBP → JPY → USD → GBP', profit: '0.11%', age: '5m 45s ago', brokers: ['FXCM', 'Pepperstone'] },
+    { id: 3, path: 'AUD → CHF → USD → AUD', profit: '0.07%', age: '10m 2s ago', brokers: ['IC Markets', 'Interactive Brokers'] },
+    { id: 4, path: 'USD → CAD → JPY → USD', profit: '0.15%', age: '18m 30s ago', brokers: ['OANDA', 'FXCM'] },
+  ];
 
 const mockPriceFeeds = [
   { pair: 'EUR/USD', oanda: '1.0712', fxcm: '1.0713', ib: '1.0711' },
@@ -58,25 +66,31 @@ export function ForexArbitrageChecker() {
                     <Select value={selectedBroker} onValueChange={setSelectedBroker}>
                         <SelectTrigger><SelectValue placeholder="Select a Broker..." /></SelectTrigger>
                         <SelectContent>
+                            <SelectGroup>
                             {mockBrokers.map(broker => (
                                 <SelectItem key={broker} value={broker}>{broker}</SelectItem>
                             ))}
+                            </SelectGroup>
                         </SelectContent>
                     </Select>
                      <Select value={selectedPair} onValueChange={setSelectedPair}>
                         <SelectTrigger><SelectValue placeholder="Select a Currency Pair..." /></SelectTrigger>
                         <SelectContent>
+                            <SelectGroup>
                              {mockPairs.map(pair => (
                                 <SelectItem key={pair} value={pair}>{pair}</SelectItem>
                             ))}
+                            </SelectGroup>
                         </SelectContent>
                     </Select>
                     <Select value={arbitrageType} onValueChange={setArbitrageType}>
                         <SelectTrigger><SelectValue placeholder="Arbitrage Type..." /></SelectTrigger>
                         <SelectContent>
+                            <SelectGroup>
                             <SelectItem value="triangular">Triangular</SelectItem>
                             <SelectItem value="direct">Direct (2-Leg)</SelectItem>
                              <SelectItem value="statistical" disabled>Statistical (soon)</SelectItem>
+                            </SelectGroup>
                         </SelectContent>
                     </Select>
                     <Button onClick={handleScan} disabled={isScanning || !selectedBroker || !selectedPair}>
@@ -138,29 +152,52 @@ export function ForexArbitrageChecker() {
                         </CardContent>
                     </Card>
                 </TabsContent>
-                <TabsContent value="analysis" className="mt-6">
+                 <TabsContent value="analysis" className="mt-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Analysis Charts</CardTitle>
+                      <CardTitle>Price Analysis Chart</CardTitle>
                       <CardDescription>
-                        Historical price charts and volatility analysis will be displayed here.
+                        Visualizing mock historical price data for EUR/USD.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex items-center justify-center h-64 text-muted-foreground">
-                      <p>Chart components are currently under development. Check back soon!</p>
+                    <CardContent>
+                      <ForexAnalysisChart />
                     </CardContent>
                   </Card>
                 </TabsContent>
                 <TabsContent value="history" className="mt-6">
                    <Card>
                     <CardHeader>
-                      <CardTitle>Historical Arbitrage Data</CardTitle>
+                      <CardTitle>Historical Arbitrage Log</CardTitle>
                       <CardDescription>
-                        A log of past arbitrage opportunities and their outcomes will be available here.
+                        A log of mock arbitrage opportunities detected in the past.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex items-center justify-center h-64 text-muted-foreground">
-                      <p>Historical data logging and back-testing features are coming soon.</p>
+                    <CardContent>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Arbitrage Path</TableHead>
+                            <TableHead>Brokers</TableHead>
+                            <TableHead className="text-right">Est. Profit</TableHead>
+                            <TableHead className="text-right">Detected</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {mockHistoricalOpportunities.map((opp) => (
+                            <TableRow key={opp.id}>
+                              <TableCell className="font-mono">{opp.path}</TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-1">
+                                  {opp.brokers.map(b => <Badge key={b} variant="secondary">{b}</Badge>)}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-right font-medium text-green-600">{opp.profit}</TableCell>
+                              <TableCell className="text-right text-muted-foreground">{opp.age}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </CardContent>
                   </Card>
                 </TabsContent>

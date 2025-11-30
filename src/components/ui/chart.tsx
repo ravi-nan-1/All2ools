@@ -1,7 +1,46 @@
 "use client"
 
 import * as React from "react"
-import * as RechartsPrimitive from "recharts"
+import {
+  Area,
+  Bar,
+  CartesianGrid,
+  Cell,
+  Dot,
+  Label,
+  LabelList,
+  Legend,
+  Line,
+  Pie,
+  PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Polygon,
+  RadialBar,
+  RadialBarChart,
+  Rectangle,
+  ReferenceArea,
+  ReferenceDot,
+  ReferenceLine,
+  ResponsiveContainer,
+  Scatter,
+  Sector,
+  Tooltip,
+  XAxis,
+  YAxis,
+  type SectorProps,
+} from "recharts"
+import {
+  AreaChart as AreaChartPrimitive,
+  BarChart as BarChartPrimitive,
+  LineChart as LineChartPrimitive,
+  PieChart as PieChartPrimitive,
+  RadarChart as RadarChartPrimitive,
+  RadialBarChart as RadialBarChartPrimitive,
+  ScatterChart as ScatterChartPrimitive,
+  type CategoricalChartProps,
+} from "recharts"
 
 import { cn } from "@/lib/utils"
 
@@ -39,7 +78,7 @@ const ChartContainer = React.forwardRef<
   React.ComponentProps<"div"> & {
     config: ChartConfig
     children: React.ComponentProps<
-      typeof RechartsPrimitive.ResponsiveContainer
+      typeof ResponsiveContainer
     >["children"]
   }
 >(({ id, className, children, config, ...props }, ref) => {
@@ -58,9 +97,7 @@ const ChartContainer = React.forwardRef<
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
-        <RechartsPrimitive.ResponsiveContainer>
-          {children}
-        </RechartsPrimitive.ResponsiveContainer>
+        <ResponsiveContainer>{children}</ResponsiveContainer>
       </div>
     </ChartContext.Provider>
   )
@@ -100,11 +137,11 @@ ${colorConfig
   )
 }
 
-const ChartTooltip = RechartsPrimitive.Tooltip
+const ChartTooltip = Tooltip
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
+  React.ComponentProps<typeof Tooltip> &
     React.ComponentProps<"div"> & {
       hideLabel?: boolean
       hideIndicator?: boolean
@@ -256,12 +293,12 @@ const ChartTooltipContent = React.forwardRef<
 )
 ChartTooltipContent.displayName = "ChartTooltip"
 
-const ChartLegend = RechartsPrimitive.Legend
+const ChartLegend = Legend
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    Pick<React.ComponentProps<typeof Legend>, "payload" | "verticalAlign"> & {
       hideIcon?: boolean
       nameKey?: string
     }
@@ -355,11 +392,64 @@ function getPayloadConfigFromPayload(
     : config[key as keyof typeof config]
 }
 
+const Chart = ChartContainer
+const ChartStyleRoot = ChartStyle
+const ChartTooltipRoot = ChartTooltip
+const ChartTooltipContentRoot = ChartTooltipContent
+const ChartLegendRoot = ChartLegend
+const ChartLegendContentRoot = ChartLegendContent
+
+const AreaChart = AreaChartPrimitive
+const BarChart = BarChartPrimitive
+const LineChart = LineChartPrimitive
+const PieChartRoot = PieChartPrimitive
+const RadarChart = RadarChartPrimitive
+const RadialBarChartRoot = RadialBarChartPrimitive
+const ScatterChart = ScatterChartPrimitive
+
 export {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
+  Area,
+  Bar,
+  CartesianGrid,
+  Cell,
+  Dot,
+  Label,
+  LabelList,
+  Legend,
+  Line,
+  Pie,
+  PieChartRoot as PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Polygon,
+  RadialBar,
+  RadialBarChartRoot as RadialBarChart,
+  Rectangle,
+  ReferenceArea,
+  ReferenceDot,
+  ReferenceLine,
+  ResponsiveContainer,
+  Scatter,
+  Sector,
+  Tooltip,
+  XAxis,
+  YAxis,
+  //
+  AreaChart,
+  BarChart,
+  LineChart,
+  RadarChart,
+  ScatterChart,
+  //
+  Chart,
+  ChartStyleRoot as ChartStyle,
+  ChartTooltipRoot as ChartTooltip,
+  ChartTooltipContentRoot as ChartTooltipContent,
+  ChartLegendRoot as ChartLegend,
+  ChartLegendContentRoot as ChartLegendContent,
+  //
+  useChart,
+  type ChartConfig,
+  type SectorProps,
 }
