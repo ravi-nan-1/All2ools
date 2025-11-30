@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Link, ExternalLink } from 'lucide-react';
 
 export function TinyUrlMaker() {
-  const toolUrl = 'https://url.all2ools.com';
+  const toolUrl = 'https://tinyurl.all2ools.com/';
 
   return (
     <div className="flex flex-col items-center justify-center text-center p-8 bg-muted rounded-lg h-64">
