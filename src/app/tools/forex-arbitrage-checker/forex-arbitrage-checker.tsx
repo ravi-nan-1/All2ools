@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -15,22 +16,25 @@ const mockBrokers = ['OANDA', 'FXCM', 'Interactive Brokers', 'Dukascopy', 'Peppe
 const mockPairs = ['EUR/USD', 'USD/JPY', 'GBP/USD', 'USD/CHF', 'AUD/USD', 'USD/CAD'];
 
 const mockOpportunities = [
-  { path: 'EUR → USD → JPY → EUR', profit: '0.12%', age: '2s ago', brokers: ['OANDA', 'FXCM', 'Dukascopy'] },
-  { path: 'GBP → USD → CHF → GBP', profit: '0.08%', age: '5s ago', brokers: ['Pepperstone', 'FXCM', 'Interactive Brokers'] },
-  { path: 'USD → JPY → AUD → USD', profit: '0.05%', age: '12s ago', brokers: ['IC Markets', 'OANDA', 'FXCM'] },
+  { path: 'EUR → USD → JPY → EUR', profit: '0.12%', age: '2s ago', brokers: ['OANDA', 'FXCM', 'Dukascopy'], type: 'Triangular' },
+  { path: 'GBP/USD (Buy OANDA, Sell IB)', profit: '0.09%', age: '4s ago', brokers: ['OANDA', 'Interactive Brokers'], type: 'Two-Leg' },
+  { path: 'GBP → USD → CHF → GBP', profit: '0.08%', age: '5s ago', brokers: ['Pepperstone', 'FXCM', 'Interactive Brokers'], type: 'Triangular' },
+  { path: 'USD → JPY → AUD → USD', profit: '0.05%', age: '12s ago', brokers: ['IC Markets', 'OANDA', 'FXCM'], type: 'Triangular' },
+  { path: 'EUR/AUD vs (EUR/USD * USD/AUD)', profit: '0.04%', age: '15s ago', brokers: ['Dukascopy', 'Pepperstone'], type: 'Synthetic' },
 ];
 
 const mockHistoricalOpportunities = [
-    { id: 1, path: 'EUR → USD → CAD → EUR', profit: '0.09%', age: '2m 15s ago', brokers: ['OANDA', 'Dukascopy'] },
-    { id: 2, path: 'GBP → JPY → USD → GBP', profit: '0.11%', age: '5m 45s ago', brokers: ['FXCM', 'Pepperstone'] },
-    { id: 3, path: 'AUD → CHF → USD → AUD', profit: '0.07%', age: '10m 2s ago', brokers: ['IC Markets', 'Interactive Brokers'] },
-    { id: 4, path: 'USD → CAD → JPY → USD', profit: '0.15%', age: '18m 30s ago', brokers: ['OANDA', 'FXCM'] },
+    { id: 1, path: 'EUR → USD → CAD → EUR', profit: '0.09%', age: '2m 15s ago', brokers: ['OANDA', 'Dukascopy'], type: 'Triangular' },
+    { id: 2, path: 'GBP → JPY → USD → GBP', profit: '0.11%', age: '5m 45s ago', brokers: ['FXCM', 'Pepperstone'], type: 'Triangular' },
+    { id: 3, path: 'AUD/CHF (Buy IC, Sell IB)', profit: '0.07%', age: '10m 2s ago', brokers: ['IC Markets', 'Interactive Brokers'], type: 'Two-Leg' },
+    { id: 4, path: 'USD → CAD → JPY → USD', profit: '0.15%', age: '18m 30s ago', brokers: ['OANDA', 'FXCM'], type: 'Triangular' },
   ];
 
 const mockPriceFeeds = [
-  { pair: 'EUR/USD', oanda: '1.0712', fxcm: '1.0713', ib: '1.0711' },
-  { pair: 'USD/JPY', oanda: '157.45', fxcm: '157.44', ib: '157.46' },
-  { pair: 'GBP/USD', oanda: '1.2543', fxcm: '1.2542', ib: '1.2544' },
+  { pair: 'EUR/USD', oanda: { bid: '1.0712', ask: '1.0713' }, fxcm: { bid: '1.0713', ask: '1.0714' }, ib: { bid: '1.0711', ask: '1.0712' } },
+  { pair: 'USD/JPY', oanda: { bid: '157.45', ask: '157.46' }, fxcm: { bid: '157.44', ask: '157.45' }, ib: { bid: '157.46', ask: '157.47' } },
+  { pair: 'GBP/USD', oanda: { bid: '1.2543', ask: '1.2544' }, fxcm: { bid: '1.2542', ask: '1.2543' }, ib: { bid: '1.2544', ask: '1.2545' } },
+  { pair: 'AUD/USD', oanda: { bid: '0.6650', ask: '0.6651' }, fxcm: { bid: '0.6649', ask: '0.6650' }, ib: { bid: '0.6651', ask: '0.6652' } },
 ];
 
 export function ForexArbitrageChecker() {
@@ -38,10 +42,15 @@ export function ForexArbitrageChecker() {
     const [selectedBroker, setSelectedBroker] = useState<string>('');
     const [selectedPair, setSelectedPair] = useState<string>('');
     const [arbitrageType, setArbitrageType] = useState<string>('triangular');
+    const [scanResults, setScanResults] = useState<typeof mockOpportunities>([]);
 
     const handleScan = () => {
         setIsScanning(true);
-        setTimeout(() => setIsScanning(false), 2000);
+        setScanResults([]);
+        setTimeout(() => {
+          setScanResults(mockOpportunities);
+          setIsScanning(false);
+        }, 2000);
     }
     
     return (
@@ -88,7 +97,8 @@ export function ForexArbitrageChecker() {
                         <SelectContent>
                             <SelectGroup>
                             <SelectItem value="triangular">Triangular</SelectItem>
-                            <SelectItem value="direct">Direct (2-Leg)</SelectItem>
+                            <SelectItem value="two-leg">Two-Leg (Direct)</SelectItem>
+                            <SelectItem value="synthetic">Synthetic Pair</SelectItem>
                              <SelectItem value="statistical" disabled>Statistical (soon)</SelectItem>
                             </SelectGroup>
                         </SelectContent>
@@ -120,6 +130,7 @@ export function ForexArbitrageChecker() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Arbitrage Path</TableHead>
+                                        <TableHead>Type</TableHead>
                                         <TableHead>Brokers</TableHead>
                                         <TableHead className="text-right">Est. Profit</TableHead>
                                         <TableHead className="text-right">Detected</TableHead>
@@ -128,25 +139,37 @@ export function ForexArbitrageChecker() {
                                 <TableBody>
                                     {isScanning ? (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center py-12">
+                                            <TableCell colSpan={5} className="text-center py-12">
                                                 <div className="flex justify-center items-center gap-2 text-muted-foreground">
                                                     <Loader2 className="h-6 w-6 animate-spin text-primary"/>
                                                     <span>Scanning multiple broker feeds...</span>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
-                                    ) : mockOpportunities.map((opp) => (
-                                        <TableRow key={opp.path}>
-                                            <TableCell className="font-mono">{opp.path}</TableCell>
-                                             <TableCell>
-                                                <div className="flex flex-wrap gap-1">
-                                                    {opp.brokers.map(b => <Badge key={b} variant="secondary">{b}</Badge>)}
-                                                </div>
+                                    ) : scanResults.length > 0 ? (
+                                        scanResults.map((opp) => (
+                                          <TableRow key={opp.path}>
+                                              <TableCell className="font-mono">{opp.path}</TableCell>
+                                              <TableCell>
+                                                <Badge variant={opp.type === 'Triangular' ? 'default' : 'secondary'}>{opp.type}</Badge>
+                                              </TableCell>
+                                              <TableCell>
+                                                  <div className="flex flex-wrap gap-1">
+                                                      {opp.brokers.map(b => <Badge key={b} variant="outline">{b}</Badge>)}
+                                                  </div>
+                                              </TableCell>
+                                              <TableCell className="text-right font-medium text-green-600">{opp.profit}</TableCell>
+                                              <TableCell className="text-right text-muted-foreground">{opp.age}</TableCell>
+                                          </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
+                                                <p>No opportunities detected in the last scan.</p>
+                                                <p className="text-sm">Adjust settings and scan again.</p>
                                             </TableCell>
-                                            <TableCell className="text-right font-medium text-green-600">{opp.profit}</TableCell>
-                                            <TableCell className="text-right text-muted-foreground">{opp.age}</TableCell>
                                         </TableRow>
-                                    ))}
+                                    )}
                                 </TableBody>
                             </Table>
                         </CardContent>
@@ -178,6 +201,7 @@ export function ForexArbitrageChecker() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Arbitrage Path</TableHead>
+                             <TableHead>Type</TableHead>
                             <TableHead>Brokers</TableHead>
                             <TableHead className="text-right">Est. Profit</TableHead>
                             <TableHead className="text-right">Detected</TableHead>
@@ -187,9 +211,12 @@ export function ForexArbitrageChecker() {
                           {mockHistoricalOpportunities.map((opp) => (
                             <TableRow key={opp.id}>
                               <TableCell className="font-mono">{opp.path}</TableCell>
+                               <TableCell>
+                                <Badge variant={opp.type === 'Triangular' ? 'default' : 'secondary'}>{opp.type}</Badge>
+                              </TableCell>
                               <TableCell>
                                 <div className="flex flex-wrap gap-1">
-                                  {opp.brokers.map(b => <Badge key={b} variant="secondary">{b}</Badge>)}
+                                  {opp.brokers.map(b => <Badge key={b} variant="outline">{b}</Badge>)}
                                 </div>
                               </TableCell>
                               <TableCell className="text-right font-medium text-green-600">{opp.profit}</TableCell>
@@ -206,25 +233,25 @@ export function ForexArbitrageChecker() {
              <Card>
                 <CardHeader>
                     <CardTitle>Live Price Feeds (Mock Data)</CardTitle>
-                    <CardDescription>Simulated real-time bid/ask prices from different brokers.</CardDescription>
+                    <CardDescription>Simulated real-time bid/ask prices from different brokers to detect spread differences.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Pair</TableHead>
-                                <TableHead className="text-center">OANDA</TableHead>
-                                <TableHead className="text-center">FXCM</TableHead>
-                                <TableHead className="text-center">Interactive Brokers</TableHead>
+                                <TableHead className="text-center">OANDA (Bid/Ask)</TableHead>
+                                <TableHead className="text-center">FXCM (Bid/Ask)</TableHead>
+                                <TableHead className="text-center">Interactive Brokers (Bid/Ask)</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {mockPriceFeeds.map(feed => (
                                  <TableRow key={feed.pair}>
                                     <TableCell className="font-medium">{feed.pair}</TableCell>
-                                    <TableCell className="text-center font-mono">{feed.oanda}</TableCell>
-                                    <TableCell className="text-center font-mono">{feed.fxcm}</TableCell>
-                                    <TableCell className="text-center font-mono">{feed.ib}</TableCell>
+                                    <TableCell className="text-center font-mono">{feed.oanda.bid} / {feed.oanda.ask}</TableCell>
+                                    <TableCell className="text-center font-mono">{feed.fxcm.bid} / {feed.fxcm.ask}</TableCell>
+                                    <TableCell className="text-center font-mono">{feed.ib.bid} / {feed.ib.ask}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -235,3 +262,5 @@ export function ForexArbitrageChecker() {
         </div>
     );
 }
+
+    
