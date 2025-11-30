@@ -9,13 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { PlusCircle, Trash2, Calculator, AlertTriangle } from 'lucide-react';
+import { PlusCircle, Trash2, Calculator, AlertTriangle, Calendar as CalendarIcon } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -100,70 +98,73 @@ export function CryptoTaxCalculator() {
             <CardContent>
               <div className="space-y-4">
                 {fields.map((field, index) => (
-                  <div key={field.id} className="grid grid-cols-1 md:grid-cols-5 gap-2 items-start p-2 border rounded-lg">
-                    <FormField control={form.control} name={`transactions.${index}.date`} render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Date</FormLabel>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <FormControl>
-                                <Button
-                                    variant={"outline"}
-                                    className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                                >
-                                    {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                                </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                            </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                     <FormField control={form.control} name={`transactions.${index}.type`} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Type</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="buy">Buy</SelectItem>
-                            <SelectItem value="sell">Sell</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                     <FormField control={form.control} name={`transactions.${index}.asset`} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Asset</FormLabel>
-                        <FormControl><Input placeholder="e.g., BTC" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <FormField control={form.control} name={`transactions.${index}.quantity`} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Quantity</FormLabel>
-                        <FormControl><Input type="number" placeholder="e.g., 0.5" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <FormField control={form.control} name={`transactions.${index}.price`} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Price / Coin (USD)</FormLabel>
-                         <FormControl><Input type="number" placeholder="e.g., 60000" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <div className="flex items-end h-full">
-                       <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
-                         <Trash2 className="h-4 w-4 text-muted-foreground" />
-                       </Button>
+                  <div key={field.id} className="p-3 border rounded-lg space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                      <FormField control={form.control} name={`transactions.${index}.date`} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Date</FormLabel>
+                          <Popover>
+                              <PopoverTrigger asChild>
+                                  <FormControl>
+                                  <Button
+                                      variant={"outline"}
+                                      className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
+                                  >
+                                      <CalendarIcon className="mr-2 h-4 w-4" />
+                                      {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                  </Button>
+                                  </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                              </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                       <FormField control={form.control} name={`transactions.${index}.type`} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Type</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="buy">Buy</SelectItem>
+                              <SelectItem value="sell">Sell</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                       <FormField control={form.control} name={`transactions.${index}.asset`} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Asset</FormLabel>
+                          <FormControl><Input placeholder="e.g., BTC" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField control={form.control} name={`transactions.${index}.quantity`} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Quantity</FormLabel>
+                          <FormControl><Input type="number" step="any" placeholder="e.g., 0.5" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField control={form.control} name={`transactions.${index}.price`} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price / Coin (USD)</FormLabel>
+                           <FormControl><Input type="number" step="any" placeholder="e.g., 60000" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
                     </div>
+                    <div className="flex justify-end">
+                         <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
+                           <Trash2 className="h-4 w-4 text-muted-foreground" />
+                           <span className="sr-only">Remove transaction</span>
+                         </Button>
+                      </div>
                   </div>
                 ))}
               </div>
@@ -172,7 +173,7 @@ export function CryptoTaxCalculator() {
               </Button>
             </CardContent>
           </Card>
-          <Button type="submit" size="lg" className="w-full md:w-auto">
+          <Button type="submit" size="lg" className="w-full md:w-auto" disabled={fields.length === 0}>
             <Calculator className="mr-2 h-5 w-5" /> Calculate Taxes (FIFO)
           </Button>
         </form>
