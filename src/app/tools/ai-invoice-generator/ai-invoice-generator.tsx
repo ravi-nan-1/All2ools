@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -46,6 +46,7 @@ import {
   Upload,
   CalendarIcon,
   Download,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -84,14 +85,18 @@ const currencies = [
 export function AiInvoiceGenerator() {
   const { toast } = useToast();
   const [currency, setCurrency] = useState('USD');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const form = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
       from: 'Your Company Name\n123 Street, City, Country',
       billTo: '',
-      invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`,
-      date: new Date(),
+      invoiceNumber: '',
       lineItems: [{ description: '', quantity: 1, rate: 0 }],
       notes: 'Thank you for your business!',
       terms: 'Payment due within 30 days.',
@@ -99,6 +104,17 @@ export function AiInvoiceGenerator() {
       discount: 0,
     },
   });
+
+  useEffect(() => {
+    if (isClient) {
+      form.reset({
+        ...form.getValues(),
+        date: new Date(),
+        invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`,
+      });
+    }
+  }, [isClient, form.reset, form]);
+
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -142,6 +158,13 @@ export function AiInvoiceGenerator() {
     }).format(amount);
   };
 
+  if (!isClient) {
+    return (
+      <div className="flex items-center justify-center p-8 h-96">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -259,7 +282,7 @@ export function AiInvoiceGenerator() {
                         />
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatCurrency(watchLineItems[index].quantity * watchLineItems[index].rate)}
+                        {formatCurrency(watchLineItems[index]?.quantity * watchLineItems[index]?.rate || 0)}
                       </TableCell>
                       <TableCell>
                         <Button
