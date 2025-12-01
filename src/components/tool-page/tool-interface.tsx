@@ -23,6 +23,8 @@ import { AiProductDescriptionGenerator } from '@/app/tools/ai-product-descriptio
 import { JsonExcelConverter } from '@/app/tools/json-excel-converter/json-excel-converter';
 import { RegexGeneratorFromText } from '@/app/tools/regex-generator-from-text/regex-generator-from-text';
 import { WebhookTester } from '@/app/tools/webhook-tester/webhook-tester';
+import { AiSchemaMarkupGenerator } from '@/app/tools/ai-schema-markup-generator/ai-schema-markup-generator';
+import { OneClickArticleOutlineGenerator } from '@/app/tools/1-click-article-outline-generator/1-click-article-outline-generator';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -74,7 +76,9 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
       case 'webhook-tester':
         return <WebhookTester />;
       case 'ai-schema-markup-generator':
-        return <PlaceholderTool />;
+        return <AiSchemaMarkupGenerator />;
+       case '1-click-article-outline-generator':
+        return <OneClickArticleOutlineGenerator />;
       default:
         return <PlaceholderTool />;
     }

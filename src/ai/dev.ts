@@ -15,3 +15,5 @@ import '@/ai/flows/generate-keyword-clusters.ts';
 import '@/ai/flows/generate-product-description.ts';
 import '@/ai/flows/generate-regex-from-text.ts';
 import '@/ai/flows/webhook-tester.ts';
+import '@/ai/flows/generate-schema-markup.ts';
+import '@/ai/flows/generate-article-outline.ts';

@@ -12,6 +12,7 @@ import { generateKeywordClusters } from '@/ai/flows/generate-keyword-clusters';
 import { generateProductDescription } from '@/ai/flows/generate-product-description';
 import { generateRegexFromText, describeRegex } from '@/ai/flows/generate-regex-from-text';
 import { generateWebhookPayload } from '@/ai/flows/webhook-tester';
+import { generateArticleOutline } from '@/ai/flows/generate-article-outline';
 import type { GenerateRegexInput, DescribeRegexInput } from '@/ai/flows/generate-regex-from-text';
 
 const GenerateProductDescriptionInputSchema = z.object({
@@ -305,4 +306,26 @@ export async function handleWebhookPayloadGeneration(type: 'github' | 'stripe') 
     } catch (error: any) {
         return { error: error.message || `Failed to generate ${type} payload.`}
     }
+}
+
+const ArticleOutlineInputSchema = z.object({
+  topic: z.string().min(3, 'Topic must be at least 3 characters.'),
+});
+
+export async function handleArticleOutlineGeneration(
+  input: z.infer<typeof ArticleOutlineInputSchema>
+) {
+  try {
+    const validatedInput = ArticleOutlineInputSchema.parse(input);
+    const result = await generateArticleOutline(validatedInput);
+    return { data: result };
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return { error: error.errors.map((e) => e.message).join(', ') };
+    }
+    return {
+      error:
+        error.message || 'Failed to generate article outline.',
+    };
+  }
 }
