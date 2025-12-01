@@ -48,6 +48,8 @@ import {
   Download,
   Loader2,
   Globe,
+  Banknote,
+  Percent,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -55,6 +57,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const lineItemSchema = z.object({
   description: z.string().min(1, 'Description is required.'),
+  hsn: z.string().optional(),
   quantity: z.coerce.number().min(0, 'Quantity must be positive.'),
   rate: z.coerce.number().min(0, 'Rate must be positive.'),
 });
@@ -69,8 +72,10 @@ const invoiceSchema = z.object({
   lineItems: z.array(lineItemSchema).min(1, 'At least one item is required.'),
   notes: z.string().optional(),
   terms: z.string().optional(),
+  bankDetails: z.string().optional(),
   tax: z.coerce.number().min(0).max(100).default(0),
   discount: z.coerce.number().min(0).default(0),
+  shipping: z.coerce.number().min(0).default(0),
 });
 
 type InvoiceFormValues = z.infer<typeof invoiceSchema>;
@@ -100,11 +105,13 @@ export function AiInvoiceGenerator() {
       from: 'Your Company Name\n123 Street, City, Country',
       billTo: '',
       invoiceNumber: '',
-      lineItems: [{ description: '', quantity: 1, rate: 0 }],
+      lineItems: [{ description: '', hsn: '', quantity: 1, rate: 0 }],
       notes: 'Thank you for your business!',
       terms: 'Payment due within 30 days.',
+      bankDetails: 'Bank: Your Bank Name\nAccount: 1234567890',
       tax: 0,
       discount: 0,
+      shipping: 0,
     },
   });
 
@@ -116,7 +123,8 @@ export function AiInvoiceGenerator() {
         invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`,
       });
     }
-  }, [isClient, form.reset, form]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isClient]);
 
 
   const { fields, append, remove } = useFieldArray({
@@ -127,14 +135,16 @@ export function AiInvoiceGenerator() {
   const watchLineItems = form.watch('lineItems');
   const watchTax = form.watch('tax');
   const watchDiscount = form.watch('discount');
+  const watchShipping = form.watch('shipping');
 
   const subtotal = watchLineItems.reduce(
     (acc, item) => acc + item.quantity * item.rate,
     0
   );
   const discountAmount = (subtotal * watchDiscount) / 100;
-  const taxAmount = ((subtotal - discountAmount) * watchTax) / 100;
-  const total = subtotal - discountAmount + taxAmount;
+  const subtotalAfterDiscount = subtotal - discountAmount;
+  const taxAmount = (subtotalAfterDiscount * watchTax) / 100;
+  const total = subtotalAfterDiscount + taxAmount + watchShipping;
 
   const handleAiPrompt = (prompt: string) => {
     if (prompt.toLowerCase().includes('john')) {
@@ -142,11 +152,13 @@ export function AiInvoiceGenerator() {
         ...form.getValues(),
         billTo: 'John Doe\n456 Oak Ave, Town, USA',
         lineItems: [
-          { description: 'Web Development Services', quantity: 10, rate: 80 },
-          { description: 'UI/UX Design Mockups', quantity: 5, rate: 50 },
-          { description: 'Project Management', quantity: 8, rate: 60 },
+          { description: 'Web Development Services', hsn: '998314', quantity: 10, rate: 80 },
+          { description: 'UI/UX Design Mockups', hsn: '998313', quantity: 5, rate: 50 },
+          { description: 'Project Management', hsn: '998311', quantity: 8, rate: 60 },
         ],
         tax: 8,
+        discount: 5,
+        shipping: 25,
       });
       toast({ title: 'AI Success', description: 'Invoice populated from your prompt.'});
     } else {
@@ -160,6 +172,13 @@ export function AiInvoiceGenerator() {
       style: 'currency',
       currency: currency,
     }).format(amount);
+  };
+  
+  const handleDownload = () => {
+    toast({
+      title: 'Feature Coming Soon',
+      description: 'PDF generation is under development. Please check back later!',
+    });
   };
 
   if (!isClient) {
@@ -184,7 +203,7 @@ export function AiInvoiceGenerator() {
             {/* Header */}
             <div className="flex justify-between gap-4 items-start">
                 <div>
-                    <Button variant="outline" size="sm" disabled>
+                    <Button variant="outline" size="sm" onClick={() => toast({ title: 'Feature Coming Soon' })}>
                         <Upload className="mr-2 h-4 w-4" />
                         Upload Logo
                     </Button>
@@ -195,14 +214,14 @@ export function AiInvoiceGenerator() {
             </div>
 
             {/* From/To */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium">From</label>
-                <Textarea {...form.register('from')} className="mt-1" />
+                <Textarea {...form.register('from')} className="mt-1" rows={4} />
               </div>
               <div>
                 <label className="text-sm font-medium">Bill To</label>
-                <Textarea {...form.register('billTo')} className="mt-1" />
+                <Textarea {...form.register('billTo')} className="mt-1" rows={4} />
               </div>
             </div>
 
@@ -256,6 +275,7 @@ export function AiInvoiceGenerator() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Description</TableHead>
+                    <TableHead className="w-28">HSN/SAC</TableHead>
                     <TableHead className="w-24">Quantity</TableHead>
                     <TableHead className="w-32">Rate</TableHead>
                     <TableHead className="w-32 text-right">Amount</TableHead>
@@ -269,6 +289,12 @@ export function AiInvoiceGenerator() {
                         <Input
                           {...form.register(`lineItems.${index}.description`)}
                           placeholder="Item description"
+                        />
+                      </TableCell>
+                      <TableCell>
+                         <Input
+                          {...form.register(`lineItems.${index}.hsn`)}
+                          placeholder="998314"
                         />
                       </TableCell>
                       <TableCell>
@@ -305,36 +331,44 @@ export function AiInvoiceGenerator() {
                 variant="outline"
                 size="sm"
                 className="mt-4"
-                onClick={() => append({ description: '', quantity: 1, rate: 0 })}
+                onClick={() => append({ description: '', hsn: '', quantity: 1, rate: 0 })}
               >
                 <PlusCircle className="mr-2 h-4 w-4" /> Add Item
               </Button>
             </div>
             
             {/* Totals */}
-            <div className="grid grid-cols-2 gap-12 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start pt-6">
                 <div className="space-y-4">
                      <div>
                         <label className="text-sm font-medium">Notes</label>
                         <Textarea {...form.register('notes')} className="mt-1" placeholder="Any additional notes..." />
                     </div>
                      <div>
-                        <label className="text-sm font-medium">Terms</label>
+                        <label className="text-sm font-medium">Terms & Conditions</label>
                         <Textarea {...form.register('terms')} className="mt-1" placeholder="Payment terms and conditions..." />
                     </div>
+                     <div>
+                        <label className="text-sm font-medium">Bank Details</label>
+                        <Textarea {...form.register('bankDetails')} className="mt-1" placeholder="Bank name, account number, etc." />
+                    </div>
                 </div>
-                 <div className="space-y-2">
-                    <div className="flex justify-between"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
+                 <div className="space-y-2 border p-4 rounded-lg">
+                    <div className="flex justify-between items-center"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
                     <div className="flex justify-between items-center">
-                        <span>Discount (%)</span>
+                        <span className="flex items-center gap-1"><Percent className="h-4 w-4 text-muted-foreground"/> Discount</span>
                         <Input type="number" {...form.register('discount')} className="w-24 h-8" />
                     </div>
-                     <div className="flex justify-between"><span></span><span className="text-sm text-muted-foreground">-{formatCurrency(discountAmount)}</span></div>
+                     <div className="flex justify-between text-muted-foreground text-sm"><span></span><span>-{formatCurrency(discountAmount)}</span></div>
                      <div className="flex justify-between items-center">
-                        <span>Tax (%)</span>
+                        <span className="flex items-center gap-1"><Percent className="h-4 w-4 text-muted-foreground"/> Tax</span>
                         <Input type="number" {...form.register('tax')} className="w-24 h-8" />
                     </div>
-                    <div className="flex justify-between"><span></span><span className="text-sm text-muted-foreground">+{formatCurrency(taxAmount)}</span></div>
+                    <div className="flex justify-between text-muted-foreground text-sm"><span></span><span>+{formatCurrency(taxAmount)}</span></div>
+                    <div className="flex justify-between items-center">
+                        <span className="flex items-center gap-1"><Banknote className="h-4 w-4 text-muted-foreground"/> Shipping</span>
+                        <Input type="number" {...form.register('shipping')} className="w-24 h-8" />
+                    </div>
                     <div className="border-t my-2"></div>
                     <div className="flex justify-between font-bold text-lg"><span>Total</span><span>{formatCurrency(total)}</span></div>
                 </div>
@@ -372,13 +406,13 @@ export function AiInvoiceGenerator() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Settings /> Controls
+              <Settings /> Controls & Templates
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
              <div>
-                <label className="text-sm font-medium">Country</label>
-                <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                <label className="text-sm font-medium">Country (for Currency & Tax)</label>
+                <Select value={selectedCountry} onValueChange={(val) => setSelectedCountry(val)}>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
@@ -393,15 +427,15 @@ export function AiInvoiceGenerator() {
                     <SelectTrigger className="mt-1"><SelectValue placeholder="Select Template" /></SelectTrigger>
                     <SelectContent>
                        <SelectItem value="modern">Modern</SelectItem>
-                       <SelectItem value="minimal" disabled>Minimal</SelectItem>
-                       <SelectItem value="professional" disabled>Professional</SelectItem>
+                       <SelectItem value="minimal">Minimal</SelectItem>
+                       <SelectItem value="professional">Professional</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
             <div className="grid grid-cols-2 gap-2 pt-4">
-                <Button variant="outline" disabled><Eye className="mr-2 h-4 w-4"/>Preview</Button>
-                <Button variant="outline" disabled><Download className="mr-2 h-4 w-4"/>Download</Button>
-                <Button className="col-span-2" disabled><Send className="mr-2 h-4 w-4"/>Send Invoice</Button>
+                <Button variant="outline" onClick={() => toast({ title: 'Feature Coming Soon' })}><Eye className="mr-2 h-4 w-4"/>Preview</Button>
+                <Button variant="default" onClick={handleDownload}><Download className="mr-2 h-4 w-4"/>Download PDF</Button>
+                <Button className="col-span-2" onClick={() => toast({ title: 'Feature Coming Soon' })}><Send className="mr-2 h-4 w-4"/>Send Invoice</Button>
             </div>
           </CardContent>
         </Card>
