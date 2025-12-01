@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -249,7 +249,7 @@ export function JsonExcelConverter() {
     }
   };
   
-  React.useEffect(() => {
+  useEffect(() => {
     if (jsonInput && activeTab === 'json-to-excel') {
         parseAndDisplayJson(jsonInput);
     }
