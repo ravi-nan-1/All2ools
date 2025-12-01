@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, PlusCircle, Sparkles, Trash2, UploadCloud, FileText, File, Merge, Split, HelpCircle, ChevronsUpDown, ChevronsDownUp } from 'lucide-react';
+import { Loader2, PlusCircle, Sparkles, Trash2, UploadCloud, FileText, File, Merge, Split, HelpCircle, ChevronsUpDown, ChevronsDownUp, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { handleKeywordClusterGeneration } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
@@ -40,10 +40,18 @@ interface Cluster {
     relevanceScore: number;
     difficultyScore: number;
     keywords: string[];
+    aiSeoTitle: string;
+    aiMetaDescription: string;
+    aiContentBrief: string;
+    aiKeywordExpansion: {
+        related: string[];
+        questions: string[];
+    };
 }
 
 interface ClusterResult {
     clusters: Cluster[];
+    aiPillarPageSuggestion: string;
 }
 
 const intentColors = {
@@ -80,12 +88,10 @@ export function KeywordClusterGenerator() {
       setFileName(file.name);
       Papa.parse(file, {
         complete: (results) => {
-          const keywords = results.data.flat().map(k => (k as string).trim()).filter(Boolean);
-          form.reset({
-            ...form.getValues(),
-            secondaryKeywords: keywords.map(k => ({ value: k }))
-          });
-          toast({ title: "Keywords Imported", description: `${keywords.length} keywords were loaded from the file.`});
+          const keywords = (results.data as string[][]).flat().map(k => k.trim()).filter(Boolean);
+          const uniqueKeywords = [...new Set(keywords)];
+          replace(uniqueKeywords.map(k => ({ value: k })));
+          toast({ title: "Keywords Imported", description: `${uniqueKeywords.length} unique keywords were loaded from the file.`});
         },
         error: (error) => {
             toast({ title: "Import Error", description: `Failed to parse file: ${error.message}`, variant: 'destructive'});
@@ -99,9 +105,15 @@ export function KeywordClusterGenerator() {
     const pasteData = event.clipboardData.getData('text');
     const keywords = pasteData.split(/\r?\n/).map(k => k.trim()).filter(Boolean);
     if (keywords.length > 0) {
-      replace(keywords.map(k => ({ value: k })));
-      toast({ title: "Keywords Pasted", description: `${keywords.length} keywords were pasted and added.`});
+      const uniqueKeywords = [...new Set(keywords)];
+      replace(uniqueKeywords.map(k => ({ value: k })));
+      toast({ title: "Keywords Pasted", description: `${uniqueKeywords.length} unique keywords were pasted and added.`});
     }
+  };
+  
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({ title: "Copied to clipboard!" });
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -110,10 +122,9 @@ export function KeywordClusterGenerator() {
 
     const formData = new FormData();
     formData.append('primaryKeyword', data.primaryKeyword);
-    data.secondaryKeywords.forEach(kw => {
-      if (kw.value) {
-        formData.append('secondaryKeywords', kw.value);
-      }
+    const uniqueKeywords = [...new Set(data.secondaryKeywords.map(kw => kw.value).filter(Boolean))];
+    uniqueKeywords.forEach(kw => {
+        formData.append('secondaryKeywords', kw);
     });
 
     try {
@@ -145,7 +156,7 @@ export function KeywordClusterGenerator() {
              <Card>
                 <CardHeader>
                     <CardTitle>1. Import Keywords</CardTitle>
-                    <CardDescription>Upload a file or paste your keywords.</CardDescription>
+                    <CardDescription>Upload a file or paste your keywords. Duplicates will be removed.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                      <div>
@@ -193,7 +204,7 @@ export function KeywordClusterGenerator() {
                     />
                     
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-                    <FormLabel>Secondary Keywords ({fields.length})</FormLabel>
+                    <FormLabel>Secondary Keywords ({[...new Set(form.watch('secondaryKeywords').map(f => f.value).filter(Boolean))].length})</FormLabel>
                     {fields.map((field, index) => (
                         <div key={field.id} className="flex items-center gap-2">
                         <FormField
@@ -244,7 +255,7 @@ export function KeywordClusterGenerator() {
             <CardHeader>
                 <CardTitle>Generated Keyword Clusters</CardTitle>
                 <CardDescription>
-                    AI-powered semantic groups with intent and difficulty scores.
+                    AI-powered semantic groups with intent, difficulty, and content strategy suggestions.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -263,58 +274,99 @@ export function KeywordClusterGenerator() {
                     </div>
                 )}
                 {!isLoading && result && (
-                    <Accordion type="multiple" className="w-full" defaultValue={result.clusters.map(c => c.clusterTitle)}>
-                        {result.clusters.map((cluster, index) => (
-                            <AccordionItem value={cluster.clusterTitle} key={index}>
-                                <AccordionTrigger className="text-base font-semibold hover:no-underline">
-                                    <div className="flex flex-col md:flex-row md:items-center gap-2 text-left">
-                                        <span>{cluster.clusterTitle}</span>
-                                        <div className="flex gap-2 items-center">
-                                            <Badge variant="outline" className={intentColors[cluster.intent]}>{cluster.intent}</Badge>
-                                             <Badge variant="secondary">Parent: {cluster.parentTopic}</Badge>
-                                        </div>
-                                    </div>
-                                </AccordionTrigger>
-                                <AccordionContent>
-                                    <div className="space-y-4">
-                                        <div className="grid grid-cols-2 gap-4 text-sm">
-                                            <div>
-                                                <p className="font-semibold">Cluster Relevance</p>
-                                                <div className="flex items-center gap-2">
-                                                    <Progress value={cluster.relevanceScore} className="w-full" />
-                                                    <span>{cluster.relevanceScore}%</span>
-                                                </div>
-                                            </div>
-                                             <div>
-                                                <p className="font-semibold">SEO Difficulty</p>
-                                                <div className="flex items-center gap-2">
-                                                    <Progress value={cluster.difficultyScore} className="w-full" />
-                                                    <span>{cluster.difficultyScore}/100</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md">
-                                            {cluster.keywords.map((keyword, kwIndex) => (
-                                                <Badge key={kwIndex} variant="secondary">{keyword}</Badge>
-                                            ))}
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Button variant="ghost" size="sm" disabled><Merge className="mr-2"/>Merge</Button>
-                                            <Button variant="ghost" size="sm" disabled><Split className="mr-2"/>Split</Button>
-                                        </div>
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                         <Alert className="mt-4">
-                            <HelpCircle className="h-4 w-4" />
-                            <AlertTitle>Understanding the Scores</AlertTitle>
+                    <div className="space-y-6">
+                        <Alert className="bg-primary/5 border-primary/20">
+                            <Sparkles className="h-4 w-4 text-primary" />
+                            <AlertTitle className="text-primary font-bold">AI Pillar Page Strategy</AlertTitle>
                             <AlertDescription>
-                                <p><strong>Relevance:</strong> How semantically related the keywords are to each other (higher is better).</p>
-                                <p><strong>Difficulty:</strong> An estimated score of how hard it is to rank for this cluster (lower is easier).</p>
+                                {result.aiPillarPageSuggestion}
                             </AlertDescription>
                         </Alert>
-                    </Accordion>
+                        <Accordion type="multiple" className="w-full" defaultValue={result.clusters.map(c => c.clusterTitle)}>
+                            {result.clusters.map((cluster, index) => (
+                                <AccordionItem value={cluster.clusterTitle} key={index}>
+                                    <AccordionTrigger className="text-base font-semibold hover:no-underline">
+                                        <div className="flex flex-col md:flex-row md:items-center gap-2 text-left">
+                                            <span>{cluster.clusterTitle}</span>
+                                            <div className="flex gap-2 items-center">
+                                                <Badge variant="outline" className={intentColors[cluster.intent]}>{cluster.intent}</Badge>
+                                                <Badge variant="secondary">Parent: {cluster.parentTopic}</Badge>
+                                            </div>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="space-y-6">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <p className="font-semibold flex items-center gap-1"><ChevronsUpDown className="h-4 w-4 text-muted-foreground"/>Cluster Relevance</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Progress value={cluster.relevanceScore} className="w-full" />
+                                                    <span className="font-bold">{cluster.relevanceScore}%</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold flex items-center gap-1"><ChevronsDownUp className="h-4 w-4 text-muted-foreground"/>SEO Difficulty</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Progress value={cluster.difficultyScore} className="w-full" />
+                                                    <span className="font-bold">{cluster.difficultyScore}/100</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="p-3 bg-muted/50 rounded-md">
+                                             <h4 className="font-semibold text-sm mb-2">Original Keywords in Cluster</h4>
+                                             <div className="flex flex-wrap gap-2">
+                                                {cluster.keywords.map((keyword, kwIndex) => (
+                                                    <Badge key={kwIndex} variant="secondary">{keyword}</Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <h4 className="font-semibold text-sm">AI-Suggested SEO Title</h4>
+                                                <div className="flex items-start gap-2">
+                                                    <p className="text-sm p-2 bg-muted/50 rounded-md text-muted-foreground flex-grow">"{cluster.aiSeoTitle}"</p>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => copyToClipboard(cluster.aiSeoTitle)}><Copy/></Button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <h4 className="font-semibold text-sm">AI-Suggested Meta Description</h4>
+                                                <div className="flex items-start gap-2">
+                                                    <p className="text-sm p-2 bg-muted/50 rounded-md text-muted-foreground flex-grow">"{cluster.aiMetaDescription}"</p>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => copyToClipboard(cluster.aiMetaDescription)}><Copy/></Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                         <div className="space-y-2">
+                                            <h4 className="font-semibold text-sm">AI Content Brief</h4>
+                                            <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground whitespace-pre-wrap p-3 bg-muted/50 rounded-md">{cluster.aiContentBrief}</div>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <h4 className="font-semibold text-sm">AI Keyword Expansion (Related)</h4>
+                                                <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md">
+                                                    {cluster.aiKeywordExpansion.related.map((kw, i) => <Badge key={i} variant="outline">{kw}</Badge>)}
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <h4 className="font-semibold text-sm">AI Keyword Expansion (Questions)</h4>
+                                                <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md">
+                                                    {cluster.aiKeywordExpansion.questions.map((q, i) => <Badge key={i} variant="outline">{q}</Badge>)}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-2 pt-4 border-t">
+                                            <Button variant="ghost" size="sm" disabled><Merge className="mr-2"/>Merge Cluster</Button>
+                                            <Button variant="ghost" size="sm" disabled><Split className="mr-2"/>Split Cluster</Button>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                         </Accordion>
+                    </div>
                 )}
             </CardContent>
         </Card>
