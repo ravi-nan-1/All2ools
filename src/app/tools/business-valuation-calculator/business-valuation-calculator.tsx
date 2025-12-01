@@ -17,8 +17,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const valuationSchema = z.object({
   revenue: z.coerce.number().min(10000, "Must be at least 10,000"),
-  profit: z.coerce.number().min(0, "Cannot be negative"),
-  growthRate: z.coerce.number().min(0).max(100),
+  opex: z.coerce.number().min(0, "Cannot be negative"),
+  depreciation: z.coerce.number().min(0, "Cannot be negative"),
+  capex: z.coerce.number().min(0, "Cannot be negative"),
+  workingCapitalChange: z.coerce.number(),
+  taxRate: z.coerce.number().min(0).max(100),
+  growthRate: z.coerce.number().min(-50).max(100),
   discountRate: z.coerce.number().min(5).max(30),
   industry: z.string().min(1, "Please select an industry"),
   // SDE Fields
@@ -53,7 +57,11 @@ export function BusinessValuationCalculator() {
     resolver: zodResolver(valuationSchema),
     defaultValues: {
       revenue: 500000,
-      profit: 100000,
+      opex: 300000,
+      depreciation: 25000,
+      capex: 40000,
+      workingCapitalChange: 10000,
+      taxRate: 21,
       growthRate: 15,
       discountRate: 12,
       industry: 'saas',
@@ -71,27 +79,42 @@ export function BusinessValuationCalculator() {
 
     setTimeout(() => {
       const multipliers = industryMultipliers[data.industry as Industry];
+      
+      const profit = data.revenue - data.opex;
+
       // 1. Earnings-Based Method
       const revenueValuation = data.revenue * multipliers.revenue;
-      const profitValuation = data.profit * multipliers.profit;
-      const sde = data.profit + (data.ownerSalary || 0) + (data.addBacks || 0);
+      const profitValuation = profit * multipliers.profit;
+      const sde = profit + (data.ownerSalary || 0) + (data.addBacks || 0);
       const sdeValuation = sde * multipliers.sde;
 
-      // 2. Simplified DCF Method
+      // 2. DCF Method (using UFCF)
       let futureCashFlows = [];
-      let lastYearProfit = data.profit;
+      let lastYearRevenue = data.revenue;
+      
       for (let i = 1; i <= 5; i++) {
-        lastYearProfit *= (1 + data.growthRate / 100);
-        futureCashFlows.push(lastYearProfit);
+        lastYearRevenue *= (1 + data.growthRate / 100);
+        const projectedEbit = (lastYearRevenue * (profit / data.revenue)); // Assume stable margin
+        const ebitdaMinusTaxes = projectedEbit * (1 - data.taxRate / 100);
+        const ufcf = ebitdaMinusTaxes + data.depreciation - data.capex - data.workingCapitalChange;
+        futureCashFlows.push(ufcf);
       }
-      const terminalValue = (lastYearProfit * (1 + 0.03)) / (data.discountRate/100 - 0.03); // Assume 3% perpetual growth
-      if (terminalValue > 0 && isFinite(terminalValue)) {
-          futureCashFlows.push(terminalValue);
-      }
+      
+      const lastUFCF = futureCashFlows[futureCashFlows.length - 1];
+      const perpetualGrowthRate = 0.03; // Assume 3% perpetual growth
+      const terminalValue = (lastUFCF * (1 + perpetualGrowthRate)) / (data.discountRate/100 - perpetualGrowthRate);
 
-      const dcfValuation = futureCashFlows.reduce((acc, cf, i) => {
-        return acc + (cf / Math.pow(1 + data.discountRate / 100, i + 1));
-      }, 0);
+      let dcfValuation = 0;
+      if (terminalValue > 0 && isFinite(terminalValue)) {
+          const allFutureValues = [...futureCashFlows, terminalValue];
+          dcfValuation = allFutureValues.reduce((acc, cf, i) => {
+            return acc + (cf / Math.pow(1 + data.discountRate / 100, i + 1));
+          }, 0);
+      } else {
+        dcfValuation = futureCashFlows.reduce((acc, cf, i) => {
+            return acc + (cf / Math.pow(1 + data.discountRate / 100, i + 1));
+          }, 0);
+      }
 
       // 3. Asset-Based Method
       const navValuation = (data.totalAssets || 0) - (data.totalLiabilities || 0);
@@ -136,13 +159,42 @@ export function BusinessValuationCalculator() {
                         <FormMessage />
                     </FormItem>
                 )} />
-                 <FormField control={form.control} name="profit" render={({ field }) => (
+                 <FormField control={form.control} name="opex" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Last 12 Months Profit/EBITDA ($)</FormLabel>
+                        <FormLabel>Operating Expenses (Opex, ex-Depr.) ($)</FormLabel>
                         <FormControl><Input type="number" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )} />
+                 <FormField control={form.control} name="depreciation" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Depreciation & Amortization ($)</FormLabel>
+                        <FormControl><Input type="number" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+                 <FormField control={form.control} name="capex" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Capital Expenditures (CAPEX) ($)</FormLabel>
+                        <FormControl><Input type="number" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+                 <FormField control={form.control} name="workingCapitalChange" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Annual Change in Working Capital ($)</FormLabel>
+                        <FormControl><Input type="number" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+                 <FormField control={form.control} name="taxRate" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Corporate Tax Rate: {field.value}%</FormLabel>
+                        <FormControl><Slider min={0} max={100} step={1} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+
                 <FormField control={form.control} name="industry" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Industry</FormLabel>
@@ -164,7 +216,7 @@ export function BusinessValuationCalculator() {
                  <FormField control={form.control} name="growthRate" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Projected Annual Growth Rate: {field.value}%</FormLabel>
-                        <FormControl><Slider min={0} max={100} step={1} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
+                        <FormControl><Slider min={-50} max={100} step={1} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )} />
@@ -235,11 +287,11 @@ export function BusinessValuationCalculator() {
                          <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><LineChart className="text-primary"/>Discounted Cash Flow (DCF)</CardTitle>
-                                <CardDescription>Valuation based on the present value of projected future profits.</CardDescription>
+                                <CardDescription>Valuation based on the present value of projected future cash flows.</CardDescription>
                             </CardHeader>
                             <CardContent className="text-center">
                                  <div className="p-4 bg-muted rounded-lg">
-                                    <p className="text-sm text-muted-foreground">5-Year DCF Valuation</p>
+                                    <p className="text-sm text-muted-foreground">5-Year Unlevered DCF Valuation</p>
                                     <p className="text-3xl font-bold text-primary">{formatCurrency(valuationResult.dcfValuation)}</p>
                                 </div>
                             </CardContent>
