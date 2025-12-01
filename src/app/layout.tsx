@@ -9,7 +9,7 @@ import { AdBanner } from '@/components/shared/ad-banner';
 export const metadata: Metadata = {
   title: 'All2ools | Free AI-Powered Tools for Finance, SEO, & Business',
   description: 'The ultimate suite of 30+ free online tools powered by AI. Explore tools for finance, SEO, image editing, business management, developers, and more. Boost your productivity today.',
-  keywords: 'ai tools, free tools, online tools, finance calculator, seo analyzer, image editor, business tools, developer utilities, crypto tax, invoice generator, url shortener',
+  keywords: 'online tools, free web tools, pdf tools, image tools, writing tools, seo tools, ai tools, productivity tools, all-in-one online tools, convert files online',
   icons: {
     icon: '/favicon.ico',
   },
