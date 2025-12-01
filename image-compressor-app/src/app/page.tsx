@@ -89,76 +89,90 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 md:p-24 bg-background text-foreground">
-      <div className="w-full max-w-4xl space-y-8">
-        <header className="text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-primary">Image Compressor</h1>
-          <p className="mt-2 text-lg text-muted-foreground">
-            Reduce image file sizes directly in your browser without sacrificing quality.
-          </p>
-        </header>
+    <>
+      <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 md:p-24 bg-background text-foreground">
+        <div className="w-full max-w-4xl space-y-8">
+          <header className="text-center">
+            <h1 className="text-4xl sm:text-5xl font-bold text-primary">Image Compressor</h1>
+            <p className="mt-2 text-lg text-muted-foreground">
+              Reduce image file sizes directly in your browser without sacrificing quality.
+            </p>
+          </header>
 
-        <div className="bg-card p-6 sm:p-8 rounded-lg shadow-md border border-border">
-          <div className="space-y-6">
-            <div className="flex flex-col items-center justify-center w-full">
-              <label htmlFor="image-upload" className="flex flex-col items-center justify-center w-full h-48 sm:h-64 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-background transition-colors">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
-                  <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground" />
-                  {originalFile ? (
-                    <p className="font-semibold text-primary break-all px-2">{originalFile.name}</p>
-                  ) : (
-                    <>
-                      <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                      <p className="text-xs text-muted-foreground">PNG, JPG, WEBP, GIF</p>
-                    </>
-                  )}
-                </div>
-                <Input id="image-upload" type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-              </label>
-            </div>
-
-            {error && <p className="text-sm font-medium text-destructive text-center">{error}</p>}
-
-            <Button onClick={handleCompress} disabled={!originalFile || isCompressing} className="w-full h-12 text-lg">
-              {isCompressing ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Compressing...
-                </>
-              ) : 'Compress Image'}
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-          <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-semibold">Original Image</h2>
-            <div className="bg-muted aspect-video rounded-lg flex items-center justify-center overflow-hidden">
-              {originalUrl ? <img src={originalUrl} alt="Original" className="max-h-full max-w-full" /> : <ImageIcon className="h-16 w-16 text-muted-foreground" />}
-            </div>
-            {originalFile && <p className="text-muted-foreground">Size: {formatBytes(originalFile.size)}</p>}
-          </div>
-
-          <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-semibold">Compressed Image</h2>
-            <div className="bg-muted aspect-video rounded-lg flex items-center justify-center overflow-hidden">
-              {isCompressing && <Loader2 className="h-12 w-12 animate-spin text-primary" />}
-              {!isCompressing && compressedResult ? <img src={compressedResult.url} alt="Compressed" className="max-h-full max-w-full" /> : !isCompressing && <ImageIcon className="h-16 w-16 text-muted-foreground" />}
-            </div>
-            {compressedResult && (
-              <div className="space-y-4">
-                <p className="text-muted-foreground">
-                  New Size: {formatBytes(compressedResult.compressedSize)} | Reduction: {(((compressedResult.originalSize - compressedResult.compressedSize) / compressedResult.originalSize) * 100).toFixed(2)}%
-                </p>
-                <Button onClick={handleDownload} className="w-full">
-                  <Download className="mr-2 h-5 w-5" />
-                  Download Compressed Image
-                </Button>
+          <div className="bg-card p-6 sm:p-8 rounded-lg shadow-md border border-border">
+            <div className="space-y-6">
+              <div className="flex flex-col items-center justify-center w-full">
+                <label htmlFor="image-upload" className="flex flex-col items-center justify-center w-full h-48 sm:h-64 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-background transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
+                    <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground" />
+                    {originalFile ? (
+                      <p className="font-semibold text-primary break-all px-2">{originalFile.name}</p>
+                    ) : (
+                      <>
+                        <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                        <p className="text-xs text-muted-foreground">PNG, JPG, WEBP, GIF</p>
+                      </>
+                    )}
+                  </div>
+                  <Input id="image-upload" type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                </label>
               </div>
-            )}
+
+              {error && <p className="text-sm font-medium text-destructive text-center">{error}</p>}
+
+              <Button onClick={handleCompress} disabled={!originalFile || isCompressing} className="w-full h-12 text-lg">
+                {isCompressing ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Compressing...
+                  </>
+                ) : 'Compress Image'}
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="space-y-4 text-center">
+              <h2 className="text-2xl font-semibold">Original Image</h2>
+              <div className="bg-muted aspect-video rounded-lg flex items-center justify-center overflow-hidden">
+                {originalUrl ? <img src={originalUrl} alt="Original" className="max-h-full max-w-full" /> : <ImageIcon className="h-16 w-16 text-muted-foreground" />}
+              </div>
+              {originalFile && <p className="text-muted-foreground">Size: {formatBytes(originalFile.size)}</p>}
+            </div>
+
+            <div className="space-y-4 text-center">
+              <h2 className="text-2xl font-semibold">Compressed Image</h2>
+              <div className="bg-muted aspect-video rounded-lg flex items-center justify-center overflow-hidden">
+                {isCompressing && <Loader2 className="h-12 w-12 animate-spin text-primary" />}
+                {!isCompressing && compressedResult ? <img src={compressedResult.url} alt="Compressed" className="max-h-full max-w-full" /> : !isCompressing && <ImageIcon className="h-16 w-16 text-muted-foreground" />}
+              </div>
+              {compressedResult && (
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">
+                    New Size: {formatBytes(compressedResult.compressedSize)} | Reduction: {(((compressedResult.originalSize - compressedResult.compressedSize) / compressedResult.originalSize) * 100).toFixed(2)}%
+                  </p>
+                  <Button onClick={handleDownload} className="w-full">
+                    <Download className="mr-2 h-5 w-5" />
+                    Download Compressed Image
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <footer className="w-full bg-background border-t border-border mt-auto py-6">
+        <div className="container mx-auto text-center text-muted-foreground">
+          <nav className="flex justify-center space-x-4 mb-4">
+            <a href="#" className="hover:text-primary">Home</a>
+            <a href="#" className="hover:text-primary">About</a>
+            <a href="#" className="hover:text-primary">Contact</a>
+            <a href="#" className="hover:text-primary">Privacy Policy</a>
+            <a href="#" className="hover:text-primary">Terms of Use</a>
+          </nav>
+          <p>&copy; 2025 PDF2Word. A part of All2ools.com</p>
+        </div>
+      </footer>
+    </>
   );
 }
