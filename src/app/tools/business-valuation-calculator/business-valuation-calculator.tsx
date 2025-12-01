@@ -98,7 +98,6 @@ export function BusinessValuationCalculator() {
       totalLiabilities: isIndia ? 1500000 : 150000,
     },
     mode: 'onChange',
-    key: country, // Re-mounts form on country change
   });
   
   const { reset } = form;
@@ -235,49 +234,49 @@ export function BusinessValuationCalculator() {
       </Alert>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
         <div className="space-y-6 md:col-span-2">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Settings</CardTitle>
-                </CardHeader>
-                 <CardContent>
-                    <FormLabel>Currency / Region</FormLabel>
-                    <Select value={country} onValueChange={(val) => setCountry(val as Country)}>
-                        <SelectTrigger className="mt-1">
-                          <SelectValue placeholder="Select Country" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {countries.map(c => <SelectItem key={c.code} value={c.code}> <Globe className="inline-block mr-2 h-4 w-4"/> {c.name} ({c.currency})</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </CardContent>
-            </Card>
-            <Card>
-                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Sparkles className="text-primary"/> AI Assistant
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      e.g., "A 3-year old profitable Shopify store doing $1M in sales"
-                    </p>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        const formData = new FormData(e.currentTarget);
-                        const prompt = formData.get('ai-prompt') as string;
-                        handleAiPrompt(prompt);
-                    }}>
-                        <div className="flex gap-2">
-                            <Input name="ai-prompt" placeholder="Describe a business..." disabled={isProcessingAi} />
-                            <Button type="submit" disabled={isProcessingAi}>
-                              {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
-                            </Button>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Settings</CardTitle>
+                    </CardHeader>
+                     <CardContent>
+                        <FormLabel>Currency / Region</FormLabel>
+                        <Select value={country} onValueChange={(val) => setCountry(val as Country)}>
+                            <SelectTrigger className="mt-1">
+                              <SelectValue placeholder="Select Country" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {countries.map(c => <SelectItem key={c.code} value={c.code}> <Globe className="inline-block mr-2 h-4 w-4"/> {c.name} ({c.currency})</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </CardContent>
+                </Card>
+                <Card>
+                     <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Sparkles className="text-primary"/> AI Assistant
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          e.g., "A 3-year old profitable Shopify store doing $1M in sales"
+                        </p>
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            const formData = new FormData(e.currentTarget);
+                            const prompt = formData.get('ai-prompt') as string;
+                            handleAiPrompt(prompt);
+                        }}>
+                            <div className="flex gap-2">
+                                <Input name="ai-prompt" placeholder="Describe a business..." disabled={isProcessingAi} />
+                                <Button type="submit" disabled={isProcessingAi}>
+                                  {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
                 <Card>
                   <CardHeader><CardTitle>Financial Inputs</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
