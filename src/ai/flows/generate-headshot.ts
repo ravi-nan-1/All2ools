@@ -66,7 +66,7 @@ Specific instructions:
         },
       ],
       config: {
-        responseModalities: ['IMAGE'],
+        responseModalities: ['IMAGE', 'TEXT'],
       },
     });
 
