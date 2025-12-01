@@ -19,26 +19,50 @@ const styles = [
   {
     name: 'Corporate',
     prompt:
-      'a professional corporate headshot, sharp focus, neutral background, studio lighting',
+      'a professional corporate headshot, sharp focus, neutral gray or blue background, studio lighting, wearing a business suit',
     imageHint: 'corporate headshot',
   },
   {
     name: 'Creative',
     prompt:
-      'a creative, artistic headshot, textured background, dramatic lighting, vibrant colors',
+      'a creative, artistic headshot against a textured, abstract background with vibrant, dramatic lighting',
     imageHint: 'creative portrait',
   },
   {
-    name: 'Classic',
+    name: 'Classic B&W',
     prompt:
-      'a classic black and white headshot, timeless, elegant, soft lighting, simple background',
+      'a classic black and white headshot, timeless, elegant, soft studio lighting, simple dark background',
     imageHint: 'classic portrait',
   },
   {
-    name: 'Tech',
+    name: 'Tech Founder',
     prompt:
-      'a modern tech-style headshot, clean, slightly blurred office or server room background, confident expression',
+      'a modern tech-style headshot, clean, confident expression, taken in a modern office with a slightly blurred background',
     imageHint: 'tech professional',
+  },
+  {
+    name: 'Friendly Casual',
+    prompt:
+      'a friendly and approachable casual headshot, smiling, wearing a simple t-shirt or sweater, warm and inviting lighting',
+    imageHint: 'casual portrait',
+  },
+  {
+    name: 'Outdoor',
+    prompt:
+      'a professional headshot taken outdoors with natural lighting, with a softly blurred natural background like a park or modern architecture',
+    imageHint: 'outdoor portrait',
+  },
+  {
+    name: 'Dramatic',
+    prompt:
+      'a dramatic, cinematic headshot with high-contrast lighting (chiaroscuro), intense expression, dark and moody background',
+    imageHint: 'dramatic portrait',
+  },
+  {
+    name: 'Futuristic/Sci-Fi',
+    prompt:
+      'a futuristic, sci-fi style headshot with neon accents, a sleek, minimalist background, and a visionary expression',
+    imageHint: 'futuristic portrait',
   },
 ];
 
@@ -161,7 +185,7 @@ export function AiHeadshotGenerator() {
 
           <div>
             <h3 className="text-lg font-medium mb-2">Choose a Style</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {styles.map((style) => (
                 <Card
                   key={style.name}
@@ -173,8 +197,8 @@ export function AiHeadshotGenerator() {
                       : 'hover:border-primary/50'
                   )}
                 >
-                  <CardContent className="p-4 text-center">
-                    <p className="font-semibold">{style.name}</p>
+                  <CardContent className="p-3 text-center flex items-center justify-center h-full">
+                    <p className="font-semibold text-sm">{style.name}</p>
                   </CardContent>
                 </Card>
               ))}
