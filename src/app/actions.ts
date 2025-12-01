@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { removeBackground } from "@/ai/flows/ai-product-background-remover";
 import { analyzeContentGap } from "@/ai/flows/analyze-content-gap";
 import { translateContent } from "@/ai/flows/translate-content";
+import { generateInvoiceFromPrompt } from "@/ai/flows/generate-invoice-from-prompt";
 
 
 async function fileToDataUri(file: File): Promise<string> {
@@ -123,4 +124,16 @@ export async function handleTranslation(content: string, targetLanguage: string)
   } catch (error: any) {
     return { error: error.message || 'Failed to translate content.' };
   }
+}
+
+export async function handleInvoiceGeneration(prompt: string) {
+    try {
+        if (!prompt) {
+            throw new Error('No prompt provided for invoice generation.');
+        }
+        const result = await generateInvoiceFromPrompt({ prompt });
+        return { data: result };
+    } catch (error: any) {
+        return { error: error.message || 'Failed to generate invoice from prompt.' };
+    }
 }

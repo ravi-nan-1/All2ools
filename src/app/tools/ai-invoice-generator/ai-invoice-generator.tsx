@@ -36,12 +36,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Trash2,
@@ -62,6 +56,7 @@ import {
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
+import { handleInvoiceGeneration } from '@/app/actions';
 
 const lineItemSchema = z.object({
   description: z.string().min(1, 'Description is required.'),
@@ -70,7 +65,7 @@ const lineItemSchema = z.object({
   rate: z.coerce.number().min(0, 'Rate must be positive.'),
 });
 
-const invoiceSchema = z.object({
+export const invoiceSchema = z.object({
   from: z.string().min(1, 'This field is required.'),
   billTo: z.string().min(1, 'This field is required.'),
   shipTo: z.string().optional(),
@@ -86,7 +81,7 @@ const invoiceSchema = z.object({
   shipping: z.coerce.number().min(0).default(0),
 });
 
-type InvoiceFormValues = z.infer<typeof invoiceSchema>;
+export type InvoiceFormValues = z.infer<typeof invoiceSchema>;
 
 const countries = [
     { code: 'US', name: 'United States', currency: 'USD' },
@@ -102,6 +97,7 @@ export function AiInvoiceGenerator() {
   const [selectedCountry, setSelectedCountry] = useState('US');
   const [isClient, setIsClient] = useState(false);
   const [isProcessingPdf, setIsProcessingPdf] = useState(false);
+  const [isProcessingAi, setIsProcessingAi] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -153,23 +149,32 @@ export function AiInvoiceGenerator() {
   const taxAmount = (subtotalAfterDiscount * (watchAllFields.tax || 0)) / 100;
   const total = subtotalAfterDiscount + taxAmount + (watchAllFields.shipping || 0);
 
-  const handleAiPrompt = (prompt: string) => {
-    if (prompt) {
-      form.reset({
-        ...form.getValues(),
-        billTo: 'John Doe\n456 Oak Ave, Town, USA',
-        lineItems: [
-          { description: 'Web Development Services', hsn: '998314', quantity: 10, rate: 80 },
-          { description: 'UI/UX Design Mockups', hsn: '998313', quantity: 5, rate: 50 },
-          { description: 'Project Management', hsn: '998311', quantity: 8, rate: 60 },
-        ],
-        tax: 8,
-        discount: 5,
-        shipping: 25,
-      });
-      toast({ title: 'AI Success', description: 'Invoice populated from your prompt.'});
-    } else {
+  const handleAiPrompt = async (prompt: string) => {
+    if (!prompt) {
       toast({ title: 'AI Info', description: 'Please enter a prompt, for example: "Make an invoice for John for 3 items."' });
+      return;
+    }
+    setIsProcessingAi(true);
+    try {
+        const result = await handleInvoiceGeneration(prompt);
+        if (result.error) {
+            throw new Error(result.error);
+        }
+        
+        const aiData = result.data as Omit<InvoiceFormValues, 'date' | 'dueDate'>;
+
+        // Reset the form with AI data, but keep existing date objects
+        form.reset({
+            ...aiData,
+            date: form.getValues('date'),
+            dueDate: form.getValues('dueDate'),
+        });
+
+        toast({ title: 'AI Success', description: 'Invoice populated from your prompt.'});
+    } catch(e: any) {
+        toast({ title: 'AI Error', description: e.message || 'Failed to generate invoice from prompt.', variant: 'destructive'});
+    } finally {
+        setIsProcessingAi(false);
     }
   };
   
@@ -522,7 +527,7 @@ export function AiInvoiceGenerator() {
             <CardContent>
               <p className="text-sm text-muted-foreground mb-2">
                 Describe the invoice you want to create. For example: "Make an
-                invoice for John for 3 items."
+                invoice for John for 13 items."
               </p>
               <form onSubmit={(e) => {
                   e.preventDefault();
@@ -531,8 +536,10 @@ export function AiInvoiceGenerator() {
                   handleAiPrompt(prompt);
               }}>
                   <div className="flex gap-2">
-                      <Input name="ai-prompt" placeholder="Enter a prompt..." />
-                      <Button type="submit">Generate</Button>
+                      <Input name="ai-prompt" placeholder="Enter a prompt..." disabled={isProcessingAi} />
+                      <Button type="submit" disabled={isProcessingAi}>
+                        {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
+                      </Button>
                   </div>
               </form>
             </CardContent>
