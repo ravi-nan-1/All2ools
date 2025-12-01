@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import {
   Card,
   CardContent,
@@ -94,6 +96,8 @@ export function AiInvoiceGenerator() {
   const { toast } = useToast();
   const [selectedCountry, setSelectedCountry] = useState('US');
   const [isClient, setIsClient] = useState(false);
+  const [isProcessingPdf, setIsProcessingPdf] = useState(false);
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -147,7 +151,9 @@ export function AiInvoiceGenerator() {
   const total = subtotalAfterDiscount + taxAmount + watchShipping;
 
   const handleAiPrompt = (prompt: string) => {
-    if (prompt.toLowerCase().includes('john')) {
+    // This is a mock implementation.
+    // A real implementation would involve a call to an AI service.
+    if (prompt) {
       form.reset({
         ...form.getValues(),
         billTo: 'John Doe\n456 Oak Ave, Town, USA',
@@ -162,7 +168,7 @@ export function AiInvoiceGenerator() {
       });
       toast({ title: 'AI Success', description: 'Invoice populated from your prompt.'});
     } else {
-      toast({ title: 'AI Info', description: 'This is a demo. Try a prompt like: "Make an invoice for John for 3 items."' });
+      toast({ title: 'AI Info', description: 'Please enter a prompt, for example: "Make an invoice for John for 3 items."' });
     }
   };
   
@@ -174,11 +180,50 @@ export function AiInvoiceGenerator() {
     }).format(amount);
   };
   
-  const handleDownload = () => {
-    toast({
-      title: 'Feature Coming Soon',
-      description: 'PDF generation is under development. Please check back later!',
-    });
+  const generatePdf = async (action: 'download' | 'preview') => {
+    if (!invoiceRef.current) return;
+    
+    setIsProcessingPdf(true);
+    
+    try {
+        const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'px', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const ratio = canvasWidth / pdfWidth;
+        const finalHeight = canvasHeight / ratio;
+
+        if (finalHeight > pdfHeight) {
+            // This is a simple implementation. A real one might handle multiple pages.
+            console.warn("Content exceeds PDF page height.");
+        }
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, finalHeight);
+
+        if (action === 'download') {
+            pdf.save(`invoice-${form.getValues('invoiceNumber')}.pdf`);
+        } else {
+            pdf.output('dataurlnewwindow');
+        }
+    } catch (error) {
+        console.error("Failed to generate PDF", error);
+        toast({
+            title: 'PDF Generation Failed',
+            description: 'An error occurred while creating the PDF.',
+            variant: 'destructive'
+        })
+    } finally {
+        setIsProcessingPdf(false);
+    }
+  };
+
+  const handleSend = () => {
+    const subject = `Invoice ${form.getValues('invoiceNumber')}`;
+    const body = `Hi ${form.getValues('billTo').split('\n')[0]},\n\nPlease find your invoice attached.\n\nThank you for your business!\n\nBest,\n${form.getValues('from').split('\n')[0]}`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   if (!isClient) {
@@ -191,7 +236,7 @@ export function AiInvoiceGenerator() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-      <div className="lg:col-span-2">
+      <div className="lg:col-span-2" ref={invoiceRef}>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -199,7 +244,7 @@ export function AiInvoiceGenerator() {
               Invoice Details
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 p-6">
             {/* Header */}
             <div className="flex justify-between gap-4 items-start">
                 <div>
@@ -433,9 +478,12 @@ export function AiInvoiceGenerator() {
                 </Select>
             </div>
             <div className="grid grid-cols-2 gap-2 pt-4">
-                <Button variant="outline" onClick={() => toast({ title: 'Feature Coming Soon' })}><Eye className="mr-2 h-4 w-4"/>Preview</Button>
-                <Button variant="default" onClick={handleDownload}><Download className="mr-2 h-4 w-4"/>Download PDF</Button>
-                <Button className="col-span-2" onClick={() => toast({ title: 'Feature Coming Soon' })}><Send className="mr-2 h-4 w-4"/>Send Invoice</Button>
+                <Button variant="outline" onClick={() => generatePdf('preview')} disabled={isProcessingPdf}><Eye className="mr-2 h-4 w-4"/>Preview</Button>
+                <Button variant="default" onClick={() => generatePdf('download')} disabled={isProcessingPdf}>
+                    {isProcessingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Download className="mr-2 h-4 w-4"/>}
+                    Download PDF
+                </Button>
+                <Button className="col-span-2" onClick={handleSend}><Send className="mr-2 h-4 w-4"/>Send Invoice</Button>
             </div>
           </CardContent>
         </Card>
