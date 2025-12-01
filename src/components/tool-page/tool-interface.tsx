@@ -67,6 +67,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <AiProductDescriptionGenerator />;
       case 'json-excel-converter':
         return <JsonExcelConverter />;
+      case 'ai-schema-markup-generator':
+        return <PlaceholderTool />;
       default:
         return <PlaceholderTool />;
     }

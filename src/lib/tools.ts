@@ -323,7 +323,7 @@ howItWorks: [],
     useCases: [],
   },
   {
-    name: 'JSON → Excel Converter',
+    name: 'JSON Hero: Converter & Formatter',
     slug: 'json-excel-converter',
     category: 'Developer',
     icon: 'FileJson',
