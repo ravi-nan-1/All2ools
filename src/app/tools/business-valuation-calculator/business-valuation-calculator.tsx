@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -62,6 +62,7 @@ export function BusinessValuationCalculator() {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const [country, setCountry] = useState<Country>('US');
+  const aiPromptRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -175,7 +176,8 @@ export function BusinessValuationCalculator() {
     }, 1500);
   };
   
-  const handleAiPrompt = async (prompt: string) => {
+  const handleAiPrompt = async () => {
+    const prompt = aiPromptRef.current?.value;
     if (!prompt) {
       toast({ title: 'AI Info', description: 'Please enter a description, e.g., "a 2-year old SaaS company with $500k revenue"' });
       return;
@@ -236,7 +238,7 @@ export function BusinessValuationCalculator() {
         <div className="space-y-6 md:col-span-2">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <Card>
+                 <Card>
                     <CardHeader>
                         <CardTitle>Settings</CardTitle>
                     </CardHeader>
@@ -262,19 +264,12 @@ export function BusinessValuationCalculator() {
                         <p className="text-sm text-muted-foreground mb-2">
                           e.g., "A 3-year old profitable Shopify store doing $1M in sales"
                         </p>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            const formData = new FormData(e.currentTarget);
-                            const prompt = formData.get('ai-prompt') as string;
-                            handleAiPrompt(prompt);
-                        }}>
-                            <div className="flex gap-2">
-                                <Input name="ai-prompt" placeholder="Describe a business..." disabled={isProcessingAi} />
-                                <Button type="submit" disabled={isProcessingAi}>
-                                  {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
-                                </Button>
-                            </div>
-                        </form>
+                        <div className="flex gap-2">
+                            <Input name="ai-prompt" ref={aiPromptRef} placeholder="Describe a business..." disabled={isProcessingAi} />
+                            <Button type="button" onClick={handleAiPrompt} disabled={isProcessingAi}>
+                              {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
                 <Card>
