@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export default function TermsPage() {
     <div className="container mx-auto px-4 py-12 md:py-16">
       <div className="mx-auto max-w-3xl prose prose-lg dark:prose-invert">
         <h1 className="text-primary font-headline">Terms of Service</h1>
-        <p><em>Last Updated: {new Date().toLocaleDateString()}</em></p>
+        <p><em>Last Updated: July 26, 2024</em></p>
 
         <p>
           Please read these Terms of Service ("Terms", "Terms of Service") carefully before using the All2ools.com website (the "Service") operated by All2ools ("us", "we", or "our").

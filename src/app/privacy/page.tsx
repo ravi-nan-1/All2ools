@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export default function PrivacyPage() {
     <div className="container mx-auto px-4 py-12 md:py-16">
       <div className="mx-auto max-w-3xl prose prose-lg dark:prose-invert">
         <h1 className="text-primary font-headline">Privacy Policy</h1>
-        <p><em>Last Updated: {new Date().toLocaleDateString()}</em></p>
+        <p><em>Last Updated: July 26, 2024</em></p>
 
         <p>
           Welcome to All2ools ("we," "us," or "our"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.
