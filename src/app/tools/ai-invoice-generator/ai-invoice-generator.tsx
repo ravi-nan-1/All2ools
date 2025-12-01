@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import 'jspdf-autotable';
 import {
   Card,
   CardContent,
@@ -98,110 +98,12 @@ const countries = [
     { code: 'AU', name: 'Australia', currency: 'AUD' },
 ];
 
-const InvoicePrintTemplate = ({
-    invoiceRef,
-    values,
-    formatCurrency
-}: {
-    invoiceRef: React.RefObject<HTMLDivElement>;
-    values: InvoiceFormValues;
-    formatCurrency: (amount: number) => string;
-}) => {
-    const subtotal = values.lineItems.reduce((acc, item) => acc + item.quantity * item.rate, 0);
-    const discountAmount = (subtotal * values.discount) / 100;
-    const subtotalAfterDiscount = subtotal - discountAmount;
-    const taxAmount = (subtotalAfterDiscount * values.tax) / 100;
-    const total = subtotalAfterDiscount + taxAmount + values.shipping;
-
-    return (
-        <div className="absolute -left-[9999px] top-auto" aria-hidden="true">
-            <div ref={invoiceRef} className="p-12 bg-white text-black" style={{ width: '210mm', minHeight: '297mm' }}>
-                {/* Header */}
-                <div className="flex justify-between items-start mb-12">
-                    <div>
-                        <h1 className="text-4xl font-bold uppercase text-gray-800">Invoice</h1>
-                        <p className="text-gray-500">{values.invoiceNumber}</p>
-                    </div>
-                    <div className="text-right">
-                        <pre className="font-sans whitespace-pre-wrap">{values.from}</pre>
-                    </div>
-                </div>
-
-                {/* Billed To & Dates */}
-                <div className="flex justify-between mb-12">
-                    <div className="w-1/2">
-                        <p className="text-sm font-semibold text-gray-500 uppercase mb-2">Billed To</p>
-                        <pre className="font-sans whitespace-pre-wrap">{values.billTo}</pre>
-                    </div>
-                    <div className="text-right">
-                        <div className="mb-2">
-                            <p className="text-sm font-semibold text-gray-500 uppercase">Date of Issue</p>
-                            <p>{values.date ? format(values.date, 'PPP') : ''}</p>
-                        </div>
-                        {values.dueDate && (
-                             <div>
-                                <p className="text-sm font-semibold text-gray-500 uppercase">Due Date</p>
-                                <p>{format(values.dueDate, 'PPP')}</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                 {/* Line Items Table */}
-                <table className="w-full mb-12">
-                    <thead>
-                        <tr className="border-b-2 border-gray-300 text-left text-gray-500 uppercase text-sm">
-                            <th className="py-2">Description</th>
-                            <th className="py-2">HSN/SAC</th>
-                            <th className="py-2 text-center">Qty</th>
-                            <th className="py-2 text-right">Rate</th>
-                            <th className="py-2 text-right">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {values.lineItems.map((item, index) => (
-                            <tr key={index} className="border-b border-gray-200">
-                                <td className="py-2">{item.description}</td>
-                                <td className="py-2">{item.hsn}</td>
-                                <td className="py-2 text-center">{item.quantity}</td>
-                                <td className="py-2 text-right">{formatCurrency(item.rate)}</td>
-                                <td className="py-2 text-right">{formatCurrency(item.quantity * item.rate)}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                
-                {/* Totals */}
-                <div className="flex justify-end mb-12">
-                     <div className="w-full max-w-xs space-y-2 text-gray-700">
-                        <div className="flex justify-between"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
-                         {values.discount > 0 && <div className="flex justify-between"><span>Discount ({values.discount}%)</span><span>-{formatCurrency(discountAmount)}</span></div>}
-                         {values.tax > 0 && <div className="flex justify-between"><span>Tax ({values.tax}%)</span><span>+{formatCurrency(taxAmount)}</span></div>}
-                         {values.shipping > 0 && <div className="flex justify-between"><span>Shipping</span><span>+{formatCurrency(values.shipping)}</span></div>}
-                        <div className="border-t border-gray-300 my-2"></div>
-                        <div className="flex justify-between font-bold text-lg text-black"><span>Total</span><span>{formatCurrency(total)}</span></div>
-                    </div>
-                </div>
-
-                 {/* Footer */}
-                <div className="absolute bottom-12 left-12 right-12 text-sm text-gray-600 space-y-4">
-                     {values.notes && (<div><h4 className="font-semibold mb-1">Notes</h4><p>{values.notes}</p></div>)}
-                     {values.terms && (<div><h4 className="font-semibold mb-1">Terms & Conditions</h4><p>{values.terms}</p></div>)}
-                     {values.bankDetails && (<div><h4 className="font-semibold mb-1">Bank Details</h4><pre className="font-sans whitespace-pre-wrap">{values.bankDetails}</pre></div>)}
-                </div>
-            </div>
-        </div>
-    );
-};
-
-
 export function AiInvoiceGenerator() {
   const [selectedCountry, setSelectedCountry] = useState('US');
   const [isClient, setIsClient] = useState(false);
   const [isProcessingPdf, setIsProcessingPdf] = useState(false);
   const [previewPdfUrl, setPreviewPdfUrl] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const invoicePrintRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -282,47 +184,120 @@ export function AiInvoiceGenerator() {
   };
   
   const generatePdf = async (action: 'download' | 'preview') => {
-    if (!invoicePrintRef.current) return;
-    
     setIsProcessingPdf(true);
-    setPreviewPdfUrl(null);
-    
-    try {
-        const canvas = await html2canvas(invoicePrintRef.current, {
-             scale: 2,
-             useCORS: true,
-             allowTaint: true,
-             logging: true
-         });
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
-        const ratio = imgWidth / pdfWidth;
-        const finalHeight = imgHeight / ratio;
+    const values = form.getValues();
+    const doc = new jsPDF();
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, Math.min(pdfHeight, finalHeight));
+    try {
+        // Set fonts
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.text('INVOICE', 20, 30);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.text(values.invoiceNumber, 20, 36);
+
+        // From Address
+        doc.setFontSize(10);
+        doc.text(values.from, 130, 30, { align: 'left' });
+
+        // Bill To
+        doc.setFont('helvetica', 'bold');
+        doc.text('Billed To', 20, 50);
+        doc.setFont('helvetica', 'normal');
+        doc.text(values.billTo, 20, 56);
+
+        // Dates
+        doc.text(`Date: ${format(values.date, 'PPP')}`, 130, 50);
+        if (values.dueDate) {
+            doc.text(`Due Date: ${format(values.dueDate, 'PPP')}`, 130, 56);
+        }
+
+        // Line Items Table
+        const tableColumn = ["Description", "HSN/SAC", "Qty", "Rate", "Amount"];
+        const tableRows: any[] = [];
+
+        values.lineItems.forEach(item => {
+            const itemData = [
+                item.description,
+                item.hsn,
+                item.quantity,
+                formatCurrency(item.rate),
+                formatCurrency(item.quantity * item.rate),
+            ];
+            tableRows.push(itemData);
+        });
+
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 70,
+            theme: 'striped',
+            headStyles: { fillColor: [22, 160, 133] },
+        });
+
+        // Totals
+        const finalY = (doc as any).lastAutoTable.finalY;
+        const totalX = 140;
+        doc.setFontSize(10);
+        doc.text('Subtotal:', totalX, finalY + 10);
+        doc.text(formatCurrency(subtotal), 190, finalY + 10, { align: 'right' });
+        
+        if (values.discount > 0) {
+            doc.text(`Discount (${values.discount}%):`, totalX, finalY + 16);
+            doc.text(`-${formatCurrency(discountAmount)}`, 190, finalY + 16, { align: 'right' });
+        }
+        if (values.tax > 0) {
+            doc.text(`Tax (${values.tax}%):`, totalX, finalY + 22);
+            doc.text(`+${formatCurrency(taxAmount)}`, 190, finalY + 22, { align: 'right' });
+        }
+        if (values.shipping > 0) {
+            doc.text(`Shipping:`, totalX, finalY + 28);
+            doc.text(`+${formatCurrency(values.shipping)}`, 190, finalY + 28, { align: 'right' });
+        }
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text('Total:', totalX, finalY + 34);
+        doc.text(formatCurrency(total), 190, finalY + 34, { align: 'right' });
+
+        // Notes and Terms
+        let notesY = 250;
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        if (values.notes) {
+            doc.setFont('helvetica', 'bold');
+            doc.text('Notes:', 20, notesY);
+            doc.setFont('helvetica', 'normal');
+            doc.text(values.notes, 20, notesY + 4);
+            notesY += 10;
+        }
+        if (values.terms) {
+            doc.setFont('helvetica', 'bold');
+            doc.text('Terms & Conditions:', 20, notesY);
+            doc.setFont('helvetica', 'normal');
+            doc.text(values.terms, 20, notesY + 4);
+        }
 
         if (action === 'download') {
-            pdf.save(`invoice-${form.getValues('invoiceNumber')}.pdf`);
+            doc.save(`invoice-${values.invoiceNumber}.pdf`);
         } else {
-            const pdfDataUri = pdf.output('datauristring');
-            setPreviewPdfUrl(pdfDataUri);
+            setPreviewPdfUrl(doc.output('datauristring'));
             setIsPreviewOpen(true);
         }
+
     } catch (error) {
         console.error("Failed to generate PDF", error);
         toast({
             title: 'PDF Generation Failed',
             description: 'An error occurred while creating the PDF.',
             variant: 'destructive'
-        })
+        });
     } finally {
         setIsProcessingPdf(false);
     }
   };
+
 
   const handleSend = () => {
     const subject = `Invoice ${form.getValues('invoiceNumber')}`;
@@ -340,7 +315,6 @@ export function AiInvoiceGenerator() {
 
   return (
     <>
-      <InvoicePrintTemplate invoiceRef={invoicePrintRef} values={watchAllFields} formatCurrency={formatCurrency} />
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
         <div className="lg:col-span-3">
           <Card>
