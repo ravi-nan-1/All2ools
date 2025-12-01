@@ -312,6 +312,8 @@ const ArticleOutlineInputSchema = z.object({
   topic: z.string().min(3, 'Topic must be at least 3 characters.'),
   sourceUrl: z.string().url("Please enter a valid URL.").optional().or(z.literal('')),
   pastedText: z.string().optional(),
+  tone: z.string().optional(),
+  audience: z.string().optional(),
 });
 
 export async function handleArticleOutlineGeneration(

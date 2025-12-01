@@ -15,6 +15,8 @@ const GenerateArticleOutlineInputSchema = z.object({
   topic: z.string().describe('The main topic or keyword for the article.'),
   sourceUrl: z.string().optional().describe("An optional URL to a source article to base the outline on."),
   pastedText: z.string().optional().describe("Optional pasted text (e.g., keywords, notes, a rough draft) to inform the outline."),
+  tone: z.string().optional().describe("The desired tone of voice for the article (e.g., 'professional', 'casual', 'expert')."),
+  audience: z.string().optional().describe("The target audience for the article (e.g., 'beginners', 'experts')."),
 });
 export type GenerateArticleOutlineInput = z.infer<typeof GenerateArticleOutlineInputSchema>;
 
@@ -62,6 +64,14 @@ The outline must be detailed and logical, suitable for a long-form blog post or 
 7.  A "Frequently Asked Questions" (FAQ) section at the end with 3-5 relevant questions and their brief answers.
 
 Primary Topic: {{{topic}}}
+
+{{#if tone}}
+Tone of Voice: The article should be written in a {{{tone}}} tone.
+{{/if}}
+
+{{#if audience}}
+Target Audience: The article should be written for {{{audience}}}.
+{{/if}}
 
 {{#if sourceUrl}}
 Source URL: Use the content at this URL as the primary inspiration and context for the new outline: {{{sourceUrl}}}

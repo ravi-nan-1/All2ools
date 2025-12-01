@@ -16,18 +16,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, Sparkles, Copy, FileText, Bot, Link, UploadCloud, FileUp } from 'lucide-react';
+import { Loader2, Sparkles, Copy, FileText, Bot, Link, FileUp, BrainCircuit, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { handleArticleOutlineGeneration } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { GenerateArticleOutlineOutput } from '@/ai/flows/generate-article-outline';
 
 const formSchema = z.object({
   topic: z.string().min(3, 'Topic must be at least 3 characters long.'),
   sourceUrl: z.string().url("Please enter a valid URL.").optional().or(z.literal('')),
   pastedText: z.string().optional(),
+  tone: z.string().optional(),
+  audience: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -43,6 +46,8 @@ export function OneClickArticleOutlineGenerator() {
       topic: '',
       sourceUrl: '',
       pastedText: '',
+      tone: 'professional',
+      audience: 'general',
     },
     mode: 'onChange',
   });
@@ -216,6 +221,61 @@ export function OneClickArticleOutlineGenerator() {
                     </label>
                   </TabsContent>
                 </Tabs>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Customization</CardTitle>
+                <CardDescription>Tailor the outline to your specific needs.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="tone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2"><BrainCircuit />Tone of Voice</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a tone" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="professional">Professional & Authoritative</SelectItem>
+                          <SelectItem value="friendly">Friendly & Casual</SelectItem>
+                          <SelectItem value="expert">Expert & Technical</SelectItem>
+                          <SelectItem value="engaging">Engaging & Persuasive</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="audience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2"><Users />Target Audience</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select an audience" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="general">General Audience</SelectItem>
+                          <SelectItem value="beginners">Beginners</SelectItem>
+                          <SelectItem value="intermediate">Intermediate</SelectItem>
+                          <SelectItem value="experts">Experts / Professionals</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
             
