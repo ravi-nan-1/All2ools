@@ -16,6 +16,7 @@ import { GlobalLoanOptimizer } from '@/app/tools/global-loan-optimizer/global-lo
 import { CryptoTaxCalculator } from '@/app/tools/crypto-tax-calculator/crypto-tax-calculator';
 import { ForexArbitrageChecker } from '@/app/tools/forex-arbitrage-checker/forex-arbitrage-checker';
 import { AiInvoiceGenerator } from '@/app/tools/ai-invoice-generator/ai-invoice-generator';
+import { BusinessValuationCalculator } from '@/app/tools/business-valuation-calculator/business-valuation-calculator';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -52,6 +53,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <ForexArbitrageChecker />;
       case 'ai-invoice-generator':
         return <AiInvoiceGenerator />;
+      case 'business-valuation-calculator':
+        return <BusinessValuationCalculator />;
       default:
         return <PlaceholderTool />;
     }
