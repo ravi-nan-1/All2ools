@@ -16,13 +16,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, PlusCircle, Sparkles, Trash2, UploadCloud, FileText, File, Merge, Split, HelpCircle, ChevronsUpDown, ChevronsDownUp, Copy } from 'lucide-react';
+import { Loader2, PlusCircle, Sparkles, Trash2, UploadCloud, FileText, Merge, Split, HelpCircle, ChevronsUpDown, ChevronsDownUp, Copy, AlertTriangle, TrendingUp, DollarSign, Search, ListTree, BarChart, Info, ShieldQuestion } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { handleKeywordClusterGeneration } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import type { Cluster } from '@/ai/flows/generate-keyword-clusters';
 
 const formSchema = z.object({
   primaryKeyword: z.string().min(1, 'Primary keyword is required.'),
@@ -33,34 +35,25 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface Cluster {
-    clusterTitle: string;
-    parentTopic: string;
-    intent: 'Informational' | 'Transactional' | 'Commercial' | 'Navigational' | 'Unknown';
-    relevanceScore: number;
-    difficultyScore: number;
-    keywords: string[];
-    aiSeoTitle: string;
-    aiMetaDescription: string;
-    aiContentBrief: string;
-    aiKeywordExpansion: {
-        related: string[];
-        questions: string[];
-    };
-}
-
 interface ClusterResult {
     clusters: Cluster[];
     aiPillarPageSuggestion: string;
+    duplicateKeywords: string[];
 }
 
-const intentColors = {
-    Informational: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    Transactional: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    Commercial: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-    Navigational: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-    Unknown: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+const intentColors: Record<string, string> = {
+    Informational: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 border-blue-200 dark:border-blue-700',
+    Transactional: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border-green-200 dark:border-green-700',
+    Commercial: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700',
+    Navigational: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 border-purple-200 dark:border-purple-700',
+    Unknown: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600',
 }
+
+const formatNumber = (num: number) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+};
 
 export function KeywordClusterGenerator() {
   const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +65,7 @@ export function KeywordClusterGenerator() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       primaryKeyword: '',
-      secondaryKeywords: [{ value: '' }],
+      secondaryKeywords: Array.from({ length: 5 }, () => ({ value: '' })),
     },
     mode: 'onChange',
   });
@@ -108,6 +101,9 @@ export function KeywordClusterGenerator() {
       const uniqueKeywords = [...new Set(keywords)];
       replace(uniqueKeywords.map(k => ({ value: k })));
       toast({ title: "Keywords Pasted", description: `${uniqueKeywords.length} unique keywords were pasted and added.`});
+      // Clear the textarea after processing
+      const target = event.target as HTMLTextAreaElement;
+      target.value = '';
     }
   };
   
@@ -122,9 +118,8 @@ export function KeywordClusterGenerator() {
 
     const formData = new FormData();
     formData.append('primaryKeyword', data.primaryKeyword);
-    const uniqueKeywords = [...new Set(data.secondaryKeywords.map(kw => kw.value).filter(Boolean))];
-    uniqueKeywords.forEach(kw => {
-        formData.append('secondaryKeywords', kw);
+    data.secondaryKeywords.forEach(kw => {
+        if (kw.value) formData.append('secondaryKeywords', kw.value);
     });
 
     try {
@@ -243,7 +238,7 @@ export function KeywordClusterGenerator() {
                 </CardContent>
             </Card>
             
-            <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading}>
+            <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading || !form.formState.isValid}>
                 {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin"/> : <Sparkles className="mr-2 h-5 w-5" />}
                 Generate Clusters
             </Button>
@@ -275,6 +270,15 @@ export function KeywordClusterGenerator() {
                 )}
                 {!isLoading && result && (
                     <div className="space-y-6">
+                        {result.duplicateKeywords.length > 0 && (
+                            <Alert>
+                                <Info className="h-4 w-4" />
+                                <AlertTitle>Duplicate Keywords Removed</AlertTitle>
+                                <AlertDescription>
+                                    {result.duplicateKeywords.length} duplicate keywords were found and removed: {result.duplicateKeywords.slice(0, 5).join(', ')}{result.duplicateKeywords.length > 5 ? '...' : ''}
+                                </AlertDescription>
+                            </Alert>
+                        )}
                         <Alert className="bg-primary/5 border-primary/20">
                             <Sparkles className="h-4 w-4 text-primary" />
                             <AlertTitle className="text-primary font-bold">AI Pillar Page Strategy</AlertTitle>
@@ -294,29 +298,48 @@ export function KeywordClusterGenerator() {
                                             </div>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent className="space-y-6">
+                                    <AccordionContent className="space-y-6 pt-4">
+                                        
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                            <Card className='p-2'><CardTitle className='text-lg'>{formatNumber(cluster.searchVolume)}</CardTitle><CardDescription className='text-xs'>Volume</CardDescription></Card>
+                                            <Card className='p-2'><CardTitle className='text-lg'>{cluster.difficultyScore}/100</CardTitle><CardDescription className='text-xs'>Difficulty</CardDescription></Card>
+                                            <Card className='p-2'><CardTitle className='text-lg'>${cluster.cpc.toFixed(2)}</CardTitle><CardDescription className='text-xs'>CPC</CardDescription></Card>
+                                            <Card className='p-2'><CardTitle className='text-lg text-primary'>{cluster.opportunityScore}/100</CardTitle><CardDescription className='text-xs'>Opportunity</CardDescription></Card>
+                                        </div>
+
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                                            <div>
-                                                <p className="font-semibold flex items-center gap-1"><ChevronsUpDown className="h-4 w-4 text-muted-foreground"/>Cluster Relevance</p>
-                                                <div className="flex items-center gap-2">
-                                                    <Progress value={cluster.relevanceScore} className="w-full" />
-                                                    <span className="font-bold">{cluster.relevanceScore}%</span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold flex items-center gap-1"><ChevronsDownUp className="h-4 w-4 text-muted-foreground"/>SEO Difficulty</p>
-                                                <div className="flex items-center gap-2">
-                                                    <Progress value={cluster.difficultyScore} className="w-full" />
-                                                    <span className="font-bold">{cluster.difficultyScore}/100</span>
-                                                </div>
-                                            </div>
+                                             <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div>
+                                                            <p className="font-semibold flex items-center gap-1"><TrendingUp className="h-4 w-4 text-muted-foreground"/>Traffic Potential: <span className="font-bold ml-1">{formatNumber(cluster.trafficPotential)}/mo</span></p>
+                                                            <Progress value={cluster.trafficPotential / 1000} className="w-full mt-1" />
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent><p>Estimated monthly traffic for a top 3 ranking.</p></TooltipContent>
+                                                </Tooltip>
+                                                 <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div>
+                                                            <p className="font-semibold flex items-center gap-1"><ShieldQuestion className="h-4 w-4 text-muted-foreground"/>Competition: <span className="font-bold ml-1">{(cluster.competition * 100).toFixed(0)}%</span></p>
+                                                            <Progress value={cluster.competition * 100} className="w-full mt-1" />
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent><p>Paid search (PPC) competition level.</p></TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                        
+                                        <div className="flex flex-wrap gap-2 text-sm">
+                                            <Badge variant="secondary" className="capitalize">Priority: {cluster.priority}</Badge>
+                                            <Badge variant="secondary">Seasonality: {cluster.seasonality}</Badge>
                                         </div>
                                         
                                         <div className="p-3 bg-muted/50 rounded-md">
-                                             <h4 className="font-semibold text-sm mb-2">Original Keywords in Cluster</h4>
+                                             <h4 className="font-semibold text-sm mb-2">Original Keywords in Cluster ({cluster.keywords.length})</h4>
                                              <div className="flex flex-wrap gap-2">
                                                 {cluster.keywords.map((keyword, kwIndex) => (
-                                                    <Badge key={kwIndex} variant="secondary">{keyword}</Badge>
+                                                    <Badge key={kwIndex} variant="outline" className="bg-background">{keyword}</Badge>
                                                 ))}
                                             </div>
                                         </div>
@@ -326,41 +349,44 @@ export function KeywordClusterGenerator() {
                                                 <h4 className="font-semibold text-sm">AI-Suggested SEO Title</h4>
                                                 <div className="flex items-start gap-2">
                                                     <p className="text-sm p-2 bg-muted/50 rounded-md text-muted-foreground flex-grow">"{cluster.aiSeoTitle}"</p>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => copyToClipboard(cluster.aiSeoTitle)}><Copy/></Button>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => copyToClipboard(cluster.aiSeoTitle)}><Copy/></Button>
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
                                                 <h4 className="font-semibold text-sm">AI-Suggested Meta Description</h4>
                                                 <div className="flex items-start gap-2">
                                                     <p className="text-sm p-2 bg-muted/50 rounded-md text-muted-foreground flex-grow">"{cluster.aiMetaDescription}"</p>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => copyToClipboard(cluster.aiMetaDescription)}><Copy/></Button>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => copyToClipboard(cluster.aiMetaDescription)}><Copy/></Button>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                          <div className="space-y-2">
                                             <h4 className="font-semibold text-sm">AI Content Brief</h4>
-                                            <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground whitespace-pre-wrap p-3 bg-muted/50 rounded-md">{cluster.aiContentBrief}</div>
+                                            <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground whitespace-pre-wrap p-3 bg-muted/50 rounded-md" dangerouslySetInnerHTML={{ __html: cluster.aiContentBrief.replace(/\*/g, '•') }}></div>
                                         </div>
-                                        
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <h4 className="font-semibold text-sm">AI Keyword Expansion (Related)</h4>
-                                                <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md">
-                                                    {cluster.aiKeywordExpansion.related.map((kw, i) => <Badge key={i} variant="outline">{kw}</Badge>)}
+
+                                        <div className='p-4 border rounded-lg space-y-4'>
+                                            <h4 className="font-semibold text-sm">AI Keyword & Content Expansion</h4>
+                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <h5 className="font-medium text-xs text-muted-foreground">Related/LSI Keywords</h5>
+                                                    <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md">
+                                                        {cluster.aiKeywordExpansion.related.map((kw, i) => <Badge key={i} variant="outline">{kw}</Badge>)}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <h4 className="font-semibold text-sm">AI Keyword Expansion (Questions)</h4>
-                                                <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-md">
-                                                    {cluster.aiKeywordExpansion.questions.map((q, i) => <Badge key={i} variant="outline">{q}</Badge>)}
+                                                <div className="space-y-2">
+                                                    <h5 className="font-medium text-xs text-muted-foreground">Common Questions</h5>
+                                                    <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
+                                                        {cluster.aiKeywordExpansion.questions.map((q, i) => <li key={i}>{q}</li>)}
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="flex gap-2 pt-4 border-t">
-                                            <Button variant="ghost" size="sm" disabled><Merge className="mr-2"/>Merge Cluster</Button>
-                                            <Button variant="ghost" size="sm" disabled><Split className="mr-2"/>Split Cluster</Button>
+                                            <Button variant="outline" size="sm" disabled><Merge className="mr-2"/>Merge Cluster</Button>
+                                            <Button variant="outline" size="sm" disabled><Split className="mr-2"/>Split Cluster</Button>
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
