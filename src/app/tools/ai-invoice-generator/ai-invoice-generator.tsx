@@ -13,6 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -52,6 +60,7 @@ import {
   Globe,
   Banknote,
   Percent,
+  RefreshCw,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -100,6 +109,8 @@ export function AiInvoiceGenerator() {
   const [isProcessingPdf, setIsProcessingPdf] = useState(false);
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const { toast } = useToast();
+  const [previewPdfUrl, setPreviewPdfUrl] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -181,13 +192,17 @@ export function AiInvoiceGenerator() {
     }
   };
   
-  const formatCurrency = (amount: number, forPdf = false) => {
+  const formatCurrencyForPdf = (amount: number) => {
     const currency = countries.find(c => c.code === selectedCountry)?.currency || 'USD';
-    if (forPdf) {
-      // Simple, reliable formatting for jspdf
-      return `${currency} ${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
-    }
-    // Richer formatting for the UI
+    const formatted = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+    return `${currency} ${formatted}`;
+  };
+  
+  const formatCurrencyForUi = (amount: number) => {
+    const currency = countries.find(c => c.code === selectedCountry)?.currency || 'USD';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
@@ -200,9 +215,6 @@ export function AiInvoiceGenerator() {
     const doc = new jsPDF();
 
     try {
-      const pageHeight = doc.internal.pageSize.height;
-      let finalY = 0;
-
       // --- Template-specific styles ---
       const professionalBlue = [0, 51, 102];
       const modernHeader = [22, 160, 133];
@@ -262,8 +274,8 @@ export function AiInvoiceGenerator() {
           item.description,
           item.hsn || '-',
           item.quantity,
-          formatCurrency(item.rate, true),
-          formatCurrency(item.quantity * item.rate, true),
+          formatCurrencyForPdf(item.rate),
+          formatCurrencyForPdf(item.quantity * item.rate),
       ]);
 
       let tableTheme: 'striped' | 'grid' | 'plain' = 'striped';
@@ -282,9 +294,8 @@ export function AiInvoiceGenerator() {
           startY: 75,
           theme: tableTheme,
           headStyles: headStyles,
-          didDrawPage: (data: any) => { finalY = data.cursor.y; }
       });
-      finalY = (doc as any).lastAutoTable.finalY;
+      let finalY = (doc as any).lastAutoTable.finalY;
 
       // --- Totals Section ---
       const totalX = 130;
@@ -293,22 +304,22 @@ export function AiInvoiceGenerator() {
       doc.setFont('helvetica', 'normal');
       
       doc.text('Subtotal:', totalX, totalY);
-      doc.text(formatCurrency(subtotal, true), 190, totalY, { align: 'right' });
+      doc.text(formatCurrencyForPdf(subtotal), 190, totalY, { align: 'right' });
       totalY += 6;
 
       if (values.discount > 0) {
           doc.text(`Discount (${values.discount}%):`, totalX, totalY);
-          doc.text(`-${formatCurrency(discountAmount, true)}`, 190, totalY, { align: 'right' });
+          doc.text(`-${formatCurrencyForPdf(discountAmount)}`, 190, totalY, { align: 'right' });
           totalY += 6;
       }
       if (values.tax > 0) {
           doc.text(`Tax (${values.tax}%):`, totalX, totalY);
-          doc.text(`+${formatCurrency(taxAmount, true)}`, 190, totalY, { align: 'right' });
+          doc.text(`+${formatCurrencyForPdf(taxAmount)}`, 190, totalY, { align: 'right' });
           totalY += 6;
       }
       if (values.shipping > 0) {
           doc.text(`Shipping:`, totalX, totalY);
-          doc.text(formatCurrency(values.shipping, true), 190, totalY, { align: 'right' });
+          doc.text(formatCurrencyForPdf(values.shipping), 190, totalY, { align: 'right' });
           totalY += 6;
       }
       
@@ -317,11 +328,11 @@ export function AiInvoiceGenerator() {
       doc.line(totalX, totalY, 190, totalY);
       totalY += 6;
       doc.text('TOTAL:', totalX, totalY);
-      doc.text(formatCurrency(total, true), 190, totalY, { align: 'right' });
+      doc.text(formatCurrencyForPdf(total), 190, totalY, { align: 'right' });
 
       // --- Footer Notes ---
-      let notesY = pageHeight - 40;
-      if (finalY + 50 > notesY) notesY = finalY + 15; // Position notes below table if there's no space at the bottom
+      const pageHeight = doc.internal.pageSize.height;
+      let notesY = totalY + 20 > pageHeight - 60 ? totalY + 10 : pageHeight - 40;
 
       doc.setFontSize(9);
       doc.setTextColor(100);
@@ -331,7 +342,7 @@ export function AiInvoiceGenerator() {
           doc.setFont('helvetica', 'bold');
           doc.text('Notes:', 20, notesY);
           doc.setFont('helvetica', 'normal');
-          doc.text(values.notes, 20, notesY + 4, { maxWidth: 80 });
+          doc.text(values.notes.split('\n'), 20, notesY + 4, { maxWidth: 80 });
       }
 
       if (values.bankDetails) {
@@ -508,7 +519,7 @@ export function AiInvoiceGenerator() {
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
-                          {formatCurrency((watchAllFields.lineItems[index]?.quantity || 0) * (watchAllFields.lineItems[index]?.rate || 0))}
+                          {formatCurrencyForUi((watchAllFields.lineItems[index]?.quantity || 0) * (watchAllFields.lineItems[index]?.rate || 0))}
                         </TableCell>
                         <TableCell>
                           <Button
@@ -550,23 +561,23 @@ export function AiInvoiceGenerator() {
                       </div>
                   </div>
                    <div className="space-y-2 border p-4 rounded-lg">
-                      <div className="flex justify-between items-center"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
+                      <div className="flex justify-between items-center"><span>Subtotal</span><span>{formatCurrencyForUi(subtotal)}</span></div>
                       <div className="flex justify-between items-center">
                           <span className="flex items-center gap-1"><Percent className="h-4 w-4 text-muted-foreground"/> Discount</span>
                           <Input type="number" {...form.register('discount')} className="w-24 h-8" />
                       </div>
-                       <div className="flex justify-between text-muted-foreground text-sm"><span></span><span>-{formatCurrency(discountAmount)}</span></div>
+                       <div className="flex justify-between text-muted-foreground text-sm"><span></span><span>-{formatCurrencyForUi(discountAmount)}</span></div>
                        <div className="flex justify-between items-center">
                           <span className="flex items-center gap-1"><Percent className="h-4 w-4 text-muted-foreground"/> Tax</span>
                           <Input type="number" {...form.register('tax')} className="w-24 h-8" />
                       </div>
-                      <div className="flex justify-between text-muted-foreground text-sm"><span></span><span>+{formatCurrency(taxAmount)}</span></div>
+                      <div className="flex justify-between text-muted-foreground text-sm"><span></span><span>+{formatCurrencyForUi(taxAmount)}</span></div>
                       <div className="flex justify-between items-center">
                           <span className="flex items-center gap-1"><Banknote className="h-4 w-4 text-muted-foreground"/> Shipping</span>
                           <Input type="number" {...form.register('shipping')} className="w-24 h-8" />
                       </div>
                       <div className="border-t my-2"></div>
-                      <div className="flex justify-between font-bold text-lg"><span>Total</span><span>{formatCurrency(total)}</span></div>
+                      <div className="flex justify-between font-bold text-lg"><span>Total</span><span>{formatCurrencyForUi(total)}</span></div>
                   </div>
               </div>
 
@@ -578,70 +589,70 @@ export function AiInvoiceGenerator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles /> AI Assistant
+                <Sparkles /> Actions
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-2">
-                Describe the invoice you want to create. For example: "Make an
-                invoice for John for 13 items."
-              </p>
-              <form onSubmit={(e) => {
-                  e.preventDefault();
-                  const formData = new FormData(e.currentTarget);
-                  const prompt = formData.get('ai-prompt') as string;
-                  handleAiPrompt(prompt);
-              }}>
-                  <div className="flex gap-2">
-                      <Input name="ai-prompt" placeholder="Enter a prompt..." disabled={isProcessingAi} />
-                      <Button type="submit" disabled={isProcessingAi}>
-                        {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
-                      </Button>
-                  </div>
-              </form>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings /> Controls & Templates
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-               <div>
-                  <label className="text-sm font-medium">Country (for Currency & Tax)</label>
-                  <Select value={selectedCountry} onValueChange={(val) => setSelectedCountry(val)}>
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Select Country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                          {countries.map(c => <SelectItem key={c.code} value={c.code}> <Globe className="inline-block mr-2 h-4 w-4"/> {c.name} ({c.currency})</SelectItem>)}
-                      </SelectContent>
-                  </Select>
+            <CardContent className="space-y-6">
+              <div>
+                <p className="text-sm font-medium mb-1">AI Assistant</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  e.g., "Make an invoice for John for 13 items."
+                </p>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    const prompt = formData.get('ai-prompt') as string;
+                    handleAiPrompt(prompt);
+                }}>
+                    <div className="flex gap-2">
+                        <Input name="ai-prompt" placeholder="Enter a prompt..." disabled={isProcessingAi} />
+                        <Button type="submit" disabled={isProcessingAi}>
+                          {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
+                        </Button>
+                    </div>
+                </form>
               </div>
-               <div>
-                  <label className="text-sm font-medium">Template</label>
-                  <Select value={selectedTemplate} onValueChange={(val) => setSelectedTemplate(val)}>
-                      <SelectTrigger className="mt-1"><SelectValue placeholder="Select Template" /></SelectTrigger>
-                      <SelectContent>
-                         <SelectItem value="modern">Modern</SelectItem>
-                         <SelectItem value="minimal">Minimal</SelectItem>
-                         <SelectItem value="professional">Professional</SelectItem>
-                      </SelectContent>
-                  </Select>
-              </div>
-              <div className="grid grid-cols-2 gap-2 pt-4">
-                 
-                <Button variant="outline" onClick={() => generatePdf('preview')} disabled={isProcessingPdf} className="w-full">
-                  {isProcessingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Eye className="mr-2 h-4 w-4"/>}
-                  Preview
-                </Button>
 
-                <Button variant="default" onClick={() => generatePdf('download')} disabled={isProcessingPdf}>
-                    {isProcessingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Download className="mr-2 h-4 w-4"/>}
-                    Download PDF
+              <div className='space-y-4'>
+                 <div>
+                    <label className="text-sm font-medium">Country (for Currency & Tax)</label>
+                    <Select value={selectedCountry} onValueChange={(val) => setSelectedCountry(val)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select Country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {countries.map(c => <SelectItem key={c.code} value={c.code}> <Globe className="inline-block mr-2 h-4 w-4"/> {c.name} ({c.currency})</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+                 <div>
+                    <label className="text-sm font-medium">Template</label>
+                    <Select value={selectedTemplate} onValueChange={(val) => setSelectedTemplate(val)}>
+                        <SelectTrigger className="mt-1"><SelectValue placeholder="Select Template" /></SelectTrigger>
+                        <SelectContent>
+                           <SelectItem value="modern">Modern</SelectItem>
+                           <SelectItem value="minimal">Minimal</SelectItem>
+                           <SelectItem value="professional">Professional</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-4 border-t">
+                <Button
+                  variant="default"
+                  className="w-full col-span-2"
+                  onClick={() => generatePdf('preview')}
+                  disabled={isProcessingPdf}
+                >
+                  {isProcessingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <RefreshCw className="mr-2 h-4 w-4"/>}
+                  Apply Changes & Preview
                 </Button>
-                <Button className="col-span-2" onClick={handleSend}><Send className="mr-2 h-4 w-4"/>Send Invoice</Button>
+                <Button variant="outline" onClick={() => generatePdf('download')} disabled={isProcessingPdf}>
+                    {isProcessingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Download className="mr-2 h-4 w-4"/>}
+                    Download
+                </Button>
+                <Button variant="outline" onClick={handleSend}><Send className="mr-2 h-4 w-4"/>Send</Button>
               </div>
             </CardContent>
           </Card>
