@@ -5,6 +5,7 @@ import { removeBackground } from "@/ai/flows/ai-product-background-remover";
 import { analyzeContentGap } from "@/ai/flows/analyze-content-gap";
 import { translateContent } from "@/ai/flows/translate-content";
 import { generateInvoiceFromPrompt } from "@/ai/flows/generate-invoice-from-prompt";
+import { generateFinancialsFromPrompt } from "@/ai/flows/generate-financials-from-prompt";
 
 
 async function fileToDataUri(file: File): Promise<string> {
@@ -135,5 +136,17 @@ export async function handleInvoiceGeneration(prompt: string) {
         return { data: result };
     } catch (error: any) {
         return { error: error.message || 'Failed to generate invoice from prompt.' };
+    }
+}
+
+export async function handleFinancialsGeneration(prompt: string) {
+    try {
+        if (!prompt) {
+            throw new Error('No prompt provided for financials generation.');
+        }
+        const result = await generateFinancialsFromPrompt({ prompt });
+        return { data: result };
+    } catch (error: any) {
+        return { error: error.message || 'Failed to generate financials from prompt.' };
     }
 }

@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Calculator, AlertTriangle, Loader2, LineChart, PieChart, Landmark, DollarSign, Scale } from 'lucide-react';
+import { Calculator, AlertTriangle, Loader2, LineChart, PieChart, Landmark, DollarSign, Scale, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { handleFinancialsGeneration } from '@/app/actions';
 
 const valuationSchema = z.object({
   revenue: z.coerce.number().min(10000, "Must be at least 10,000"),
@@ -52,6 +54,8 @@ interface ValuationResult {
 export function BusinessValuationCalculator() {
   const [valuationResult, setValuationResult] = useState<ValuationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessingAi, setIsProcessingAi] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<ValuationFormData>({
     resolver: zodResolver(valuationSchema),
@@ -127,6 +131,32 @@ export function BusinessValuationCalculator() {
       setIsLoading(false);
     }, 1500);
   };
+  
+  const handleAiPrompt = async (prompt: string) => {
+    if (!prompt) {
+      toast({ title: 'AI Info', description: 'Please enter a description, e.g., "a 2-year old SaaS company with $500k revenue"' });
+      return;
+    }
+    setIsProcessingAi(true);
+    try {
+        const result = await handleFinancialsGeneration(prompt);
+        if (result.error) {
+            throw new Error(result.error);
+        }
+        
+        const aiData = result.data as Omit<ValuationFormData, 'industry'>;
+        form.reset({
+            ...form.getValues(),
+            ...aiData,
+        });
+
+        toast({ title: 'AI Success', description: 'Financials populated from your prompt.'});
+    } catch(e: any) {
+        toast({ title: 'AI Error', description: e.message || 'Failed to generate financials from prompt.', variant: 'destructive'});
+    } finally {
+        setIsProcessingAi(false);
+    }
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', { 
@@ -147,105 +177,132 @@ export function BusinessValuationCalculator() {
         </AlertDescription>
       </Alert>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:col-span-2">
+        <div className="space-y-6 md:col-span-2">
             <Card>
-              <CardHeader><CardTitle>Financial Inputs</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                 <FormField control={form.control} name="revenue" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Last 12 Months Revenue ($)</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                 <FormField control={form.control} name="opex" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Operating Expenses (Opex, ex-Depr.) ($)</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                 <FormField control={form.control} name="depreciation" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Depreciation & Amortization ($)</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                 <FormField control={form.control} name="capex" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Capital Expenditures (CAPEX) ($)</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                 <FormField control={form.control} name="workingCapitalChange" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Annual Change in Working Capital ($)</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                 <FormField control={form.control} name="taxRate" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Corporate Tax Rate: {field.value}%</FormLabel>
-                        <FormControl><Slider min={0} max={100} step={1} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-
-                <FormField control={form.control} name="industry" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Industry</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger><SelectValue placeholder="Select an industry" /></SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="saas">SaaS / Technology</SelectItem>
-                        <SelectItem value="ecommerce">E-commerce / Retail</SelectItem>
-                        <SelectItem value="service">Service-Based Business</SelectItem>
-                        <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                        <SelectItem value="biotech">Biotech / Pharma</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                 <FormField control={form.control} name="growthRate" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Projected Annual Growth Rate: {field.value}%</FormLabel>
-                        <FormControl><Slider min={-50} max={100} step={1} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                <FormField control={form.control} name="discountRate" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Discount Rate (WACC): {field.value}%</FormLabel>
-                        <FormControl><Slider min={5} max={30} step={0.5} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )} />
-                <FormField control={form.control} name="ownerSalary" render={({ field }) => (
-                    <FormItem><FormLabel>Owner's Salary ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
-                )} />
-                 <FormField control={form.control} name="addBacks" render={({ field }) => (
-                    <FormItem><FormLabel>Discretionary Expenses / Add-backs ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
-                )} />
-                <FormField control={form.control} name="totalAssets" render={({ field }) => (
-                    <FormItem><FormLabel>Total Assets ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
-                )} />
-                <FormField control={form.control} name="totalLiabilities" render={({ field }) => (
-                    <FormItem><FormLabel>Total Liabilities ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
-                )} />
-              </CardContent>
+                 <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <Sparkles className="text-primary"/> AI Assistant
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      e.g., "A 3-year old profitable Shopify store doing $1M in sales"
+                    </p>
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.currentTarget);
+                        const prompt = formData.get('ai-prompt') as string;
+                        handleAiPrompt(prompt);
+                    }}>
+                        <div className="flex gap-2">
+                            <Input name="ai-prompt" placeholder="Describe a business..." disabled={isProcessingAi} />
+                            <Button type="submit" disabled={isProcessingAi}>
+                              {isProcessingAi ? <Loader2 className="animate-spin" /> : 'Generate'}
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
             </Card>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Calculating...</> : <><Calculator className="mr-2 h-4 w-4" />Calculate Valuation</>}
-            </Button>
-          </form>
-        </Form>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Card>
+                  <CardHeader><CardTitle>Financial Inputs</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                     <FormField control={form.control} name="revenue" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Last 12 Months Revenue ($)</FormLabel>
+                            <FormControl><Input type="number" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                     <FormField control={form.control} name="opex" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Operating Expenses (Opex, ex-Depr.) ($)</FormLabel>
+                            <FormControl><Input type="number" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                     <FormField control={form.control} name="depreciation" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Depreciation & Amortization ($)</FormLabel>
+                            <FormControl><Input type="number" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                     <FormField control={form.control} name="capex" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Capital Expenditures (CAPEX) ($)</FormLabel>
+                            <FormControl><Input type="number" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                     <FormField control={form.control} name="workingCapitalChange" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Annual Change in Working Capital ($)</FormLabel>
+                            <FormControl><Input type="number" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                     <FormField control={form.control} name="taxRate" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Corporate Tax Rate: {field.value}%</FormLabel>
+                            <FormControl><Slider min={0} max={100} step={1} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+
+                    <FormField control={form.control} name="industry" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Industry</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Select an industry" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="saas">SaaS / Technology</SelectItem>
+                            <SelectItem value="ecommerce">E-commerce / Retail</SelectItem>
+                            <SelectItem value="service">Service-Based Business</SelectItem>
+                            <SelectItem value="manufacturing">Manufacturing</SelectItem>
+                            <SelectItem value="biotech">Biotech / Pharma</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                     <FormField control={form.control} name="growthRate" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Projected Annual Growth Rate: {field.value}%</FormLabel>
+                            <FormControl><Slider min={-50} max={100} step={1} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    <FormField control={form.control} name="discountRate" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Discount Rate (WACC): {field.value}%</FormLabel>
+                            <FormControl><Slider min={5} max={30} step={0.5} onValueChange={(v) => field.onChange(v[0])} defaultValue={[field.value]} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    <FormField control={form.control} name="ownerSalary" render={({ field }) => (
+                        <FormItem><FormLabel>Owner's Salary ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                    )} />
+                     <FormField control={form.control} name="addBacks" render={({ field }) => (
+                        <FormItem><FormLabel>Discretionary Expenses / Add-backs ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                    )} />
+                    <FormField control={form.control} name="totalAssets" render={({ field }) => (
+                        <FormItem><FormLabel>Total Assets ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                    )} />
+                    <FormField control={form.control} name="totalLiabilities" render={({ field }) => (
+                        <FormItem><FormLabel>Total Liabilities ($)</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                    )} />
+                  </CardContent>
+                </Card>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/> Calculating...</> : <><Calculator className="mr-2 h-4 w-4" />Calculate Valuation</>}
+                </Button>
+              </form>
+            </Form>
+        </div>
         <div className="md:col-span-3">
             {isLoading ? (
                  <Card className="flex items-center justify-center text-center p-8 h-full">
@@ -324,5 +381,3 @@ export function BusinessValuationCalculator() {
     </div>
   );
 }
-
-    
