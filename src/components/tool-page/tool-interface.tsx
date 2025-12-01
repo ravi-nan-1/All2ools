@@ -19,6 +19,7 @@ import { AiInvoiceGenerator } from '@/app/tools/ai-invoice-generator/ai-invoice-
 import { BusinessValuationCalculator } from '@/app/tools/business-valuation-calculator/business-valuation-calculator';
 import { AiHeadshotGenerator } from '@/app/tools/ai-headshot-generator/ai-headshot-generator';
 import { KeywordClusterGenerator } from '@/app/tools/keyword-cluster-generator/keyword-cluster-generator';
+import { AiProductDescriptionGenerator } from '@/app/tools/ai-product-description-generator/ai-product-description-generator';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -61,6 +62,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <AiHeadshotGenerator />;
       case 'keyword-cluster-generator':
         return <KeywordClusterGenerator />;
+      case 'ai-product-description-generator':
+        return <AiProductDescriptionGenerator />;
       default:
         return <PlaceholderTool />;
     }

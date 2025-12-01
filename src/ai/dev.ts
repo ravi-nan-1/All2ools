@@ -11,3 +11,4 @@ import '@/ai/flows/generate-invoice-from-prompt.ts';
 import '@/ai/flows/generate-financials-from-prompt.ts';
 import '@/ai/flows/generate-headshot.ts';
 import '@/ai/flows/generate-keyword-clusters.ts';
+import '@/ai/flows/generate-product-description.ts';

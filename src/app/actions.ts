@@ -1,3 +1,4 @@
+
 "use server";
 
 import { z } from 'zod';
@@ -8,6 +9,7 @@ import { generateInvoiceFromPrompt } from "@/ai/flows/generate-invoice-from-prom
 import { generateFinancialsFromPrompt } from "@/ai/flows/generate-financials-from-prompt";
 import { generateHeadshot } from '@/ai/flows/generate-headshot';
 import { generateKeywordClusters } from '@/ai/flows/generate-keyword-clusters';
+import { generateProductDescription, GenerateProductDescriptionInputSchema } from '@/ai/flows/generate-product-description';
 
 
 async function fileToDataUri(file: File): Promise<string> {
@@ -197,4 +199,22 @@ export async function handleKeywordClusterGeneration(formData: FormData) {
     } catch (error: any) {
         return { error: error.message || 'Failed to generate keyword clusters.' };
     }
+}
+
+export async function handleProductDescriptionGeneration(
+  input: z.infer<typeof GenerateProductDescriptionInputSchema>
+) {
+  try {
+    const validatedInput = GenerateProductDescriptionInputSchema.parse(input);
+    const result = await generateProductDescription(validatedInput);
+    return { data: result };
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return { error: error.errors.map((e) => e.message).join(', ') };
+    }
+    return {
+      error:
+        error.message || 'Failed to generate product descriptions from prompt.',
+    };
+  }
 }
