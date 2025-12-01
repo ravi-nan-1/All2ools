@@ -1,4 +1,3 @@
-
 import { tools } from '@/lib/tools';
 import { notFound } from 'next/navigation';
 import { generateSEOMetadata } from '@/ai/flows/generate-seo-metadata';
@@ -7,12 +6,10 @@ import { translations } from '@/lib/translations';
 import type { Metadata } from 'next';
 import { placeholderImages } from '@/lib/placeholder-images';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const tool = tools.find((t) => t.slug === params.slug);
+const SLUG = 'ai-headshot-generator';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const tool = tools.find((t) => t.slug === SLUG);
 
   if (!tool) {
     return {
@@ -31,13 +28,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function ToolPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
-  const tool = tools.find((t) => t.slug === slug);
+export default async function ToolPage() {
+  const tool = tools.find((t) => t.slug === SLUG);
 
   if (!tool) {
     notFound();
@@ -65,32 +57,3 @@ export default async function ToolPage({
     />
   );
 }
-
-export async function generateStaticParams() {
-  // These pages have their own dedicated page.tsx files
-  const excludedSlugs = new Set([
-    'tinyurl-maker',
-    'ai-product-background-remover',
-    'content-gap-analyzer',
-    'api-latency-checker',
-    'pdf-to-word-converter',
-    'ai-tutor',
-    'excel-power-tools',
-    'image-compressor',
-    'jwt-decoder-validator',
-    'global-loan-optimizer',
-    'crypto-tax-calculator',
-    'forex-arbitrage-checker',
-    'ai-invoice-generator',
-    'business-valuation-calculator',
-    'ai-headshot-generator',
-  ]);
-
-  return tools
-    .filter((tool) => !excludedSlugs.has(tool.slug))
-    .map((tool) => ({
-      slug: tool.slug,
-    }));
-}
-
-    

@@ -17,6 +17,7 @@ import { CryptoTaxCalculator } from '@/app/tools/crypto-tax-calculator/crypto-ta
 import { ForexArbitrageChecker } from '@/app/tools/forex-arbitrage-checker/forex-arbitrage-checker';
 import { AiInvoiceGenerator } from '@/app/tools/ai-invoice-generator/ai-invoice-generator';
 import { BusinessValuationCalculator } from '@/app/tools/business-valuation-calculator/business-valuation-calculator';
+import { AiHeadshotGenerator } from '@/app/tools/ai-headshot-generator/ai-headshot-generator';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -55,6 +56,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <AiInvoiceGenerator />;
       case 'business-valuation-calculator':
         return <BusinessValuationCalculator />;
+      case 'ai-headshot-generator':
+        return <AiHeadshotGenerator />;
       default:
         return <PlaceholderTool />;
     }

@@ -9,3 +9,4 @@ import '@/ai/flows/find-tax-deductions.ts';
 import '@/ai/flows/translate-content.ts';
 import '@/ai/flows/generate-invoice-from-prompt.ts';
 import '@/ai/flows/generate-financials-from-prompt.ts';
+import '@/ai/flows/generate-headshot.ts';

@@ -6,6 +6,7 @@ import { analyzeContentGap } from "@/ai/flows/analyze-content-gap";
 import { translateContent } from "@/ai/flows/translate-content";
 import { generateInvoiceFromPrompt } from "@/ai/flows/generate-invoice-from-prompt";
 import { generateFinancialsFromPrompt } from "@/ai/flows/generate-financials-from-prompt";
+import { generateHeadshot } from '@/ai/flows/generate-headshot';
 
 
 async function fileToDataUri(file: File): Promise<string> {
@@ -149,4 +150,31 @@ export async function handleFinancialsGeneration(prompt: string) {
     } catch (error: any) {
         return { error: error.message || 'Failed to generate financials from prompt.' };
     }
+}
+
+export async function handleHeadshotGeneration(formData: FormData) {
+  try {
+    const imageFile = formData.get('image') as File;
+    const style = formData.get('style') as string;
+
+    if (!imageFile) {
+      return { error: 'No image file provided.' };
+    }
+     if (imageFile.size > 4 * 1024 * 1024) { // 4MB limit
+        return { error: 'Image file is too large. Please use a file under 4MB.' };
+    }
+    if (!style) {
+        return { error: 'No style selected.' };
+    }
+
+    const photoDataUri = await fileToDataUri(imageFile);
+    const result = await generateHeadshot({ photoDataUri, style });
+    return result;
+  } catch (error: any) {
+    console.error('Headshot generation action error:', error);
+    if (error.message.includes('upstream')) {
+        return { error: 'The AI service is currently unavailable. Please try again later.' };
+    }
+    return { error: error.message || 'An unexpected error occurred during headshot generation.' };
+  }
 }
