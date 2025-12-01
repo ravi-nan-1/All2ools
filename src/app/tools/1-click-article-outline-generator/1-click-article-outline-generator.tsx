@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import {
   Card,
   CardContent,
@@ -16,13 +18,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, Sparkles, Copy, FileText, Bot, Link, FileUp, BrainCircuit, Users } from 'lucide-react';
+import { Loader2, Sparkles, Copy, FileText, Bot, Link, FileUp, BrainCircuit, Users, Download, FileDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { handleArticleOutlineGeneration } from '@/app/actions';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import type { GenerateArticleOutlineOutput } from '@/ai/flows/generate-article-outline';
 
 const formSchema = z.object({
@@ -71,9 +74,34 @@ export function OneClickArticleOutlineGenerator() {
     toast({ title: 'Copied to clipboard!' });
   };
   
-  const copyOutlineToClipboard = () => {
-    if (!result) return;
+  const getOutlineAsText = (format: 'md' | 'txt' | 'html'): string => {
+    if (!result) return '';
     
+    if (format === 'html') {
+        let html = `<!DOCTYPE html><html><head><title>${result.title}</title></head><body>`;
+        html += `<h1>${result.title}</h1>\n`;
+        html += `<p><strong>Introduction:</strong> ${result.introduction}</p>\n`;
+        result.sections.forEach(section => {
+            html += `<h2>${section.heading}</h2>\n`;
+            section.subsections?.forEach(sub => {
+                html += `<h3>${sub.heading}</h3>\n<ul>\n`;
+                sub.points.forEach(p => {
+                    html += `<li>${p}</li>\n`;
+                });
+                html += `</ul>\n`;
+            });
+        });
+        html += `<h2>Conclusion</h2>\n<p>${result.conclusion}</p>\n`;
+        if(result.faq && result.faq.length > 0) {
+            html += `<h2>Frequently Asked Questions</h2>\n`;
+            result.faq.forEach(f => {
+                html += `<h3>${f.question}</h3>\n<p>${f.answer}</p>\n`;
+            });
+        }
+        html += `</body></html>`;
+        return html;
+    }
+
     let text = `# ${result.title}\n\n`;
     text += `## Introduction\n${result.introduction}\n\n`;
     result.sections.forEach(section => {
@@ -94,7 +122,85 @@ export function OneClickArticleOutlineGenerator() {
         });
     }
 
-    copyToClipboard(text);
+    if (format === 'txt') {
+        return text.replace(/#/g, '').replace(/-/g, '*');
+    }
+
+    return text;
+  };
+  
+  const handleDownload = (format: 'md' | 'txt' | 'html') => {
+      const content = getOutlineAsText(format);
+      const blob = new Blob([content], { type: `text/${format}` });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `article-outline.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+  };
+  
+  const handleDownloadPdf = () => {
+    if (!result) return;
+    const doc = new jsPDF();
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text(result.title, 14, 22);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text(`Introduction: ${result.introduction}`, 14, 32, { maxWidth: 180 });
+
+    let y = 45;
+    result.sections.forEach(section => {
+        if (y > 270) { doc.addPage(); y = 22; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.text(`H2: ${section.heading}`, 14, y);
+        y += 7;
+
+        section.subsections?.forEach(sub => {
+            if (y > 270) { doc.addPage(); y = 22; }
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.text(`H3: ${sub.heading}`, 20, y);
+            y += 7;
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            sub.points.forEach(point => {
+                if (y > 270) { doc.addPage(); y = 22; }
+                doc.text(`- ${point}`, 25, y, { maxWidth: 160 });
+                y += 5;
+            });
+        });
+        y += 5;
+    });
+
+    if(result.faq && result.faq.length > 0) {
+        if (y > 260) { doc.addPage(); y = 22; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.text('Frequently Asked Questions', 14, y);
+        y += 7;
+
+        result.faq.forEach(f => {
+            if (y > 270) { doc.addPage(); y = 22; }
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.text(f.question, 14, y, { maxWidth: 180 });
+            y += 6;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            doc.text(f.answer, 14, y, { maxWidth: 180 });
+            y += 10;
+        });
+    }
+
+    doc.save('article-outline.pdf');
   };
 
   const onSubmit = async (data: FormValues) => {
@@ -291,9 +397,24 @@ export function OneClickArticleOutlineGenerator() {
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
                 <span>Generated Outline</span>
-                <Button variant="ghost" size="sm" onClick={copyOutlineToClipboard} disabled={!result}>
-                    <Copy className="mr-2 h-4 w-4" /> Copy All
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" onClick={() => copyToClipboard(getOutlineAsText('md'))} disabled={!result}>
+                      <Copy className="mr-2 h-4 w-4" /> Copy All
+                  </Button>
+                   <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" disabled={!result}>
+                          <Download className="mr-2 h-4 w-4" /> Export
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem onClick={handleDownloadPdf}><FileDown className="mr-2 h-4 w-4"/>Download as PDF</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDownload('md')}><FileDown className="mr-2 h-4 w-4"/>Download as Markdown (.md)</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDownload('txt')}><FileDown className="mr-2 h-4 w-4"/>Download as Text (.txt)</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDownload('html')}><FileDown className="mr-2 h-4 w-4"/>Download as HTML (.html)</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </CardTitle>
             <CardDescription>
               An SEO-friendly structure for your article, created by AI.
