@@ -51,10 +51,14 @@ interface ValuationResult {
   assetValuation: { nav: number };
 }
 
-type Country = 'US' | 'IN';
+type Country = 'US' | 'IN' | 'GB' | 'CA' | 'AU' | 'DE';
 const countries: { code: Country, name: string, currency: string, locale: string }[] = [
     { code: 'US', name: 'United States', currency: 'USD', locale: 'en-US' },
     { code: 'IN', name: 'India', currency: 'INR', locale: 'en-IN' },
+    { code: 'GB', name: 'United Kingdom', currency: 'GBP', locale: 'en-GB' },
+    { code: 'CA', name: 'Canada', currency: 'CAD', locale: 'en-CA' },
+    { code: 'AU', name: 'Australia', currency: 'AUD', locale: 'en-AU' },
+    { code: 'DE', name: 'Germany', currency: 'EUR', locale: 'de-DE' },
 ]
 
 export function BusinessValuationCalculator() {
@@ -70,6 +74,8 @@ export function BusinessValuationCalculator() {
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         if (timeZone.startsWith('Asia/')) {
             setCountry('IN');
+        } else if (timeZone.startsWith('Europe/')) {
+            setCountry('GB');
         } else {
             setCountry('US');
         }
@@ -103,6 +109,7 @@ export function BusinessValuationCalculator() {
   
   const { reset } = form;
   useEffect(() => {
+      const isIndia = country === 'IN';
       reset({
         revenue: isIndia ? 5000000 : 500000,
         opex: isIndia ? 3000000 : 300000,
@@ -118,7 +125,7 @@ export function BusinessValuationCalculator() {
         totalAssets: isIndia ? 4000000 : 400000,
         totalLiabilities: isIndia ? 1500000 : 150000,
       });
-  }, [country, isIndia, reset]);
+  }, [country, reset]);
 
 
   const onSubmit = (data: ValuationFormData) => {

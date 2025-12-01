@@ -88,9 +88,9 @@ const countries = [
     { code: 'GB', name: 'United Kingdom', currency: 'GBP' },
     { code: 'EU', name: 'European Union', currency: 'EUR' },
     { code: 'IN', name: 'India', currency: 'INR' },
-    { code: 'JP', name: 'Japan', currency: 'JPY' },
     { code: 'CA', name: 'Canada', currency: 'CAD' },
     { code: 'AU', name: 'Australia', currency: 'AUD' },
+    { code: 'DE', name: 'Germany', currency: 'EUR' },
 ];
 
 export function AiInvoiceGenerator() {
