@@ -20,7 +20,6 @@ import { BusinessValuationCalculator } from '@/app/tools/business-valuation-calc
 import { AiHeadshotGenerator } from '@/app/tools/ai-headshot-generator/ai-headshot-generator';
 import { KeywordClusterGenerator } from '@/app/tools/keyword-cluster-generator/keyword-cluster-generator';
 import { AiProductDescriptionGenerator } from '@/app/tools/ai-product-description-generator/ai-product-description-generator';
-import { AiSchemaMarkupGenerator } from '@/app/tools/ai-schema-markup-generator/ai-schema-markup-generator';
 import { JsonExcelConverter } from '@/app/tools/json-excel-converter/json-excel-converter';
 
 interface ToolInterfaceProps {
@@ -66,8 +65,6 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <KeywordClusterGenerator />;
       case 'ai-product-description-generator':
         return <AiProductDescriptionGenerator />;
-      case 'ai-schema-markup-generator':
-        return <AiSchemaMarkupGenerator />;
       case 'json-excel-converter':
         return <JsonExcelConverter />;
       default:
