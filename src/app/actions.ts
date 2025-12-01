@@ -10,7 +10,7 @@ import { generateFinancialsFromPrompt } from "@/ai/flows/generate-financials-fro
 import { generateHeadshot } from '@/ai/flows/generate-headshot';
 import { generateKeywordClusters } from '@/ai/flows/generate-keyword-clusters';
 import { generateProductDescription } from '@/ai/flows/generate-product-description';
-import { GenerateRegexInputSchema, GenerateRegexOutputSchema, generateRegexFromText, DescribeRegexInputSchema, DescribeRegexOutputSchema, describeRegex } from '@/ai/flows/generate-regex-from-text';
+import { generateRegexFromText, describeRegex, type GenerateRegexInput, type DescribeRegexInput } from '@/ai/flows/generate-regex-from-text';
 
 const GenerateProductDescriptionInputSchema = z.object({
   productName: z.string().min(3, 'Product name must be at least 3 characters.'),
@@ -228,11 +228,10 @@ export async function handleProductDescriptionGeneration(
 
 
 export async function handleRegexGeneration(
-  input: z.infer<typeof GenerateRegexInputSchema>
+  input: GenerateRegexInput
 ) {
   try {
-    const validatedInput = GenerateRegexInputSchema.parse(input);
-    const result = await generateRegexFromText(validatedInput);
+    const result = await generateRegexFromText(input);
     return { data: result };
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -246,11 +245,10 @@ export async function handleRegexGeneration(
 }
     
 export async function handleRegexDescription(
-    input: z.infer<typeof DescribeRegexInputSchema>
+    input: DescribeRegexInput
 ) {
     try {
-        const validatedInput = DescribeRegexInputSchema.parse(input);
-        const result = await describeRegex(validatedInput);
+        const result = await describeRegex(input);
         return { data: result };
     } catch (error: any) {
         if (error instanceof z.ZodError) {

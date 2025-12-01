@@ -11,7 +11,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-export const GenerateRegexInputSchema = z.object({
+const GenerateRegexInputSchema = z.object({
   sampleText: z.string().describe('A piece of sample text that contains the pattern to be matched.'),
   isCaseSensitive: z.boolean().describe('Whether the regex should be case-sensitive.'),
   isGlobal: z.boolean().describe('Whether the regex should find all matches (global) or just the first one.'),
@@ -19,7 +19,7 @@ export const GenerateRegexInputSchema = z.object({
 });
 export type GenerateRegexInput = z.infer<typeof GenerateRegexInputSchema>;
 
-export const GenerateRegexOutputSchema = z.object({
+const GenerateRegexOutputSchema = z.object({
   regex: z.string().describe('The generated regular expression pattern, enclosed in slashes (e.g., `/[a-z]+/`).'),
   explanation: z.string().describe('A step-by-step, human-readable explanation of how the regex works. Use HTML formatting with bold tags for regex parts and code tags for examples.'),
   sampleMatches: z.array(z.string()).describe('An array of 2-3 sample strings that WOULD match the generated regex.'),
@@ -71,12 +71,12 @@ const generateRegexFlow = ai.defineFlow(
 
 
 // New flow for describing regex
-export const DescribeRegexInputSchema = z.object({
+const DescribeRegexInputSchema = z.object({
     regex: z.string().describe('A regular expression string.'),
 });
 export type DescribeRegexInput = z.infer<typeof DescribeRegexInputSchema>;
 
-export const DescribeRegexOutputSchema = z.object({
+const DescribeRegexOutputSchema = z.object({
     explanation: z.string().describe('A detailed, human-readable explanation of the provided regex. Use HTML formatting.'),
 });
 export type DescribeRegexOutput = z.infer<typeof DescribeRegexOutputSchema>;
