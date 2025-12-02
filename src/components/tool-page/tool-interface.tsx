@@ -24,6 +24,7 @@ import { JsonExcelConverter } from '@/app/tools/json-excel-converter/json-excel-
 import { RegexGeneratorFromText } from '@/app/tools/regex-generator-from-text/regex-generator-from-text';
 import { WebhookTester } from '@/app/tools/webhook-tester/webhook-tester';
 import { OneClickArticleOutlineGenerator } from '@/app/tools/1-click-article-outline-generator/1-click-article-outline-generator';
+import { InvoiceExcelExtractor } from '@/app/tools/invoice-excel-extractor/invoice-excel-extractor';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -76,6 +77,8 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <WebhookTester />;
        case '1-click-article-outline-generator':
         return <OneClickArticleOutlineGenerator />;
+      case 'invoice-excel-extractor':
+        return <InvoiceExcelExtractor />;
       default:
         return <PlaceholderTool />;
     }
