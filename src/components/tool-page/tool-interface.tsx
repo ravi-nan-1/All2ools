@@ -25,7 +25,7 @@ import { RegexGeneratorFromText } from '@/app/tools/regex-generator-from-text/re
 import { WebhookTester } from '@/app/tools/webhook-tester/webhook-tester';
 import { OneClickArticleOutlineGenerator } from '@/app/tools/1-click-article-outline-generator/1-click-article-outline-generator';
 import { InvoiceExcelExtractor } from '@/app/tools/invoice-excel-extractor/invoice-excel-extractor';
-import { AiHumanizer } from '@/app/tools/ai-humanizer/ai-humanizer';
+import { AiHumanizer } from '@/app/(iframe-tools)/ai-humanizer/ai-humanizer';
 
 interface ToolInterfaceProps {
   slug: string;

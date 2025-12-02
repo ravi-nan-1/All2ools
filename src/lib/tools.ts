@@ -37,6 +37,7 @@ import {
   FileSpreadsheet,
   Minimize,
   Feather,
+  QrCode,
 } from 'lucide-react';
 
 export type ToolCategory =
@@ -70,6 +71,17 @@ export const tools: Tool[] = [
     features: ['ai-humanizer_features'],
     howItWorks: ['ai-humanizer_how_it_works'],
     useCases: ['ai-humanizer_use_cases'],
+  },
+  {
+    name: 'Free QR Code Generator',
+    slug: 'free-qr-code-generator',
+    category: 'Developer',
+    icon: 'QrCode',
+    description: 'free-qr-code-generator_description',
+    longDescription: 'free-qr-code-generator_long_description',
+    features: ['free-qr-code-generator_features'],
+    howItWorks: ['free-qr-code-generator_how_it_works'],
+    useCases: ['free-qr-code-generator_use_cases'],
   },
   {
     name: 'Plagiarism Checker',
