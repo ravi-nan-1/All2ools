@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import * as icons from 'lucide-react';
@@ -15,7 +16,7 @@ import type { Tool } from '@/lib/tools';
 import { useLanguage } from '@/hooks/use-language';
 import { ArrowRight, Wrench } from 'lucide-react';
 
-export type ToolWithImage = Tool & { image: string; imageHint: string };
+export type ToolWithImage = Tool & { image: string; imageHint: string, width: number, height: number };
 
 interface ToolCardProps {
   tool: ToolWithImage;
@@ -31,7 +32,8 @@ export function ToolCard({ tool }: ToolCardProps) {
           <Image
             src={tool.image}
             alt={tool.name}
-            fill
+            width={tool.width}
+            height={tool.height}
             className="rounded-t-lg object-cover"
             data-ai-hint={tool.imageHint}
           />

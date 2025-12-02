@@ -1,3 +1,4 @@
+
 import { tools } from '@/lib/tools';
 import { HomePageClient } from '@/components/homepage/home-page-client';
 import { placeholderImages } from '@/lib/placeholder-images';
@@ -11,6 +12,8 @@ export default function Home() {
       ...toolWithoutIcon,
       icon: tool.icon,
       image: image?.imageUrl || `https://picsum.photos/seed/${tool.slug}/500/300`,
+      width: 500,
+      height: 300,
       imageHint: image?.imageHint || 'tool illustration',
     };
   });

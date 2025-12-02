@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/shared/header';
 import { Footer } from '@/components/shared/footer';
 import { LanguageProvider } from '@/context/language-context';
+import { ClientOnly } from '@/components/shared/client-only';
 import { DeferredAdBanner } from '@/components/shared/deferred-ad-banner';
 
 export const metadata: Metadata = {
@@ -30,11 +31,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          rel="preload"
-          as="style"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro&display=swap"
-        />
-        <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro&display=swap"
         />
@@ -44,20 +40,24 @@ export default function RootLayout({
           <div className="flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">{children}</main>
-            <DeferredAdBanner
-              adSlot="YOUR_BOTTOM_BANNER_AD_SLOT_ID"
-              className="w-full min-h-[100px] flex items-center justify-center bg-muted my-4"
-            />
+            <ClientOnly>
+              <DeferredAdBanner
+                adSlot="YOUR_BOTTOM_BANNER_AD_SLOT_ID"
+                className="w-full min-h-[100px] flex items-center justify-center bg-muted my-4"
+              />
+            </ClientOnly>
             <Footer />
           </div>
           <Toaster />
-          <DeferredAdBanner
-            adSlot="YOUR_STICKY_AD_SLOT_ID"
-            adFormat="auto"
-            dataFullWidthResponsive={true}
-            className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-center border-t bg-background"
-            style={{ minHeight: '50px' }}
-          />
+          <ClientOnly>
+            <DeferredAdBanner
+              adSlot="YOUR_STICKY_AD_SLOT_ID"
+              adFormat="auto"
+              dataFullWidthResponsive={true}
+              className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-center border-t bg-background"
+              style={{ minHeight: '50px' }}
+            />
+          </ClientOnly>
         </LanguageProvider>
       </body>
     </html>
