@@ -1,6 +1,12 @@
 {
   "placeholderImages": [
     {
+      "id": "ai-humanizer",
+      "description": "AI Humanizer",
+      "imageUrl": "https://images.unsplash.com/photo-1516131206008-dd041a9764fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3cml0aW5nfGVufDB8fHx8MTc2MzMyNDQyN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "creative writing"
+    },
+    {
       "id": "ai-tutor",
       "description": "AI Tutor",
       "imageUrl": "https://images.unsplash.com/photo-1543269865-cbf427effbad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzdHVkeWluZ3xlbnwwfHx8fDE3NjMzMDQwNzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -129,7 +135,7 @@
     {
       "id": "jwt-decoder-validator",
       "description": "JWT Decoder & Validator",
-      "imageUrl": "https://images.unsplash.com/photo-1696013910376-c56f76dd8178?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzZWN1cml0eSUyMHRva2VufGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1696013910376-c56f76dd8178?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzZWN1cml0eSUyMHRva2VufGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "security token"
     },
     {
@@ -159,7 +165,7 @@
     {
       "id": "sleep-score-analyzer",
       "description": "Sleep Score Analyzer",
-      "imageUrl": "https://images.unsplash.com/photo-1609680582612-4265665a01b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzbGVlcCUyMHRyYWNraW5nfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1609680582612-4265665a01b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzbGVlcCUyMHRyYWNraW5nfGVufDB8fHx8MTc2MzMwNDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "sleep tracking"
     },
     {
@@ -189,13 +195,13 @@
     {
       "id": "ai-contract-summarizer",
       "description": "AI Contract Summarizer",
-      "imageUrl": "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdhbCUyMGRvY3VtZW50fGVufDB8fHx8MTc2MzE4NDkzMXww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdhbCUyMGRvY3VtZW50fGVufDB8fHx8MTc2MzE4NDkzMXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "legal document"
     },
     {
       "id": "invoice-excel-extractor",
       "description": "Invoice -> Excel Extractor",
-      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwZXh0cmFjdGlvbnxlbnwwfHx8fDE3NjMyMDkwODN8MA&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1740908900846-4bbd4f22c975?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwZXh0cmFjdGlvbnxlbnwwfHx8fDE3NjMyMDkwODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "data extraction"
     }
   ]

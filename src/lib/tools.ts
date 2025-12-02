@@ -36,6 +36,7 @@ import {
   GraduationCap,
   FileSpreadsheet,
   Minimize,
+  Feather,
 } from 'lucide-react';
 
 export type ToolCategory =
@@ -59,6 +60,17 @@ export interface Tool {
 }
 
 export const tools: Tool[] = [
+  {
+    name: 'AI Humanizer',
+    slug: 'ai-humanizer',
+    category: 'SEO',
+    icon: 'Feather',
+    description: 'ai-humanizer_description',
+    longDescription: 'ai-humanizer_long_description',
+    features: ['ai-humanizer_features'],
+    howItWorks: ['ai-humanizer_how_it_works'],
+    useCases: ['ai-humanizer_use_cases'],
+  },
   {
     name: 'Plagiarism Checker',
     slug: 'plagiarism-checker',

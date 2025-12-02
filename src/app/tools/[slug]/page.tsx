@@ -69,6 +69,7 @@ export default async function ToolPage({
 export async function generateStaticParams() {
   // These pages have their own dedicated page.tsx files
   const excludedSlugs = new Set([
+    'ai-humanizer',
     'tinyurl-maker',
     'ai-product-background-remover',
     'content-gap-analyzer',
