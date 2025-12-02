@@ -95,6 +95,27 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
         return <PlaceholderTool />;
     }
   };
+  
+  const iframeTools = [
+    'ai-humanizer',
+    'free-qr-code-generator',
+    'free-cheat-sheet-generator',
+    'free-image-file-compressor',
+    'tinyurl-maker',
+    'ai-product-background-remover',
+    'pdf-to-word-converter',
+    'ai-tutor',
+    'excel-power-tools',
+    'plagiarism-checker'
+  ];
+
+  if (iframeTools.includes(slug)) {
+    return (
+      <div>
+        {renderTool()}
+      </div>
+    );
+  }
 
   return (
     <Card className="shadow-lg border-primary/20 border-2">
