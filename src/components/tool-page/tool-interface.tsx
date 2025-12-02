@@ -1,14 +1,9 @@
 
-import { AiProductBackgroundRemover } from '@/app/tools/ai-product-background-remover/ai-product-background-remover';
 import { ContentGapAnalyzer } from '@/app/tools/content-gap-analyzer/content-gap-analyzer';
 import { ApiLatencyChecker } from '@/app/tools/api-latency-checker/api-latency-checker';
 import { PlaceholderTool } from './tools/placeholder-tool';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Wrench } from 'lucide-react';
-import { TinyUrlMaker } from '@/app/tools/tinyurl-maker/tinyurl-maker';
-import { PdfToWordConverter } from '@/app/tools/pdf-to-word-converter/pdf-to-word-converter';
-import { AiTutor } from '@/app/tools/ai-tutor/ai-tutor';
-import { ExcelPowerTools } from '@/app/tools/excel-power-tools/excel-power-tools';
 import { ImageCompressor } from '@/app/tools/image-compressor/image-compressor';
 import { PlagiarismChecker } from '@/app/tools/plagiarism-checker/plagiarism-checker';
 import { JwtDecoderValidator } from '@/app/tools/jwt-decoder-validator/jwt-decoder-validator';
@@ -29,6 +24,11 @@ import { AiHumanizer } from '@/app/(iframe-tools)/ai-humanizer/ai-humanizer';
 import { FreeQrCodeGenerator } from '@/app/(iframe-tools)/free-qr-code-generator/free-qr-code-generator';
 import { FreeCheatSheetGenerator } from '@/app/(iframe-tools)/free-cheat-sheet-generator/free-cheat-sheet-generator';
 import { FreeImageFileCompressor } from '@/app/(iframe-tools)/free-image-file-compressor/free-image-file-compressor';
+import { TinyUrlMaker } from '@/app/tools/tinyurl-maker/tinyurl-maker';
+import { PdfToWordConverter } from '@/app/tools/pdf-to-word-converter/pdf-to-word-converter';
+import { AiTutor } from '@/app/tools/ai-tutor/ai-tutor';
+import { ExcelPowerTools } from '@/app/tools/excel-power-tools/excel-power-tools';
+import { AiProductBackgroundRemover } from '@/app/tools/ai-product-background-remover/ai-product-background-remover';
 
 interface ToolInterfaceProps {
   slug: string;
@@ -111,7 +111,7 @@ export function ToolInterface({ slug }: ToolInterfaceProps) {
 
   if (iframeTools.includes(slug)) {
     return (
-      <div>
+      <div className="h-screen -m-8">
         {renderTool()}
       </div>
     );

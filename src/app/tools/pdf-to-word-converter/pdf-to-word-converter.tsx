@@ -1,3 +1,4 @@
+
 "use client";
 
 export function PdfToWordConverter() {
@@ -7,6 +8,7 @@ export function PdfToWordConverter() {
     <iframe
       src={toolUrl}
       className="w-full h-full border-0"
+      style={{ height: '100vh' }}
       title="PDF to Word Converter"
       allow="fullscreen"
     />

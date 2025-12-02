@@ -1,3 +1,4 @@
+
 "use client";
 
 export function TinyUrlMaker() {
@@ -7,6 +8,7 @@ export function TinyUrlMaker() {
     <iframe
       src={toolUrl}
       className="w-full h-full border-0"
+      style={{ height: '100vh' }}
       title="TinyURL Maker"
       allow="fullscreen"
     />

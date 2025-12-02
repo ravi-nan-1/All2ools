@@ -1,3 +1,4 @@
+
 "use client";
 
 export function ExcelPowerTools() {
@@ -7,6 +8,7 @@ export function ExcelPowerTools() {
     <iframe
       src={toolUrl}
       className="w-full h-full border-0"
+      style={{ height: '100vh' }}
       title="Excel Power Tools"
       allow="fullscreen"
     />
