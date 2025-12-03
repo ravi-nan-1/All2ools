@@ -1,14 +1,14 @@
 "use client";
 
-export function AiHumanizer() {
-  const toolUrl = 'https://humanizer.all2ools.com/';
+export function ExcelPowerTools() {
+  const toolUrl = 'https://iloveexcel.all2ools.com';
 
   return (
     <iframe
       src={toolUrl}
       className="w-full h-full border-0"
       style={{ height: '100vh' }}
-      title="AI Humanizer Tool"
+      title="Excel Power Tools"
       allow="fullscreen"
     />
   );

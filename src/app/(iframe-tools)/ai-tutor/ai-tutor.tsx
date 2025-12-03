@@ -1,14 +1,14 @@
 "use client";
 
-export function AiHumanizer() {
-  const toolUrl = 'https://humanizer.all2ools.com/';
+export function AiTutor() {
+  const toolUrl = 'https://AItutor.all2ools.com';
 
   return (
     <iframe
       src={toolUrl}
       className="w-full h-full border-0"
       style={{ height: '100vh' }}
-      title="AI Humanizer Tool"
+      title="AI Tutor"
       allow="fullscreen"
     />
   );
