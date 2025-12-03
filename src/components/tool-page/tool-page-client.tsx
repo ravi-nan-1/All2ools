@@ -12,6 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, CheckCircle2, Sparkles, BookOpen, BrainCircuit, HelpCircle, ArrowRight } from 'lucide-react';
 import { ToolInterface } from './tool-interface';
 import { DeferredAdBanner } from '@/components/shared/deferred-ad-banner';
+import { toolClusters } from '@/lib/tool-clusters';
+import { tools } from '@/lib/tools';
+import { ToolCard } from '@/components/homepage/tool-card';
+import { placeholderImages } from '@/lib/placeholder-images';
 
 interface ToolPageClientProps {
   tool: Tool & { image: string; imageHint: string };
@@ -47,6 +51,22 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
   const useCaseItems = useCasesContent.split('\n').map(u => u.trim()).filter(Boolean);
 
   const isIframeTool = iframeTools.includes(tool.slug);
+
+  const relatedCluster = toolClusters.find(cluster => cluster.slugs.includes(tool.slug));
+  const relatedTools = relatedCluster
+    ? tools
+        .filter(t => relatedCluster.slugs.includes(t.slug) && t.slug !== tool.slug)
+        .map(t => {
+          const image = placeholderImages.find(img => img.id === t.slug);
+          return {
+            ...t,
+            image: image?.imageUrl || `https://picsum.photos/seed/${t.slug}/300/300`,
+            width: 300,
+            height: 300,
+            imageHint: image?.imageHint || 'tool illustration',
+          };
+        })
+    : [];
 
   if (isIframeTool) {
     return <ToolInterface slug={tool.slug} />;
@@ -104,6 +124,17 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
                   className="w-full min-h-[100px] flex items-center justify-center bg-muted rounded-lg"
                 />
               </div>
+              
+              {relatedTools.length > 0 && relatedCluster && (
+                <section>
+                  <h3 className="text-2xl font-bold text-foreground mb-6 font-headline text-center">{relatedCluster.title}</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {relatedTools.map(relatedTool => (
+                      <ToolCard key={relatedTool.slug} tool={relatedTool} />
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <section>
                 <Tabs defaultValue="features" className="w-full">
