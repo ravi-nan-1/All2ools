@@ -3,5 +3,5 @@ export default function IframeLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="w-full h-screen">{children}</div>;
+  return <div className="w-full h-screen overflow-hidden">{children}</div>;
 }

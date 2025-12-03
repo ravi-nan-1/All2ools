@@ -2,11 +2,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { Header } from '@/components/shared/header';
-import { Footer } from '@/components/shared/footer';
 import { LanguageProvider } from '@/context/language-context';
 import { ClientOnly } from '@/components/shared/client-only';
 import { DeferredAdBanner } from '@/components/shared/deferred-ad-banner';
+import { Suspense } from 'react';
+import { MainLayout } from '@/components/shared/main-layout';
+
 
 export const metadata: Metadata = {
   title: 'All2ools | Free AI-Powered Tools for Finance, SEO, & Business',
@@ -42,17 +43,9 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <LanguageProvider>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <ClientOnly>
-              <DeferredAdBanner
-                adSlot="YOUR_BOTTOM_BANNER_AD_SLOT_ID"
-                className="w-full min-h-[100px] flex items-center justify-center bg-muted my-4"
-              />
-            </ClientOnly>
-            <Footer />
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <MainLayout>{children}</MainLayout>
+          </Suspense>
           <Toaster />
           <ClientOnly>
             <DeferredAdBanner
