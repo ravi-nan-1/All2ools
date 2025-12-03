@@ -1,14 +1,15 @@
 
-"use client";
+'use client';
 
-import { useState, useMemo, Fragment } from 'react';
-import type { Tool, ToolCategory } from '@/lib/tools';
+import { useState, useMemo } from 'react';
+import type { ToolCategory } from '@/lib/tools';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ToolCard, type ToolWithImage } from './tool-card';
 import { useLanguage } from '@/hooks/use-language';
 import { Search } from 'lucide-react';
 import { AdBanner } from '@/components/shared/ad-banner';
+import { WhyAll2ools } from './why-all2ools';
 
 const categories: ToolCategory[] = [
   'Finance',
@@ -106,6 +107,10 @@ export function HomePageClient({ tools }: HomePageClientProps) {
             <p>Try adjusting your search or filters.</p>
           </div>
         )}
+      </section>
+
+      <section className="py-16 md:py-24">
+        <WhyAll2ools />
       </section>
     </div>
   );
