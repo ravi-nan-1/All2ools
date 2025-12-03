@@ -18,6 +18,19 @@ interface ToolPageClientProps {
   aiContent: GenerateSEOMetadataOutput;
 }
 
+const iframeTools = [
+    'ai-humanizer',
+    'free-qr-code-generator',
+    'free-cheat-sheet-generator',
+    'free-image-file-compressor',
+    'tinyurl-maker',
+    'ai-product-background-remover',
+    'pdf-to-word-converter',
+    'ai-tutor',
+    'excel-power-tools',
+    'plagiarism-checker'
+  ];
+
 export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
   const { translate } = useLanguage();
   const { jsonLdSchema } = aiContent;
@@ -32,6 +45,12 @@ export function ToolPageClient({ tool, aiContent }: ToolPageClientProps) {
   const featureItems = featuresContent.split('\n').map(f => f.trim()).filter(Boolean);
   const howItWorksItems = howItWorksContent.split('\n').map(s => s.trim()).filter(Boolean);
   const useCaseItems = useCasesContent.split('\n').map(u => u.trim()).filter(Boolean);
+
+  const isIframeTool = iframeTools.includes(tool.slug);
+
+  if (isIframeTool) {
+    return <ToolInterface slug={tool.slug} />;
+  }
 
   return (
     <>
