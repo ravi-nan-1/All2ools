@@ -9,9 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '@/hooks/use-language';
 
 const featuredSlugs = [
     'pdf-to-word-converter', 
@@ -23,6 +23,7 @@ const featuredSlugs = [
 ];
 
 export function FeaturedTools() {
+    const { translate } = useLanguage();
     const featuredTools = tools.filter(tool => featuredSlugs.includes(tool.slug));
     
     return (
@@ -41,10 +42,10 @@ export function FeaturedTools() {
                         <Card key={tool.slug} className="group hover:border-primary/50 transition-all">
                              <Link href={`/tools/${tool.slug}`} className="flex flex-col h-full">
                                 <CardHeader>
-                                    <CardTitle className="text-xl">{tool.name}</CardTitle>
+                                    <CardTitle className="text-xl">{translate(tool.slug)}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="flex-grow">
-                                    <CardDescription>{tool.description}</CardDescription>
+                                    <CardDescription>{translate(tool.description)}</CardDescription>
                                 </CardContent>
                                  <div className="p-6 pt-0">
                                     <div className="text-primary font-semibold flex items-center group-hover:underline">
