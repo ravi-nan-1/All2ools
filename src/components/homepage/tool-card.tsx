@@ -38,7 +38,6 @@ export function ToolCard({ tool, priority = false }: ToolCardProps) {
                 className="rounded-t-lg object-cover"
                 data-ai-hint={tool.imageHint}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                priority={priority}
               />
             </div>
           <CardHeader className="p-4">
