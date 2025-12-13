@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ToolCard, type ToolWithImage } from './tool-card';
 import { useLanguage } from '@/hooks/use-language';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight, Check } from 'lucide-react';
 import { AdBanner } from '@/components/shared/ad-banner';
 import { WhyAll2ools } from './why-all2ools';
 import { ToolCategories } from './tool-categories';
@@ -55,27 +55,66 @@ export function HomePageClient({ tools }: HomePageClientProps) {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-      <section className="text-center py-12 md:py-20">
-        <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tight">
-          {translate('hero_title')}
-        </h1>
-        <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-          {translate('hero_subtitle')}
-        </p>
-        <div className="mt-8 max-w-xl mx-auto relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder={translate('search_placeholder')}
-            className="w-full pl-10 h-12 text-base"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      <section className="relative bg-gradient-to-b from-background to-muted/20 py-20 px-4 text-center">
+        <div className="container mx-auto max-w-6xl text-center">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Free AI-Powered Online Tools for SEO, Business, Finance & Images
+          </h1>
+          
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+            Access 30+ professional-grade tools including AI humanizer, image compressor, 
+            PDF converter, loan calculator, and more. Completely free, no signup required, 
+            unlimited usage forever.
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-green-500" />
+              <span>100% Free Forever</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-green-500" />
+              <span>No Signup Required</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-green-500" />
+              <span>Unlimited Use</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-green-500" />
+              <span>30+ Tools</span>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a 
+              href="#tools" 
+              className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition inline-block"
+            >
+              Explore All Tools →
+            </a>
+            <a 
+              href="#popular" 
+              className="px-8 py-4 bg-secondary text-secondary-foreground rounded-lg font-semibold hover:bg-secondary/90 transition inline-block"
+            >
+              Most Popular Tools
+            </a>
+          </div>
         </div>
       </section>
 
-      <section className="mb-12">
-        <div className="flex justify-center flex-wrap gap-2">
+      <section id="tools" className="pt-12">
+        <div className="max-w-xl mx-auto relative mb-8">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder={translate('search_placeholder')}
+              className="w-full pl-10 h-12 text-base"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+        </div>
+        <div className="flex justify-center flex-wrap gap-2 mb-12">
           <Button
             variant={selectedCategory === 'All' ? 'default' : 'outline'}
             onClick={() => setSelectedCategory('All')}
@@ -94,9 +133,7 @@ export function HomePageClient({ tools }: HomePageClientProps) {
             </Button>
           ))}
         </div>
-      </section>
 
-      <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {translatedAndFilteredTools.map((tool, index) => (
             <ToolCard key={tool.slug} tool={tool} priority={index < 5} />
@@ -123,7 +160,7 @@ export function HomePageClient({ tools }: HomePageClientProps) {
 
       <Personas />
       
-      <div className="my-16 md:my-24">
+      <div className="my-16 md:my-24" id="popular">
          <AdBanner
           adSlot="YOUR_MID_BANNER_AD_SLOT_ID"
           className="w-full min-h-[100px] flex items-center justify-center bg-muted rounded-lg"
