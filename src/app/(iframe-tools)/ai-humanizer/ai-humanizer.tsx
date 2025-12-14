@@ -6,8 +6,7 @@ export function AiHumanizer() {
   return (
     <iframe
       src={toolUrl}
-      className="w-full h-full border-0"
-      style={{ height: '100vh' }}
+      className="w-full h-screen border-0"
       title="AI Humanizer Tool"
       allow="fullscreen"
     />

@@ -6,8 +6,7 @@ export function AiTutor() {
   return (
     <iframe
       src={toolUrl}
-      className="w-full h-full border-0"
-      style={{ height: '100vh' }}
+      className="w-full h-screen border-0"
       title="AI Tutor"
       allow="fullscreen"
     />
