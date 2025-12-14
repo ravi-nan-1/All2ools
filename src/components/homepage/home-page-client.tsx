@@ -58,11 +58,11 @@ export function HomePageClient({ tools }: HomePageClientProps) {
       <section className="relative bg-gradient-to-b from-background to-muted/20 py-20 px-4 text-center">
         <div className="container mx-auto max-w-6xl text-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Free AI-Powered Online Tools for SEO, Business, Finance & Images
+            30+ Free AI Tools for SEO, Business, Finance & More
           </h1>
           
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-            All2ools offers 30+ free AI tools for PDFs, SEO, images, and business tasks. Fast, easy, and no signup required.
+            All2ools offers a complete suite of free online tools. Compress images, convert JSON to Excel, check API latency, find forex arbitrage opportunities, and more. Fast, easy, and no signup required.
           </p>
           
           <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm text-muted-foreground">
