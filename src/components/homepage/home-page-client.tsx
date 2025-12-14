@@ -58,11 +58,11 @@ export function HomePageClient({ tools }: HomePageClientProps) {
       <section className="relative bg-background py-20 px-4 text-center">
         <div className="container mx-auto max-w-6xl text-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            The Ultimate Suite of Free AI Tools Online
+            Free Online AI Tools for Every Task
           </h1>
           
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-             Explore 30+ powerful utilities for PDF to Word conversion, image compression, SEO analysis, and more. Our full suite of AI tools is fast, easy, and requires no signup.
+             All2ools offers 30+ free AI tools for PDFs, PDF to Word, SEO, images, and business tasks. Fast, easy, and no signup required.
           </p>
           
           <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm text-muted-foreground">

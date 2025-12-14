@@ -42,7 +42,7 @@ export function WhyAll2ools() {
          <div>
             <h3 className="text-2xl md:text-3xl font-bold font-headline mb-4">Fast, Simple, and Free — Built for Real Workflows</h3>
             <p className="text-muted-foreground mb-8">
-              Most online tools force you to watch ads, require sign-ups, slow down your device, and don't respect your privacy. All2ools does the opposite.
+              Most online tools force you to watch ads, require sign-ups, slow down your device, and don't respect your privacy. All2ools does the opposite, offering powerful features like a free PDF to Word converter, a high-quality image compressor, and a full suite of AI tools online for free.
             </p>
              <ul className="space-y-4">
                 <FeatureItem icon={Lock}>No login required</FeatureItem>
