@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, Home, Info, Mail, Shield, FileText, Wrench } from 'lucide-react';
+import { Home, Info, Mail, Shield, FileText, Wrench } from 'lucide-react';
 import { LanguageSwitcher } from '../tool-page/language-switcher';
 import {
   DropdownMenu,
@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
+import Image from 'next/image';
 
 export function Header() {
   const pathname = usePathname();
@@ -44,7 +45,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg mr-6">
-          <Bot className="h-6 w-6 text-primary" />
+          <Image src="/logo.png" alt="All2ools Logo" width={24} height={24} className="h-6 w-6" />
           <span className="font-headline">All2ools</span>
         </Link>
         
