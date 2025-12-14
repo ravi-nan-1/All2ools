@@ -9,7 +9,7 @@ import { MainLayout } from '@/components/shared/main-layout';
 
 export const metadata: Metadata = {
   title: 'Free Online AI Tools | PDF, SEO, Image & Business Tools',
-  description: 'The ultimate suite of 30+ free online tools powered by AI. Explore tools for finance, SEO, image editing, business management, developers, and more. Boost your productivity today.',
+  description: 'All2ools offers 30+ free AI tools for PDFs, SEO, images, and business tasks. Fast, easy, and no signup required.',
   keywords: 'ai humanizer, text humanizer, humanize ai text, convert ai text to human, pdf to word, word to pdf, pdf editor, pdf converter, file converter, universal file converter, plagiarism checker, detect plagiarism online, excel tools, excel automation, url shortener, shorten link, image converter, jpg to png, rent map, apartment finder, compress image, reduce image size, pdf summarizer, ai summary tool, online tools, free web tools, pdf tools, image tools, writing tools, seo tools, ai tools, productivity tools, all-in-one online tools, convert files online, qr code generator, free qr creator, ai tutor, study assistant ai, image crop, image resize',
   icons: {
     icon: '/favicon.ico',
